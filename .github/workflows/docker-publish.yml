@@ -11,6 +11,10 @@ on:
     paths: 
       - 'Dockerfile'
       - 'conda-linux-64.lock'
+
+# adding permissions so that the workflow can push commits back to the repo
+permissions:
+  contents: write
       
 jobs:
   push_to_registry:
