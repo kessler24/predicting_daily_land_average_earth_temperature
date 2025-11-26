@@ -26,37 +26,27 @@ Follow the instructions to run the analysis or modify the project in an editor.
 
 ### Setup Environment
 
-1.  Ensure Conda is installed on your machine.
+1. Ensure Docker and Docker Compose are installed on your machine.
 
-2.  Clone the GitHub repository to your machine.
+2. Clone the GitHub repository to your machine.
 
-3.  Open a command line interface (e.g. Terminal) on your machine and navigate to the root of this repository. Enter the following command to create a new conda environment from the environment.yml file. If prompted to install packages and dependencies, type 'y' (yes).
+3. Open a command line interface (e.g. Terminal) on your machine and navigate to the root of this repository. Enter the following command to start and run your multi-container application based on the configuration provided in the docker-compose.yml file.
 
-`conda env create --file environment.yml`
+`docker compose up`
 
-4.  Switch to the `climate-env` conda environment using the following command.
+4. After the docker image is created and the container is started, follow the instructions similar to: jupyter-notebook-1  |     Or copy and paste one of these URLs:
+jupyter-notebook-1  |         http://49553df242bb:8888/lab?token=f41ef3f99692f72a4e1efb828a738f38d2da4c648c62d21c
+jupyter-notebook-1  |         http://127.0.0.1:8888/lab?token=f41ef3f99692f72a4e1efb828a738f38d2da4c648c62d21c
 
-`conda activate climate-env`
+5. Copy and paste one of the links to browser to launch the jupyter notebook. 
 
-### Run (or modify) Analysis
+If the launch fails and lead to a page asking for password or token, you might want to open the docker-compose.yml file and change the port number in square bracke {} below
+    ports:
+      - "{8888}:8888"
 
-1.  Ensure you are in the root of this repository and the appropriate conda environment is active.
+After changing the port number, remember to replace the port number when you copy and paste the link to browser.
 
-2.  Open the repository with your preferred code editor. If you would like to use JupyterLab, you may need to manually install the `ipykernel` package into the `climate-env` conda environment using the command `conda install ipykernel`, and ensure the `nb_conda_kernels` package is installed in the same conda environment on your machine where Jupyter Lab is installed.
-
-3.  In your code editor, navigate to the global_daily_land_temperature_prediction.ipynb document and explore the interactive analysis.
-
-#### Adding a dependency
-
-1.  Install the files in your conda environment.
-
-2.  Create and switch to a new branch.
-
-3.  Create a new environment file from your current conda environment using the command `conda env export -f environment.yml --from-history`.
-
-4.  Open the environment.yml file in an editor and manually remove the line starting with `prefix:`. Additionally, ensure all packages have an exact version specified.
-
-5.  Push the new environment.yml file to your branch on GitHub. Send a pull request to merge the changes into the main branch.
+6. In jupyter notebook code, navigate to the global_daily_land_temperature_prediction.ipynb document and explore the interactive analysis.
 
 ## License
 
