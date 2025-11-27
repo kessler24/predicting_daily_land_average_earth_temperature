@@ -38,13 +38,17 @@ Follow the instructions to run the analysis or modify the project in an editor.
 
 5. Copy and paste the url to browser to launch the jupyter notebook. 
 
-If the launch fails and lead to a page asking for password or token, you might want to open the docker-compose.yml file and change the port number in square bracke {} below
+If the page asking for a password or token, it is likely that the port 8888 is already being used on your computer. In this case, you can either remove the docker instance on port 8888 or launch the docker instance on a new port. 
+
+To launch this docker instance on a new port:
+a. Remove the current instance by running `docker compose rm` command. 
+b. Open the docker-compose.yml file and change the port number in curly braces {} below to an available port (e.g. If 8888 is unavailable, try 8887 or 8889).
     ports:
       - "{8888}:8888"
+c. After changing the port number, run `docker compose up` again and look for the url again. Remember to replace the port number in the curly braces {} below with the number you changed to in step b.
+'http://127.0.0.1:{8888}/lab?token=f41ef3f99692f72a4e1efb828a738f38d2da4c648c62d21c' 
 
-After changing the port number, remember to replace the port number when you copy and paste the link to browser.
-
-6. In jupyter notebook code, navigate to the global_daily_land_temperature_prediction.ipynb document and explore the interactive analysis.
+6. Once you launch the Docker instace successfully, you will be in a local JupyterLab instance in your browser. Now you can navigate to the global_daily_land_temperature_prediction.ipynb document and explore the interactive analysis.
 
 ## License
 
