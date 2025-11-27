@@ -18,7 +18,7 @@ The data set contains 5 columns with time series information, and one column rep
 
 ## Dependencies
 
-The software dependencies for this project are managed via conda environments. To install the relevant dependencies, follow the instructions in the Setup Environment section below.
+All software dependencies for this project are managed using Docker. You can build and run the project directly inside the Docker container. This ensures a consistent and reproducible environmenyt across all systems. To install the relevant dependencies, follow the instructions in the Setup Environment section below.
 
 ## Running the Analysis
 
@@ -34,11 +34,9 @@ Follow the instructions to run the analysis or modify the project in an editor.
 
 `docker compose up`
 
-4. After the docker image is created and the container is started, follow the instructions similar to: jupyter-notebook-1  |     Or copy and paste one of these URLs:
-jupyter-notebook-1  |         http://49553df242bb:8888/lab?token=f41ef3f99692f72a4e1efb828a738f38d2da4c648c62d21c
-jupyter-notebook-1  |         http://127.0.0.1:8888/lab?token=f41ef3f99692f72a4e1efb828a738f38d2da4c648c62d21c
+4. After the docker image is created and the container is started, look for an url similar to 'http://127.0.0.1:8888/lab?token=f41ef3f99692f72a4e1efb828a738f38d2da4c648c62d21c' following the line 'Or copy and paste one of these URLs'.
 
-5. Copy and paste one of the links to browser to launch the jupyter notebook. 
+5. Copy and paste the url to browser to launch the jupyter notebook. 
 
 If the launch fails and lead to a page asking for password or token, you might want to open the docker-compose.yml file and change the port number in square bracke {} below
     ports:
