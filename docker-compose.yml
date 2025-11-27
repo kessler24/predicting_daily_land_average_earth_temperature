@@ -1,0 +1,12 @@
+services:
+  jupyter-notebook:
+    image:  molkess/predicting_daily_land_average_earth_temperature:1c1c571
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/home/jovyan
+    deploy:
+      resources:
+        limits:
+          memory: 5G
+    platform: linux/amd64
