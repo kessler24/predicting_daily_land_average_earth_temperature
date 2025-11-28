@@ -2,3 +2,9 @@
 __pycache__/
 .DS_Store
 .Rhistory
+*.log
+*.jupyter
+*.local
+*.cache
+*.ipython
+*.config
