@@ -5,10 +5,10 @@ dependencies:
   - pandas=2.2.2
   - python=3.11.4
   - pip=25.3
-  - ipykernel=7.1.0
   - matplotlib=3.10.8
   - scikit-learn=1.7.2
   - pyyaml=6.0.3
   - conda-lock=3.0.4
   - pandera-pandas=0.26.1
   - altair-all=5.4
+  - ipython=8.30.0
