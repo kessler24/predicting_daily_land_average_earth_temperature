@@ -1,7 +1,7 @@
 # License for Code (MIT)
 
 ======================
-Code refers to all the scripts under these folders: scripts, src, notebooks, results
+Code refers to all the scripts in the root directory as well as in the scripts folder. 00-update_enviroment_yml.py adapted with permission from <https://github.com/skysheng7/AI_bias_in_farming/blob/main/scripts/00-update_enviroment_yml.py> under the MIT License.
 
 MIT License
 
@@ -152,7 +152,19 @@ express Statement of Purpose.
     party to this document and has no duty or obligation with respect to
     this CC0 or use of the Work.
 
-# License for GitHub Workflows
+# License for GitHub Workflows (MIT)
+==================================================
+GitHub Workflows refers to code in the .github/workflows folder and the docker-compose.yml file in the root repository. docker-publish.yml adapted with permission from <https://github.com/ttimbers/breast-cancer-predictor/blob/main/.github/workflows/docker-publish.yml> under the MIT License.
+
+MIT License
+
+Copyright (c) 2025 Molly Kessler, Daisy Zhou, Jacob Cann, Ojasv Issar
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ============================
 Except where otherwise noted, the example programs and other software provided in this repository are made available under the MIT license.
