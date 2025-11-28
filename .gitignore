@@ -7,3 +7,5 @@ __pycache__/
 *.local
 *.cache
 *.ipython
+.github/workflows/*.yml
+*.config
