@@ -154,7 +154,7 @@ express Statement of Purpose.
 
 # License for GitHub Workflows (MIT)
 ==================================================
-GitHub Workflows refers to code in the .github/workflows folder and the docker-compose.yml file in the root repository. docker-publish.yml adapted with permission from <https://github.com/ttimbers/breast-cancer-predictor/blob/main/.github/workflows/docker-publish.yml> under the MIT License.
+GitHub Workflows refers to code in the .github/workflows folder and the docker-compose.yml file in the root repository. docker-publish.yml adapted with permission from the [Breast Cancer Predictor Project](https://github.com/ttimbers/breast-cancer-predictor/blob/main/.github/workflows/docker-publish.yml) under the MIT License.
 
 MIT License
 
