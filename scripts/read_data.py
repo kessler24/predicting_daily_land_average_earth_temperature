@@ -8,7 +8,7 @@ def main():
     )
 
     # define the input file path
-    parser.add_argument("input_path", help="Please give an URL or local file path (e.g. data/input.txt)")
+    parser.add_argument("input_path", help="Please give a URL or local file path (e.g. data/input.txt)")
 
     # define the output file path
     parser.add_argument("output_path", help="Output file path (e.g. data/raw.csv)")
@@ -33,7 +33,7 @@ def main():
         df.to_csv(output_path, index=False)
         print(f"Data saved to {output_path}")
     else:
-        print("Please aware that your data is not write into a csv file.")
+        print("Please be aware that your data is not writing into a csv file.")
 
 if __name__ == "__main__":
     main()
