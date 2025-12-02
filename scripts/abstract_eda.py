@@ -15,11 +15,26 @@ import altair as alt
 # parse/define command line arguments here
 #--------------------
 
+args: list[str] = [path, base_filename]
 
 # code for other functions
 #--------------------
 
-def viz_tabular_stats(df):
+def read_clean_data(args[1]: str): # commandline args[1] -- get rel path from user
+    ...
+def viz_tabular_stats(train_df, args[1]): # commandline args[2] -- get basefilename from user to increment
+    ...
+
+def viz_linear_regression():
+    ...
+
+def viz_mean_temp_years():
+    ...
+
+def viz_seasonal_lines():
+    ...
+
+def viz_density_dists():
     ...
 
 # define main function
