@@ -15,5 +15,8 @@ RUN fix-permissions "/home/${NB_USER}"
 # of deepchecks that is compatible with python 3.11
 RUN pip install deepchecks==0.18.1
 
+# pin setuptools package to <81, imported by deepchecks
+RUN pip install --force-reinstall "setuptools=80.9.0"
+
 # force downgrade ipython to <9 for deepchecks
 RUN pip install --force-reinstall "ipython==8.30.0"
