@@ -1,3 +1,6 @@
+# note: run this file using:
+# python data_preprocessing.py --read_path="../data/raw.csv" --write_path="../data/cleaned.csv" --plots_path="../images" --logs_path="../logs"
+
 # -----------------------------
 # Data Handling & Numerical Computation
 # -----------------------------
@@ -23,16 +26,22 @@ import json        # Convert validation errors or logs to JSON format
 # -----------------------------
 # Visualization Libraries
 # -----------------------------
-# import matplotlib.pyplot as plt  # Classic plotting library
 import altair as alt             # Interactive, declarative plots for EDA
 
+# -----------------------------
+# Command Line Arguments
+# -----------------------------
+import click
 
-# Configure Plot Sizes
-# NOTE: may be able to remove this?
+# Configure Plot Sizes Globally
 plot_size = {'width': 450, 'height': 300}
-facet_plot_size = {'width': 250, 'height': 200}
 
-def main(logs_folder_path = "../logs"):
+@click.command()
+@click.option('--read_path', type=str)
+@click.option('--write_path', type=str)
+@click.option('--plots_path', type=str)
+@click.option('--logs_path', type=str)
+def main(read_path, write_path, plots_path, logs_path):
     # Simplify Working with Large Datasets 
     alt.data_transformers.enable('vegafusion')
     
@@ -44,19 +53,20 @@ def main(logs_folder_path = "../logs"):
     warnings.filterwarnings('ignore', module='pandera')
 
     # Create logs directory to hold validation logs
-    if not os.path.exists(logs_folder_path):
-        os.makedirs(logs_folder_path)
+    if not os.path.exists(logs_path):
+        os.makedirs(logs_path)
     
     # Configure logging
     logging.basicConfig(
-        filename=f"{logs_folder_path}/validation_errors.log",
+        filename=f"{logs_path}/validation_errors.log",
         filemode="w",
         format="%(asctime)s - %(message)s",
         level=logging.INFO,
     )
-
+    
+    # read_path = "../data/raw.csv"
     # Load Data from data folder
-    df = read_data_from_csv()
+    df = pd.read_csv(read_path)
 
     # Clean Data
     df = data_cleaning(df)
@@ -68,20 +78,20 @@ def main(logs_folder_path = "../logs"):
     train_df, test_df = split_data(df)
 
     # Visualize distribution of training data
-    visualize_distribution(train_df) 
+    visualize_distribution(train_df, plots_path) 
 
     # Perform validation checks that should only be on training data 
-    train_df = training_data_validation(train_df)
+    training_data_validation(train_df)
 
     # Visualize correlation and perform automatic correlation checks on training data
-    correlation_validation(train_df) 
+    correlation_validation(train_df, plots_path) 
+
+    # write_path = "../data/cleaned.csv"
+    df.to_csv(write_path, index=False)
 
     return train_df, test_df
 
-def read_data_from_csv(local_path = "../data/raw.csv"):
-    return pd.read_csv(local_path)
-
-def save_altair_chart(chart, filename, folder="../images", scale_factor=2.0):
+def save_altair_chart(chart, filename, folder, scale_factor=2.0):
     """
     Save an Altair chart to a file.
     
@@ -240,7 +250,7 @@ def split_data(df, cutoff = 2012):
     train_df = df[df['Year'] <= cutoff]
     return train_df, test_df
 
-def visualize_distribution(train_df):
+def visualize_distribution(train_df, plots_path):
     # -----------------------------------------------------------
     # Target Distribution Visualization (Training Data)
     # -----------------------------------------------------------
@@ -342,7 +352,7 @@ def visualize_distribution(train_df):
     # Save figure
     # ------------------------
 
-    save_altair_chart(plot, "temperature_and_anomaly_distributions.png")
+    save_altair_chart(plot, "temperature_and_anomaly_distributions.png", plots_path)
 
 
 def training_data_validation(train_df):
@@ -421,7 +431,7 @@ def training_data_validation(train_df):
         ],
     
         strict=True,     # Reject datasets with unexpected extra columns
-        coerce=True      # Attempt safe type coercion when appropriate
+        # coerce=True      # Attempt safe type coercion when appropriate
     )
     
     # -----------------------------------------------------------
@@ -449,7 +459,7 @@ def training_data_validation(train_df):
 
     return train_df
 
-def correlation_validation(train_df):
+def correlation_validation(train_df, plots_path):
     # -----------------------------------------------------------
     # Correlation Analysis for Training Data
     # -----------------------------------------------------------
@@ -508,7 +518,7 @@ def correlation_validation(train_df):
     )
 
     # Save plot image
-    save_altair_chart(heatmap_plot, "correlation_heatmap.png")
+    save_altair_chart(heatmap_plot, "correlation_heatmap.png", plots_path)
     
     #Correlation validations
     # Adapted from https://github.com/skysheng7/DSCI522_data_validation_demo/tree/main/notebooks
@@ -559,7 +569,7 @@ def correlation_validation(train_df):
     )
 
     # Save plot image
-    save_altair_chart(scatter_plot, "month_vs_day_of_year_correlation.png")
+    save_altair_chart(scatter_plot, "month_vs_day_of_year_correlation.png", plots_path)
 
 if __name__ == "__main__":
     main()
