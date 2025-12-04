@@ -1,23 +1,10 @@
-import argparse
+import click
 import pandas as pd
 
-def main():
-    # define a parser
-    parser = argparse.ArgumentParser(
-        description="Read data from a URL or local path and save it as a CSV file."
-    )
-
-    # define the input file path
-    parser.add_argument("input_path", help="Please give an URL or local file path (e.g. data/input.txt)")
-
-    # define the output file path
-    parser.add_argument("output_path", help="Output file path (e.g. data/raw.csv)")
-
-    # set up and get the separate arguments
-    args = parser.parse_args()
-    input_path = args.input_path
-    output_path = args.output_path
-
+@click.command()
+@click.argument("input_path")
+@click.argument("output_path")
+def main(input_path, output_path):
     # make sure the input_path (first atrgument is a propoer url before downloading)
     if input_path.startswith("http://") or input_path.startswith("https://"):
         print(f"Downloading data from an URL: {input_path} ")
