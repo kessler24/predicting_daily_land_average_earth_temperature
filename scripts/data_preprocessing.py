@@ -1,5 +1,5 @@
 # note: run this file using:
-# python data_preprocessing.py --read_path="../data/raw.csv" --write_path="../data/cleaned" --plots_path="../images" --logs_path="../logs"
+# python data_preprocessing.py --read_path="../data/global_temp_anomaly_raw.csv" --write_path="../data/global_temp_anomaly_cleaned" --plots_path="../images" --logs_path="../logs"
 
 # -----------------------------
 # Data Handling & Numerical Computation
