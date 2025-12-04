@@ -20,7 +20,7 @@ def main(input_path, output_path):
         df.to_csv(output_path, index=False)
         print(f"Data saved to {output_path}")
     else:
-        print("Please aware that your data is not write into a csv file.")
+        print("Please be aware that your data is not writing into a csv file.")
 
 if __name__ == "__main__":
     main()
