@@ -18,7 +18,7 @@ The data set contains 5 columns with time series information, and one column rep
 
 ## Dependencies
 
-All software dependencies for this project are managed using Docker. You can build and run the project directly inside the Docker container. This ensures a consistent and reproducible environmenyt across all systems. To install the relevant dependencies, follow the instructions in the Setup Environment section below.
+All software dependencies for this project are managed using Docker. You can build and run the project directly inside the [Docker](https://www.docker.com/) container. This ensures a consistent and reproducible environmenyt across all systems. To install the relevant dependencies, follow the instructions in the Setup Environment section below.
 
 ## Running the Analysis
 
@@ -49,6 +49,52 @@ c. After changing the port number, run `docker compose up` again and look for th
 'http://127.0.0.1:{8888}/lab?token=f41ef3f99692f72a4e1efb828a738f38d2da4c648c62d21c' 
 
 6. Once you launch the Docker instance successfully, you will be in a local JupyterLab instance in your browser. Now you can navigate to the global_daily_land_temperature_prediction.ipynb document and explore the interactive analysis.
+
+### Running the scripts
+
+1. Run `pwd` to make sure you are located in the project root, otherwise, make sure you naviagte to the root of the project before proceeding to the following steps. 
+
+2. Navigate to the /scripts folder in the project root by running `cd scripts`
+
+3. Download the [Berkeley Earth Temperature Data](https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt) with `read_data.py` script by running this command:
+
+ `python read_data.py "https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt" "../data/global_temp_anomaly_raw.csv"`
+
+ The script takes two arguments:
+ 3.1 the path to the input file (a URL or a relative local path, such as data/file.csv), as well as
+ 3.2 a path/filename where to write the file to and what to call it (e.g., data/cleaned_data.csv).
+
+4. Reads the data from the first script and performs and data cleaning, preprocessing and validation with `data_preprocessing.py` script by runnning this command:
+
+ `python data_preprocessing.py --read_path="../data/global_temp_anomaly_raw.csv" --write_path="../data/global_temp_anomaly_cleaned" --plots_path="../images" --logs_path="../logs"`
+
+The script takes two arguments:
+a path/filename pointing to the data to be read in
+a path/filename pointing to where the cleaned/processed/transformed/partitioned data should live.
+
+## Developer notes
+
+### Developer dependencies
+- `conda` (version 25.9.1)
+- `conda-lock` (version 3.0.4)
+
+### Adding a new dependency
+
+1. Create and switch to a new GitHub branch by typing `git checkout -b new-branch-name` in the terminal
+
+2. Open the `environment.yml`file and add the new dependencies
+
+3. To update the `conda-linux-64.lock` file, run `conda-lock -k explicit --file environment.yml -p linux-64` in the terminal
+
+4. Remember to rebuild the Docker image locally and make sure it runs locally with `docker compose up` and remotely in the GitHub Actions.
+
+5. Open the `docker-compose.yml` to update the tag from Docker.
+
+6. Run `git add .`
+       `git commit -m 'add new dependencies'`
+       `git push -u origin new-branch-name` to push the local changes to the GitHub repo.
+
+7. Create a new pull request in GitHub and merge the changes to the `main` branch after review.
 
 ## License
 
