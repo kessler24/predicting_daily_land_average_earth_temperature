@@ -9,7 +9,7 @@ Parameters
 train_df_csv_path: str
     The current relative filepath of the clean training data to be analyzed.
 
-png_path: str
+plots_path: str
     The target relative filepath of the png images to be generated. 
 
 Returns
@@ -45,8 +45,8 @@ from IPython import display
 # -----------------------------
 @click.command()
 @click.argument('train_df_csv_path', type=click.Path(exists=True))
-@click.argument('png_path')
-def main(train_df_csv_path:str, png_path: str) -> None:
+@click.argument('plots_path')
+def main(train_df_csv_path:str, plots_path: str) -> None:
 
     # Read the training data csv into a dataframe from first command line argument
     train_df = read_clean_data(train_df_csv_path)
@@ -61,21 +61,21 @@ def main(train_df_csv_path:str, png_path: str) -> None:
     viz_tabular_stats(train_df)
 
     # Create the temperature scatter plot with mean temperature per year line
-    # Pass the command line argument png_path to plot function for image output 
-    # Pass the png_path with the filename incremented by one to next plot
-    inc_name = viz_mean_temp_years(train_df, png_path)
+    # Pass the command line argument plots_path to plot function for image output 
+    # Pass the plots_path with the filename incremented by one to next plot
+    inc_name = viz_mean_temp_years(train_df, plots_path)
     
     # Create the scatter plot with a simple linear regression fit
-    # Pass the png_path with the filename incremented by one to next plot
-    inc_name = viz_linear_regression(train_df, png_path=inc_name)
+    # Pass the plots_path with the filename incremented by one to next plot
+    inc_name = viz_linear_regression(train_df, plots_path=inc_name)
 
     # Create the mean temperature per year line plots for each month
-    # Pass the png_path with the filename incremented by one to next plot
-    inc_name = viz_seasonal_lines(train_df, png_path=inc_name)
+    # Pass the plots_path with the filename incremented by one to next plot
+    inc_name = viz_seasonal_lines(train_df, plots_path=inc_name)
     
     # Create the density plot with for three years separated by ~60 years
-    # Pass the png_path with the filename incremented by one to next plot
-    inc_name = viz_density_dists(train_df, png_path=inc_name)
+    # Pass the plots_path with the filename incremented by one to next plot
+    inc_name = viz_density_dists(train_df, plots_path=inc_name)
 
 # -----------------------------
 # Increment any filename by one with *_.ext suffix
@@ -121,7 +121,7 @@ def viz_tabular_stats(train_df: pd.DataFrame) -> None:
 # Save the plot as a png file to the image folder with provided filename
 # -----------------------------
 def viz_mean_temp_years(train_df: pd.DataFrame, 
-                            png_path: str,
+                            plots_path: str,
                             plot_size: dict = {'width': 450, 'height': 300}) -> str:
 
     # Create scatter of raw data with some opacity to reduce plot noise
@@ -141,7 +141,7 @@ def viz_mean_temp_years(train_df: pd.DataFrame,
     ).properties(**plot_size)
 
     # Increment the file name in the png path
-    plot_name = increment_filename(png_path)
+    plot_name = increment_filename(plots_path)
 
     # save the plot as a png file
     (temp_points+temp_line_mean).save(plot_name)
@@ -154,7 +154,7 @@ def viz_mean_temp_years(train_df: pd.DataFrame,
 # Save the plot as a png file to the image folder with provided filename
 # -----------------------------
 def viz_linear_regression(train_df: pd.DataFrame, 
-                            png_path: str,
+                            plots_path: str,
                             plot_size: dict = {'width': 450, 'height': 300}) -> str:
     
     # PLot a scatter plot of the mean temperatures for each year
@@ -176,7 +176,7 @@ def viz_linear_regression(train_df: pd.DataFrame,
     ).properties(**plot_size)
     
     # Increment the file name in the png path
-    plot_name = increment_filename(png_path)
+    plot_name = increment_filename(plots_path)
 
     # save the plot as a png file
     reg.save(plot_name)
@@ -189,7 +189,7 @@ def viz_linear_regression(train_df: pd.DataFrame,
 # Save the plot as a png file to the image folder with provided filename
 # -----------------------------
 def viz_seasonal_lines(train_df: pd.DataFrame, 
-                        png_path: str,
+                        plots_path: str,
                         facet_plot_size: dict = {'width': 450, 'height': 300}) -> str:
     
     # Average by year for each month in data
@@ -210,7 +210,7 @@ def viz_seasonal_lines(train_df: pd.DataFrame,
         title='Seasonality of Annual Means of Global Daily Average Land Temperature')
     
     # Increment the file name in the png path
-    plot_name = increment_filename(png_path)
+    plot_name = increment_filename(plots_path)
 
     # save the plot as a png file
     final_figure.save(plot_name)
@@ -223,7 +223,7 @@ def viz_seasonal_lines(train_df: pd.DataFrame,
 # Save the plot as a png file to the image folder with provided filename
 # -----------------------------
 def viz_density_dists(train_df: pd.DataFrame, 
-                        png_path: str,
+                        plots_path: str,
                         plot_size: dict = {'width': 450, 'height': 300}) -> str:
     
     # Years to be analyzed separated by ~60 years
@@ -245,7 +245,7 @@ def viz_density_dists(train_df: pd.DataFrame,
     ).properties(**plot_size, title = 'Distributions of Global Daily Average Land Temperature')
 
     # Increment the file name in the png path
-    plot_name = increment_filename(png_path)
+    plot_name = increment_filename(plots_path)
     
     # save the plot as a png file
     temp_density.save(plot_name)
