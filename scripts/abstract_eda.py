@@ -19,9 +19,9 @@ None
 
 Examples
     --------
-    >>> python abstract_eda.py data/train_df.csv img/eda.png
+    >>> python abstract_eda.py data/train_df.csv images/eda.png
     None
-        img/
+        images/
             eda_1.png
             eda_2.png
             eda_3.png
