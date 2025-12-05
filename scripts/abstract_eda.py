@@ -19,7 +19,7 @@ None
 
 Examples
     --------
-    >>> python abstract_eda.py data/train_df.csv images/eda.png
+    >>> python scripts/abstract_eda.py data/train_df.csv images/eda.png (from repo root )
     None
         images/
             eda_1.png
@@ -38,6 +38,8 @@ import altair as alt
 import click
 import warnings
 import os
+import matplotlib.pyplot as plt
+import matplotlib
 from IPython import display
 
 # -----------------------------
@@ -57,8 +59,9 @@ def main(train_df_csv_path:str, plots_path: str) -> None:
     # Suppress altair plot warnings for cleaner output
     warnings.filterwarnings('ignore', module='altair')
 
-    # View training dataframe at a high level for stats, null count, etc.
-    viz_tabular_stats(train_df)
+    # View training dataframe at a high level for stats and null presence
+    # Save the dataframe views as html files
+    viz_tabular_stats(train_df, plots_path)
 
     # Create the temperature scatter plot with mean temperature per year line
     # Pass the command line argument plots_path to plot function for image output 
@@ -109,12 +112,20 @@ def read_clean_data(train_df_csv_path: str) -> pd.DataFrame:
     return train_df
 
 # -----------------------------
-# View descriptive statistics and null counts in training data
+# View descriptive statistics and null presence in training data
 # -----------------------------
-def viz_tabular_stats(train_df: pd.DataFrame) -> None:
-    print('\n')
-    train_df.info()
-    print(f'\n{train_df.describe()}\n')
+def viz_tabular_stats(train_df: pd.DataFrame,
+                        plots_path: str) -> None:
+    
+    # Check if any NA values are in any of the columns in the training dataset
+    contains_na_df = train_df.isna().any().reset_index(
+        ).rename(columns={'index': 'Column', 0: 'Contains NA Values'})
+
+    # Export contains_na_df to html at plot_paths directory
+    contains_na_df.to_html(plots_path.removesuffix('.png')+'_1.html')
+
+    # Export train_df.describe() to html at plots_path directory with rounded numbers
+    train_df.describe().round(2).to_html(plots_path.removesuffix('.png')+'_2.html')
 
 # -----------------------------
 # Create the temperature scatter plot with mean temperature per year line
