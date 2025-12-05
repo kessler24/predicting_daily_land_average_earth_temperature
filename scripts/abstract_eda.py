@@ -17,6 +17,16 @@ Returns
 None
     Generates png image files of the plots in the target folder.
 
+Examples
+    --------
+    >>> python abstract_eda.py data/train_df.csv img/eda.png
+    None
+        img/
+            eda_1.png
+            eda_2.png
+            eda_3.png
+            eda_4.png
+
 """
 
 # -----------------------------
@@ -143,8 +153,9 @@ def viz_mean_temp_years(train_df: pd.DataFrame,
 # Create the scatter plot with a simple linear regression fit
 # Save the plot as a png file to the image folder with provided filename
 # -----------------------------
-def viz_linear_regression(train_df: pd.DataFrame, png_path: str,
-        plot_size: dict = {'width': 450, 'height': 300}) -> str:
+def viz_linear_regression(train_df: pd.DataFrame, 
+                            png_path: str,
+                            plot_size: dict = {'width': 450, 'height': 300}) -> str:
     
     # PLot a scatter plot of the mean temperatures for each year
     temp_points_avg = alt.Chart(train_df,
