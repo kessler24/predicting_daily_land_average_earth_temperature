@@ -60,7 +60,7 @@ def main(train_df_csv_path:str, plots_path: str) -> None:
 
     # View training dataframe at a high level for stats and null presence
     # Save the dataframe views as csv files
-    viz_tabular_stats(train_df, train_df_csv_path)
+    viz_tabular_stats(train_df, plots_path)
 
     # Create the temperature scatter plot with mean temperature per year line
     # Pass the command line argument plots_path to plot function for image output 
@@ -144,24 +144,27 @@ def read_clean_data(train_df_csv_path: str) -> pd.DataFrame:
 # View descriptive statistics and null presence in training data
 # -----------------------------
 def viz_tabular_stats(train_df: pd.DataFrame,
-                        train_df_csv_path: str) -> None:
+                        plots_path: str) -> None:
     
     # Check if any NA values are in any of the columns in the training dataset
     contains_na_df = train_df.isna().any().reset_index(
         ).rename(columns={'index': 'Column', 0: 'Contains NA Values'})
 
-    # Increment the train_df_csv_path filename and strip the .png extension, add .csv
-    table_name = increment_filename(train_df_csv_path)
+    # Strip the .png extension
+    filename, ext = os.path.splitext(plots_path)
 
-    # Export contains_na_df to csv at train_df_csv_path directory
-    contains_na_df.to_csv(add_prefix_to_increment(table_name, 'eda_table'),
+    #Increment the plots_path filename with .csv extension
+    table_name = increment_filename(f"{filename}.csv")
+
+    # Export contains_na_df to csv at plots_path directory
+    contains_na_df.to_csv(add_prefix_to_increment(table_name, 'table'),
                             index=False)
 
     # Increment the table csv filename above
     table_name = increment_filename(table_name)
 
-    # Export train_df.describe() to csv at train_df_csv_path directory with rounded numbers
-    train_df.describe().round(2).to_csv(add_prefix_to_increment(table_name, 'eda_table'),
+    # Export train_df.describe() to csv at plots_path directory with rounded numbers
+    train_df.describe().round(2).to_csv(add_prefix_to_increment(table_name, 'table'),
                                             index=True)
 
 # -----------------------------
