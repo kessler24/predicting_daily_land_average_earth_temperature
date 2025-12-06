@@ -68,9 +68,11 @@ c. After changing the port number, run `docker compose up` again and look for th
 
  `python data_preprocessing.py --read_path="../data/global_temp_anomaly_raw.csv" --write_path="../data/global_temp_anomaly_cleaned" --plots_path="../images" --logs_path="../logs"`
 
-The script takes two arguments:
+The script takes four arguments:
 a path/filename pointing to the data to be read in
 a path/filename pointing to where the cleaned/processed/transformed/partitioned data should live.
+A path pointing to where the plots will be saved
+A path pointing to where the log file will be saved
 
 ## Developer notes
 
@@ -86,11 +88,11 @@ a path/filename pointing to where the cleaned/processed/transformed/partitioned 
 
 3. To update the `conda-linux-64.lock` file, run `conda-lock -k explicit --file environment.yml -p linux-64` in the terminal
 
-4. Remember to rebuild the Docker image locally and make sure it runs locally with `docker compose up` and remotely in the GitHub Actions.
+4. Remember to rebuild the Docker image locally and make sure it runs locally with `docker compose up`.
 
-5. Open the `docker-compose.yml` to update the tag from Docker.
+5. To make sure the Docker image builds properly, check GitHub Actions on GitHub.com. Ensure the latest Docker image published sucessfully with a green check icon (note: it will take up to 10 minutes for the Docker image to build). 
 
-6. Run `git add .`
+6. Run `git add modified_file_name` (Remember to add all files with edits i.e. `git add environment.yml`)
        `git commit -m 'add new dependencies'`
        `git push -u origin new-branch-name` to push the local changes to the GitHub repo.
 
