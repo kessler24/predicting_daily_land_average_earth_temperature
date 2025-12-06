@@ -104,7 +104,7 @@ def increment_filename(filepath: str) -> str:
     return os.path.join(dirname, new_filename)
 
 # -----------------------------
-# Add an underscore suffix to an incremented filename
+# Add an underscore prefix to an incremented filename
 # -----------------------------
 def add_prefix_to_increment(inc_filename: str, 
                                     prefix: str) -> str:
