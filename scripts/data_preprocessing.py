@@ -112,7 +112,7 @@ def main(read_path, write_path, plots_path, logs_path):
     Returns
     -------
     (pd.DataFrame, pd.DataFrame)
-        A tuple containing the cleaned training and test DataFrames. These 
+        A tuple containing the cleaned training and test DataFrames as well as a full cleaned dataset. These 
         DataFrames are also saved to the write_path.
     """
     # Simplify Working with Large Datasets 
@@ -145,6 +145,10 @@ def main(read_path, write_path, plots_path, logs_path):
 
     # Perform validation checks that should be on all data
     df = all_data_validation(df)
+
+    # Save full cleaned dataset
+    df.to_csv(f"{write_path}_full.csv", index=False)
+    print(f"✓ Full cleaned dataset saved → {write_path}_cleaned.csv")
 
     # Split data into test and train sets
     train_df, test_df = split_data(df)
