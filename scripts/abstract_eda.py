@@ -10,20 +10,20 @@ train_df_csv_path: str
     The current relative filepath of the clean training data to be analyzed.
 
 plots_path: str
-    The target relative filepath of the png images to be generated. 
+    The target relative filepath of the png images and csv tables to be generated. 
 
 Returns
 -------
 None
-    Generates png image files of the plots in the target folder.
+    Generates training data png files of the plots and summary csv tables in the target folder.
 
 Examples
     --------
     >>> python scripts/abstract_eda.py data/train_df.csv images/eda.png (from repo root)
     None
         images/
-            eda_table_1.html
-            eda_table_2.html
+            train_df_eda_table_1.csv
+            train_df_eda_table_2.csv
             eda_plot_1.png
             eda_plot_2.png
             eda_plot_3.png
@@ -59,8 +59,8 @@ def main(train_df_csv_path:str, plots_path: str) -> None:
     warnings.filterwarnings('ignore', module='altair')
 
     # View training dataframe at a high level for stats and null presence
-    # Save the dataframe views as html files
-    viz_tabular_stats(train_df, plots_path)
+    # Save the dataframe views as csv files
+    viz_tabular_stats(train_df, train_df_csv_path)
 
     # Create the temperature scatter plot with mean temperature per year line
     # Pass the command line argument plots_path to plot function for image output 
@@ -91,17 +91,17 @@ def increment_filename(filepath: str) -> str:
     filename, ext = os.path.splitext(filename)
     
     # If the filename has a *_.ext as a numeric suffix increment it by one
-    if filename.split('_')[-1].isnumeric():
+    if filename.split('_').pop(-1).isnumeric():
        inc = int(filename.split('_')[-1])
-       inc+=1
-       new_filename = filename.split('_')[0]+'_'+str(inc)+ext
-    
+       inc += 1
+       new_filename = '_'.join(filename.split('_')[:-1]) + '_' + str(inc)
+       
     # Otherwise add the *_.ext numeric suffix starting at 1
     else:
-        new_filename = filename+'_'+str(1)+ext
+        new_filename = filename + '_1'
 
     # Join the input directory with the modified filename and return the new path
-    return os.path.join(dirname, new_filename)
+    return os.path.join(dirname, new_filename + ext)
 
 # -----------------------------
 # Add an underscore prefix to an incremented filename
@@ -119,13 +119,16 @@ def add_prefix_to_increment(inc_filename: str,
     prefixed_name = prefixed_name.split('_')
 
     # Insert _suffix_ before *_\d*
-    prefixed_name.insert(-1, '_'+prefix+'_')
+    if prefix not in prefixed_name:
+        prefixed_name.insert(-1, prefix)
+    else:
+        pass
 
     # Join list[str] together for new filename
-    prefixed_name = ''.join(prefixed_name)
+    prefixed_name = '_'.join(prefixed_name)
 
     # Construct the new path
-    prefixed_name = os.path.join(dirname, prefixed_name+ext)
+    prefixed_name = os.path.join(dirname, prefixed_name + ext)
 
     # Return incremented filename with the provided prefix
     return prefixed_name
@@ -141,23 +144,25 @@ def read_clean_data(train_df_csv_path: str) -> pd.DataFrame:
 # View descriptive statistics and null presence in training data
 # -----------------------------
 def viz_tabular_stats(train_df: pd.DataFrame,
-                        plots_path: str) -> None:
+                        train_df_csv_path: str) -> None:
     
     # Check if any NA values are in any of the columns in the training dataset
     contains_na_df = train_df.isna().any().reset_index(
         ).rename(columns={'index': 'Column', 0: 'Contains NA Values'})
 
-    # Increment the plots_path filename and strip the .png extension, add .html
-    table_name = increment_filename(plots_path.removesuffix('.png')+'.html')
+    # Increment the train_df_csv_path filename and strip the .png extension, add .csv
+    table_name = increment_filename(train_df_csv_path)
 
-    # Export contains_na_df to html at plot_paths directory
-    contains_na_df.to_html(add_prefix_to_increment(table_name, 'table'))
+    # Export contains_na_df to csv at train_df_csv_path directory
+    contains_na_df.to_csv(add_prefix_to_increment(table_name, 'eda_table'),
+                            index=False)
 
-    # Increment the table html filename above
+    # Increment the table csv filename above
     table_name = increment_filename(table_name)
 
-    # Export train_df.describe() to html at plots_path directory with rounded numbers
-    train_df.describe().round(2).to_html(add_prefix_to_increment(table_name, 'table'))
+    # Export train_df.describe() to csv at train_df_csv_path directory with rounded numbers
+    train_df.describe().round(2).to_csv(add_prefix_to_increment(table_name, 'eda_table'),
+                                            index=True)
 
 # -----------------------------
 # Create the temperature scatter plot with mean temperature per year line
