@@ -4,11 +4,18 @@ channels:
 dependencies:
   - pandas=2.2.2
   - python=3.11.4
-  - pip=25.3
   - matplotlib=3.10.8
   - scikit-learn=1.7.2
   - pyyaml=6.0.3
   - conda-lock=3.0.4
   - pandera-pandas=0.26.1
   - altair-all=5.4
-  - ipython=8.30.0
+  - click=8.3.1
+  - quarto=1.8.26
+  - pip=25.3
+  # ------------
+  # pip dependencies are installed into Docker in the Dockerfile. to create a working conda environment, uncomment the following lines before creating an environment from this file. to create a new conda-lock file (and subsequent Docker image), these lines must be commented out. (the Dockerfile will take care of installing these dependencies in the Docker image.)
+  # -------------
+  # - pip:
+  #     - deepchecks==0.18.1
+  #     - ipython==8.30.0
