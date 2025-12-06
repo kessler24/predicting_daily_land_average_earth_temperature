@@ -19,7 +19,7 @@ None
 
 Examples
     --------
-    >>> python scripts/abstract_eda.py data/train_df.csv images/eda.png (from repo root )
+    >>> python scripts/abstract_eda.py data/train_df.csv images/eda.png (from repo root)
     None
         images/
             eda_table_1.html
