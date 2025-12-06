@@ -22,10 +22,12 @@ Examples
     >>> python scripts/abstract_eda.py data/train_df.csv images/eda.png (from repo root )
     None
         images/
-            eda_1.png
-            eda_2.png
-            eda_3.png
-            eda_4.png
+            eda_table_1.html
+            eda_table_2.html
+            eda_plot_1.png
+            eda_plot_2.png
+            eda_plot_3.png
+            eda_plot_4.png
 
 """
 
@@ -38,16 +40,13 @@ import altair as alt
 import click
 import warnings
 import os
-import matplotlib.pyplot as plt
-import matplotlib
-from IPython import display
 
 # -----------------------------
 # Define main function with click command arguments
 # -----------------------------
 @click.command()
 @click.argument('train_df_csv_path', type=click.Path(exists=True))
-@click.argument('plots_path')
+@click.argument('plots_path', type=click.Path())
 def main(train_df_csv_path:str, plots_path: str) -> None:
 
     # Read the training data csv into a dataframe from first command line argument
@@ -81,7 +80,7 @@ def main(train_df_csv_path:str, plots_path: str) -> None:
     inc_name = viz_density_dists(train_df, plots_path=inc_name)
 
 # -----------------------------
-# Increment any filename by one with *_.ext suffix
+# Increment any filename by one with *_\d*.ext suffix
 # -----------------------------
 def increment_filename(filepath: str) -> str:
 
@@ -105,10 +104,37 @@ def increment_filename(filepath: str) -> str:
     return os.path.join(dirname, new_filename)
 
 # -----------------------------
+# Add an underscore suffix to an incremented filename
+# -----------------------------
+def add_prefix_to_increment(inc_filename: str, 
+                                    prefix: str) -> str:
+    
+    # Split the input filepath into the directory path and the file
+    dirname, prefixed_name  = os.path.split(inc_filename)
+
+    # Split above filename into the base name and the extension
+    prefixed_name, ext = os.path.splitext(prefixed_name)
+
+    # Split by *_* for inserting, requires an incremented file
+    prefixed_name = prefixed_name.split('_')
+
+    # Insert _suffix_ before *_\d*
+    prefixed_name.insert(-1, '_'+prefix+'_')
+
+    # Join list[str] together for new filename
+    prefixed_name = ''.join(prefixed_name)
+
+    # Construct the new path
+    prefixed_name = os.path.join(dirname, prefixed_name+ext)
+
+    # Return incremented filename with the provided prefix
+    return prefixed_name
+
+# -----------------------------
 # Read the training data csv into a dataframe from the user provided path
 # -----------------------------
 def read_clean_data(train_df_csv_path: str) -> pd.DataFrame:
-    train_df: pd.DataFrame = pd.read_csv(train_df_csv_path)
+    train_df = pd.read_csv(train_df_csv_path)
     return train_df
 
 # -----------------------------
@@ -121,11 +147,17 @@ def viz_tabular_stats(train_df: pd.DataFrame,
     contains_na_df = train_df.isna().any().reset_index(
         ).rename(columns={'index': 'Column', 0: 'Contains NA Values'})
 
+    # Increment the plots_path filename and strip the .png extension, add .html
+    table_name = increment_filename(plots_path.removesuffix('.png')+'.html')
+
     # Export contains_na_df to html at plot_paths directory
-    contains_na_df.to_html(plots_path.removesuffix('.png')+'_1.html')
+    contains_na_df.to_html(add_prefix_to_increment(table_name, 'table'))
+
+    # Increment the table html filename above
+    table_name = increment_filename(table_name)
 
     # Export train_df.describe() to html at plots_path directory with rounded numbers
-    train_df.describe().round(2).to_html(plots_path.removesuffix('.png')+'_2.html')
+    train_df.describe().round(2).to_html(add_prefix_to_increment(table_name, 'table'))
 
 # -----------------------------
 # Create the temperature scatter plot with mean temperature per year line
@@ -153,6 +185,9 @@ def viz_mean_temp_years(train_df: pd.DataFrame,
 
     # Increment the file name in the png path
     plot_name = increment_filename(plots_path)
+
+    # Add _plot_ prefix to incremented file name
+    plot_name  = add_prefix_to_increment(plot_name, 'plot')
 
     # save the plot as a png file
     (temp_points+temp_line_mean).save(plot_name)
@@ -189,6 +224,9 @@ def viz_linear_regression(train_df: pd.DataFrame,
     # Increment the file name in the png path
     plot_name = increment_filename(plots_path)
 
+    # Add _plot_ prefix to incremented file name
+    plot_name  = add_prefix_to_increment(plot_name, 'plot')
+
     # save the plot as a png file
     reg.save(plot_name)
 
@@ -222,6 +260,9 @@ def viz_seasonal_lines(train_df: pd.DataFrame,
     
     # Increment the file name in the png path
     plot_name = increment_filename(plots_path)
+
+    # Add _plot_ prefix to incremented file name
+    plot_name  = add_prefix_to_increment(plot_name, 'plot')
 
     # save the plot as a png file
     final_figure.save(plot_name)
@@ -258,6 +299,9 @@ def viz_density_dists(train_df: pd.DataFrame,
     # Increment the file name in the png path
     plot_name = increment_filename(plots_path)
     
+    # Add _plot_ prefix to incremented file name
+    plot_name  = add_prefix_to_increment(plot_name, 'plot')
+
     # save the plot as a png file
     temp_density.save(plot_name)
 
