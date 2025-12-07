@@ -1,6 +1,19 @@
 ---
 title: Predicting Daily Land Average Temperature
 jupyter: python3
+editor: source
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    fig-pos: H
+  pdf:
+    toc: true
+    toc-depth: 3
+    fig-pos: H
+bibliography: references.bib
+execute:
+  echo: false
 ---
 
 
