@@ -21,9 +21,9 @@ Usage
 -----
 Run this script from the command line:
 
-    python read_data.py \
+    python scripts/read_data.py \
         "https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt" \
-        "../data/global_temp_anomaly_raw.csv"
+        "data/global_temp_anomaly_raw.csv"
 
 Outputs
 -------
