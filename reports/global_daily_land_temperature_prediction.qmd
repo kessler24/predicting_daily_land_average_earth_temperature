@@ -7,16 +7,10 @@ format:
     toc: true
     toc-depth: 3
     fig-pos: H
-  pdf:
-    toc: true
-    toc-depth: 3
-    fig-pos: H
 bibliography: references.bib
 execute:
   echo: false
 ---
-
-
 
 # Summary
 
@@ -33,15 +27,20 @@ In this project, we will be answering the research question:
 What do we expect the global land-average temperature of the Earth to be in 2030, based on the trends from the years 1880 to 2012.
 
 ## Dataset
-The data set for this project was published by Berkeley Earth under a Creative Commons BY-NC 4.0 International license, free for non-commercial use, and accessed by our team compliant with the conditions in this license on November 18, 2025. The raw data can be found at <https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt>.
+The data set for this project was published by Berkeley Earth under a Creative Commons BY-NC 4.0 International license, free for non-commercial use, and accessed by our team compliant with the conditions in this license on November 18, 2025. The raw data can be found at the [Berkeley Earth Temperature site](https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt) [@Berkeley_data].
 
-The data set contains 5 columns with time series information, and one column representing the temperature difference relative to the average temperature between January 1951 and December 1980, which they calculated as 8.59 +/- 0.05. For our analysis, we preprocessed the data to get the raw temperature readings back by adding 8.59 to each entry in the Anomaly column. All temperatures are in Celcius.
+The data set contains 5 columns with time series information, and one column representing the temperature difference relative to the average temperature between January 1951 and December 1980, which they calculated as 8.59 +/- 0.05 [@Berkeley_data]. For our analysis, we preprocessed the data to get the raw temperature readings back by adding 8.59 to each entry in the Anomaly column. All temperatures are in Celsius.
 
 # Methods and Results
 
-Importing the required libraries. Execution Time Note: It may take up to 30 seconds to load in the libraries on the first run through.
+The Python programming language [@Python] and the following Python packages were used to perform the analysis: pandas [@pandas], altair [@altair], click [@click], as well as Quarto [@Allaire_Quarto_2022].
+**ADD matplotlib and pandera etc.**
 
 ```{python}
+
+# Importing the required libraries. Execution Time Note: 
+# It may take up to 30 seconds to load in the libraries on the first run through.
+
 # -----------------------------
 # Data Handling & Numerical Computation
 # -----------------------------
@@ -54,6 +53,8 @@ import os                # OS-level operations (paths, environment variables)
 # -----------------------------
 import matplotlib.pyplot as plt  # Classic plotting library
 import altair as alt             # Interactive, declarative plots for EDA
+from IPython.display import Markdown, display # Render tables nicely in qmd
+from tabulate import tabulate                 # Pandas dependency for tables
 
 # -----------------------------
 # Machine Learning Models & Utilities
@@ -201,28 +202,6 @@ DailyTempSchema = pa.DataFrameSchema(
     coerce=True
 )
 ```
-
-## Citations and Explanation of Outlier Limits Used for Validation
-
-### Primary Data Source
-1. **Berkeley Earth – Global Temperature Data**  
-   https://berkeleyearth.org/data/
-
-### Reference Values for Outlier Bounds
-2. **Minimum Global Land Temperature (TMIN Summary)**  
-   https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TMIN_summary.txt
-
-3. **Maximum Global Land Temperature (TMAX Summary)**  
-   https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TMAX_summary.txt
-
-### External Justifications for Threshold Ranges
-4. **Hansen, J., Sato, M., & Ruedy, R. (2022). _Global Temperature in 2021_.**  
-   PDF: https://www.columbia.edu/~mhs119/Temperature/Emails/Annual2021.pdf  
-   Related analysis: https://arxiv.org/pdf/1204.1286
-
-5. **Hansen, J., Sato, M., & Ruedy, R. (2012). _Perception of Climate Change_. _PNAS_, 109(37), 14726–14727.**  
-   https://doi.org/10.1073/pnas.1205276109  
-   Supplementary PDF: https://www.columbia.edu/~mhs119/Temperature/Emails/Annual2021.pdf
 
 The allowable limits for outliers on the average temperature anomaly dataset relative to the average baseline (estimated Jan. 1951 - Dec. 1980 absolute temperature with reported 95% confidence bounds), were naturally set as the minimum and maximum measurements of the baseline itself, or in other words the minimum and maximum temperature anomalies observed. These are reasonable limits for the averaged values because you would not expect the averaged values to be anywhere near the absolute minimum and maximum measurements, and if they are these examples should be examined more carefully (raising a validation warning or viewing the validation error log). Because the baseline, temperature in Celsius and temperature anomaly are all related, bounds can be set on the anomaly target or temperature target interchangeably by adding or subtracting the average baseline (8.59). The resulting average anomaly limits were -5.64 and 5.81, which were compared to external sources to ensure validity. The sources cited above, (which use the same 1951-1980 baseline for average temperature anomaly) demonstrate that a deviation of temperature anomaly by more than 5 degrees Celsius from the baseline is extremely rare, and only observed for certain monthly averages of anomaly temperature taken across specific regions: "It was unusually warm in the Southeast U.S. and Greenland in December, the monthly average anomaly exceeding +5°C (+9°F) (Fig. 3)"[5]. Since our dataset involves average temperature anomalies globally, an anomaly this large in magnitude entering the training dataset should be flagged in the validation stage, examined further and potentially discarded.
 
@@ -883,7 +862,7 @@ print(f"\nPredicted anomaly for 2030: {forecast_2030_anomaly:.4f} °C")
 print(f"Predicted land-average temperature for 2030: {forecast_2030_temp:.4f} °C")
 ```
 
-The predicted anomaly of **≈1.97 °C** indicates that 2030 is expected to be nearly 2 °C warmer than the baseline period. Adding this to the baseline gives a land-average temperature of **≈10.56 °C**, showing a continuation of the observed warming trend.
+The predicted anomaly of ≈1.97 °C indicates that 2030 is expected to be nearly 2 °C warmer than the baseline period. Adding this to the baseline gives a land-average temperature of ≈10.56 °C, showing a continuation of the observed warming trend.
 
 ```{python}
 # -----------------------------------------------------------
@@ -932,9 +911,7 @@ The trend line closely follows historical data, test points are reasonably well-
 
 # Discussion
 
-We found that global daily average land temperature has been steadily increasing since 1880, with a steeper increase after 1960. This trend is approximately the same across all months and seasons. The best model to capture this trend was a SVR model, which gave a predicted 2030 average land temperature of 10.6 C, an almost 2 C increase from the baseline period.
-
-This is an expected result. Our result aligns well with expert opinions and well-documented patterns of climate change.
+We found that global daily average land temperature has been steadily increasing since 1880, with a steeper increase after 1960. This trend is approximately the same across all months and seasons. The best model to capture this trend was a SVR model, which gave a predicted 2030 average land temperature of 10.6 C, an almost 2 C increase from the baseline period. This is an expected result. Our result aligns well with expert opinions and well-documented patterns of climate change.
 
 The impact of these findings is that they reinforce the global scientific consensus of continued warming of the earth. In future, we would recommend creating more models with additional features to see what features most impact the model and predict warming. For example, could incorporating CO2 levels improve these predictions? Additionally, this model focuses on global averages, but we could use a more granular dataset to investigate if some parts of the world are warming faster than others.
 
@@ -945,5 +922,27 @@ Intergovernmental Panel on Climate Change. (2018). Summary for policymakers: Glo
 
 NASA. (n.d.). Climate change: Evidence. https://science.nasa.gov/climate-change/evidence/  ￼
 
-National Centers for Environmental Information. (n.d.). Did you know? Anomalies vs. temperature. https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature  ￼
+National Centers for Environmental Information. (n.d.). Did you know? Anomalies vs. temperature. https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature  
+
+## Citations and Explanation of Outlier Limits Used for Validation
+
+### Primary Data Source
+1. Berkeley Earth – Global Temperature Data  
+   https://berkeleyearth.org/data/
+
+### Reference Values for Outlier Bounds
+2. Minimum Global Land Temperature (TMIN Summary)  
+   https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TMIN_summary.txt
+
+3. Maximum Global Land Temperature (TMAX Summary)  
+   https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TMAX_summary.txt
+
+### External Justifications for Threshold Ranges
+4. Hansen, J., Sato, M., & Ruedy, R. (2022). _Global Temperature in 2021_. 
+   PDF: https://www.columbia.edu/~mhs119/Temperature/Emails/Annual2021.pdf  
+   Related analysis: https://arxiv.org/pdf/1204.1286
+
+5. Hansen, J., Sato, M., & Ruedy, R. (2012). _Perception of Climate Change_. _PNAS_, 109(37), 14726–14727.  
+   https://doi.org/10.1073/pnas.1205276109  
+   Supplementary PDF: https://www.columbia.edu/~mhs119/Temperature/Emails/Annual2021.pdf
 
