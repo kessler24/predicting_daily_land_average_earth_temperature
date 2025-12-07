@@ -36,6 +36,7 @@ Run this script from the command line:
 Outputs
 -------
 - Training and test data saved to `<write_path>_train.csv` and `<write_path>_test.csv`
+- Full data saved to `{write_path}_cleaned.csv`
 - Validation visualizations saved to `<plots_path>`
 - Validation logs saved to `<logs_path>/validation_errors.log`
 
