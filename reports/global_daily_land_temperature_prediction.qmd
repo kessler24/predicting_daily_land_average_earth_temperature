@@ -608,7 +608,7 @@ if not check_feat_feat_corr_result.passed_conditions():
     warnings.warn("\nFeature-feature correlation exceeds the maximum acceptable threshold.")
 ```
 
-The validation checks are set to raise warnings if there are unexpected anomalous correlations among features or between features and the target. The thresholds are guided by the relationships analyzed in [@fig-heatmap] and intuition of what features should be correlated with each other and with the target. Any warnings raise should be examined carefully in conjunction with the correlation plot above. Some columns have been intentionally dropped for this training dataset correlation analysis because they are known to have a correlation that makes sense and does not affect the analysis. For example (and shown clearly below in [@fig-corr-line]), Month and Day of Year will be very strongly correlated as they measure the same thing but in different intervals. Additionally, Anomaly and Temperature will have a correlation of 1 since they are transformations of each other by addition of a constant. Anomaly and Temperature are expected to be correlated with the Year as this relationship is well-known and part of the reason reasonable forecasts can be made by the model in this analysis.
+The validation checks are set to raise warnings if there are unexpected anomalous correlations among features or between features and the target. The thresholds are guided by the relationships analyzed in [@fig-heatmap] and intuition of what features should be correlated with each other and with the target. Any warnings raise should be examined carefully in conjunction with [@fig-heatmap] above. Some columns have been intentionally dropped for this training dataset correlation analysis because they are known to have a correlation that makes sense and does not affect the analysis. For example (and shown clearly below in [@fig-corr-line]), Month and Day of Year will be very strongly correlated as they measure the same thing but in different intervals. Additionally, Anomaly and Temperature will have a correlation of 1 since they are transformations of each other by addition of a constant. Anomaly and Temperature are expected to be correlated with the Year as this relationship is well-known and part of the reason reasonable forecasts can be made by the model in this analysis.
 
 ```{python}
 
@@ -650,22 +650,29 @@ trend = alt.Chart(train_df).mark_line(color='orange', size=3).transform_loess(
 
 ## Exploratory Data Analysis (EDA)
 
-The goal of this EDA is to determine what type of predictive model will be the best fit for the data. A suitable regression method is to explored, as the target (global average land temperature) is continuous. After preprocessing the dataset, no presence of null values were found requiring attention. In order to make the Month_Name (converting from Month) feature more readable during EDA, the feature was converted to an ordinal feature, with Jan as the first in the order and December as the last in the order. Monthly trends in the data were considered over the years, however overall trends were found irrespective of the month the data was collected in. A cutoff year (`{python} cutoff`) was decided for splitting the data into test and training data sets, and EDA was carried out on only the training portion of the data set to avoid violating the golden rule and double dipping. A randomized test split was not implemented as the model is desired for predicting temperatures in the future, so test data taken from the latest measurements represents the best evaluation of the regression model. Once the dataset was split, EDA was performed with several visualization strategies, the most informative of which are presented below. Discussions of the findings and rationale are found below as well.
+The goal of this EDA is to determine what type of predictive model will be the best fit for the data. A suitable regression method is to explored, as the target (global average land temperature) is continuous. After preprocessing the dataset, no presence of null values were found requiring attention. In order to make the Month_Name (converting from Month) feature more readable during EDA, the feature was converted to an ordinal feature, with Jan as the first in the order and December as the last in the order. Monthly trends in the data were considered over the years, however overall trends were found irrespective of the month the data was collected in. A cutoff year (`{python} cutoff`) was decided for splitting the data into test and training data sets, and EDA was carried out on only the training portion of the data set to avoid violating the golden rule and double dipping. A randomized test split was not implemented as the model is desired for predicting temperatures in the future, so test data taken from the latest measurements represents the best evaluation of the regression model. Once the dataset was split, EDA was performed with several visualization strategies, the most informative of which are presented below as [@fig-scatter], [@fig-reg], [@fig-facet] and [@fig-density]. Discussions of the findings and rationale are found below as well.
 
 ```{python}
 #| label: tbl-train-df-info
-#| tbl-cap: A view of the null counts and data types of the training dataset.
+#| tbl-cap: A view on the presence of null or NA values and the data types of the training dataset features.
 
 # Quick view of data and columns
-train_df.info()
+# train_df.info() 
+#  Check if any NA values are in any of the columns in the training dataset
+contains_na_df = train_df.isna().any().reset_index(
+    ).rename(columns={'index': 'Column', 0: 'Contains NA Values'})
+contains_na_df['Data Type'] = train_df.dtypes.values
+train_df_length = f'# of Rows (Examples of Feature Values) in the DataFrame: {len(train_df)}'
+contains_na_df
 ```
+`{python} train_df_length`
 
 ```{python}
 #| label: tbl-train-df-desc
 #| tbl-cap: A view of descriptive statistics for the features (columns) in the training dataset.
 
 # Overview of statistics
-train_df.describe(include='all')
+train_df.describe()
 ```
 
 ```{python}
@@ -755,7 +762,7 @@ final_figure
 ```
 
 
-Finally, the distribution of the training data for temperature with respect to distinct year separated in by approximately 60 years were evaluated for distinct eras in the density plot below. The last year in the training data set (`{python} cutoff`) can be seen as significantly shifted to the right, indicating the increase in global daily average land temperature across time. Three distinct peaks in the density plot below reinforces the hypothesis that even when account for the variance in temperature due to local fluctuations, the overall trend of global temperature increasing over time remains.
+Finally, the distribution of the training data for temperature with respect to distinct year separated in by approximately 60 years were evaluated for distinct eras in [@fig-density] below. The last year in the training data set (`{python} cutoff`) can be seen as significantly shifted to the right, indicating the increase in global daily average land temperature across time. Three distinct peaks in [@fig-density] below reinforces the hypothesis that even when account for the variance in temperature due to local fluctuations, the overall trend of global temperature increasing over time remains.
 
 ```{python}
 
@@ -814,7 +821,7 @@ X = yearly[['Year']].values
 y = yearly['Anomaly'].values
 ```
 
-We split the data into a training set (years up to 2012) and a test set (years after 2012) by creating boolean masks based on the chosen split year. It then uses those masks to separate the feature matrix and target values into training and testing subsets. By training on earlier years and testing on later years, we evaluate how well the model predicts future climate patterns rather than just fitting past data. A good model should perform well on the test set, meaning it can generalize to years it has never seen before.
+We split the data into a training set (years up to `{python} cutoff`) and a test set (years after `{python} cutoff`) by creating boolean masks based on the chosen split year. It then uses those masks to separate the feature matrix and target values into training and testing subsets. By training on earlier years and testing on later years, we evaluate how well the model predicts future climate patterns rather than just fitting past data. A good model should perform well on the test set, meaning it can generalize to years it has never seen before.
 
 ```{python}
 # -----------------------------------------------------------
@@ -850,7 +857,6 @@ models = {
 We train each defined model on the training data, predicts anomalies for the test years, and calculates key evaluation metrics (RMSE, MAE, R²) to measure prediction accuracy. The results are stored in a table for easy comparison of model performance.
 
 ```{python}
-
 #| label: tbl-model_perform
 #| tbl-cap: Model Performance on Test Set dataset.
 
@@ -885,37 +891,40 @@ Lower RMSE and MAE values indicate more accurate predictions, while a higher (po
 
 best_model_name = results_table["RMSE"].idxmin()
 best_model = models[best_model_name]
-print(f"\nBest model: {best_model_name}")
+# print(f"\nBest model: {best_model_name}")
+year_2030 = np.array([[2030]])
 ```
 
-We use the selected best model (SVR) to predict the temperature anomaly for the year 2030 and then adds it to the baseline temperature to estimate the actual land-average temperature.
+We use the selected best model `{python} best_model_name`, to predict the temperature anomaly for the year `{python} year_2030[0][0]` and then adds it to the baseline temperature to estimate the actual land-average temperature.
 
 ```{python}
 # -----------------------------------------------------------
 # 6. Forecast Temperature Anomaly for 2030
 # -----------------------------------------------------------
 
-year_2030 = np.array([[2030]])
 forecast_2030_anomaly = best_model.predict(year_2030)[0]
 
 forecast_2030_temp = BASELINE_TEMP + forecast_2030_anomaly
 
-anom_2030_format = f"{forecast_2030_anomaly:.4f} °C"
+anom_2030_format = f"{forecast_2030_anomaly:.2f} °C"
 
-temp_2030_format = f"{forecast_2030_temp:.4f} °C"
+temp_2030_format = f"{forecast_2030_temp:.2f} °C"
 
-rounded_increase = f"{round(forecast_2030_temp)} °C"
+rounded_increase = f"{round(forecast_2030_temp-8.59)} °C"
 
 # print(f"\nPredicted anomaly for 2030: {forecast_2030_anomaly:.4f} °C")
 # print(f"Predicted land-average temperature for 2030: {forecast_2030_temp:.4f} °C")
 ```
 
-The predicted anomaly of ≈`{python} anom_2030_format` indicates that `{python} year_2030` is expected to be nearly `{python} rounded_increase` warmer than the baseline period. Adding this to the baseline gives a land-average temperature of ≈`{python} temp_2030_format`, showing a continuation of the observed warming trend.
+The predicted anomaly of ≈`{python} anom_2030_format` indicates that `{python} year_2030[0][0]` is expected to be nearly `{python} rounded_increase` warmer than the baseline period. Adding this to the baseline gives a land-average temperature of ≈`{python} temp_2030_format`, showing a continuation of the observed warming trend.
 
 ```{python}
 
 #| label: fig-model
 #| fig-cap: Visualize the model fit to seen and unseen examples of global daily average land temperature.
+#| fig-width: 10
+#| fig-height: 5
+
 
 # -----------------------------------------------------------
 # 7. PLOT RESULTS
@@ -957,13 +966,13 @@ plt.legend()
 plt.show()
 ```
 
-The plot shows the historical anomalies, with training data in blue and test data in orange, allowing us to visually compare the model’s predictions against unseen years. The black trend line from the SVR model captures the warming pattern, while the red point highlights the `{python} year_2030` forecast, illustrating the expected continuation of the temperature rise.
+The plot shows the historical anomalies, with training data in blue and test data in orange, allowing us to visually compare the model’s predictions against unseen years. The black trend line from the SVR model captures the warming pattern, while the red point highlights the `{python} year_2030[0][0]` forecast, illustrating the expected continuation of the temperature rise.
 
 The trend line closely follows historical data, test points are reasonably well-predicted, and the red forecast indicates that temperature anomalies are expected to continue rising, consistent with expert opinions on global warming.
 
 # Discussion
 
-We found that global daily average land temperature has been steadily increasing since `{python} years_selection[0]`, with a steeper increase after `{python} years_selection[1]`. This trend is approximately the same across all months and seasons. The best model to capture this trend was a SVR model, which gave a predicted `{python} year_2030` average land temperature of `{python} temp_2030_format`, an almost `{python} rounded_increase` increase from the baseline period. This is an expected result. Our result aligns well with expert opinions and well-documented patterns of climate change.
+We found that global daily average land temperature has been steadily increasing since `{python} years_selection[0]`, with a steeper increase after `{python} years_selection[1]`. This trend is approximately the same across all months and seasons. The best model to capture this trend was a SVR model, which gave a predicted `{python} year_2030[0][0]` average land temperature of `{python} temp_2030_format`, an almost `{python} rounded_increase` increase from the baseline period. This is an expected result. Our result aligns well with expert opinions and well-documented patterns of climate change.
 
 The impact of these findings is that they reinforce the global scientific consensus of continued warming of the earth. In future, we would recommend creating more models with additional features to see what features most impact the model and predict warming. For example, could incorporating CO2 levels improve these predictions? Additionally, this model focuses on global averages, but we could use a more granular dataset to investigate if some parts of the world are warming faster than others.
 
