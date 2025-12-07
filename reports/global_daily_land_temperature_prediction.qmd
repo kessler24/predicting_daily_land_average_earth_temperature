@@ -54,7 +54,6 @@ import os                # OS-level operations (paths, environment variables)
 import matplotlib.pyplot as plt  # Classic plotting library
 import altair as alt             # Interactive, declarative plots for EDA
 from IPython.display import Markdown, display # Render tables nicely in qmd
-from tabulate import tabulate                 # Pandas dependency for tables
 
 # -----------------------------
 # Machine Learning Models & Utilities
@@ -306,6 +305,10 @@ train_df
 ## Validating The Training Dataframe
 
 ```{python}
+
+#| label: fig-hist
+#| fig-cap: Target Distribution Visualization (training data). Right-skewness is expected due to increasing anomalies in recent years.
+
 # -----------------------------------------------------------
 # Target Distribution Visualization (Training Data)
 # -----------------------------------------------------------
@@ -400,13 +403,13 @@ anomaly_labels = (
 # ------------------------
 # Display histograms side by side
 # ------------------------
-plot = (temp_hist + temp_labels) | (anomaly_hist + anomaly_labels)
-plot
+plot = (temp_hist + temp_labels) & (anomaly_hist + anomaly_labels)
+plot Show plot via image link and size control for report
 ```
 
+![Target Distribution Visualization (training data). Right-skewness is expected due to increasing anomalies in recent years.](../images/eda_plot_1.png){#fig-hist width=60%}
 
-
-We can see from the histogram plots of the target [@fig-temp-hist] (Anomaly untransformed and Temperature when transformed) that the distribution of the target is very slightly right-skewed, but is almost symmetric and fairly bell-shaped. It make sense that the majority of the distribution is close to normally distributed as temperature increase has accelerated in recent years and was less prevalent the further you go back in time. We would expect the distribution to be right-skewed since the accepted hypothesis of average global temperature is that it is increasing and accelerating in recent years relative to when the collection of this data first began, and this would cause more of the density of the anomaly and temperature distributions to be to the left of the mean.
+We can see from the histogram plots of the target in [@fig-hist] (Anomaly untransformed and Temperature when transformed) that the distribution of the target is very slightly right-skewed, but is almost symmetric and fairly normally distributed. It make sense that the majority of the distribution is close to normally distributed as temperature increase has accelerated in recent years and was less prevalent the further you go back in time. We would expect the distribution to be right-skewed since the accepted hypothesis of average global temperature is that it is increasing and accelerating in recent years relative to when the collection of this data first began, and this would cause more of the density of the anomaly and temperature distributions to be to the left of the mean. A second validation schema was created to apply this skewness check to the training data and raise a warning otherwise.
 
 ```{python}
 # -----------------------------------------------------------
@@ -512,6 +515,9 @@ except pa.errors.SchemaError as e:
 ```
 
 ```{python}
+#| label: fig-heatmap
+#| fig-cap: Correlation analysis for training data via a heatmap visualization, informing further numerical schema validation. 
+
 # -----------------------------------------------------------
 # Correlation Analysis for Training Data
 # -----------------------------------------------------------
@@ -566,12 +572,13 @@ text = alt.Chart(correlation_long).mark_text(
 # Combine and render both layers
 (heatmap + text).properties(
     **plot_size,        # Uses preset size settings for consistency
-    title="Correlation Heatmap ('Figure 0_2')"
+    title="Correlation Heatmap"
 )
 ```
 
 ```{python}
 #pip install deepchecks
+warnings.filterwarnings('ignore', module='deepchecks') # suppress warning for report
 ```
 
 ### Correlation Checks Using DEEPCHECKS
