@@ -48,7 +48,9 @@ b. Open the docker-compose.yml file and change the port number in curly braces {
 c. After changing the port number, run `docker compose up` again and look for the url again. Remember to replace the port number in the curly braces {} below with the number you changed to in step b.
 'http://127.0.0.1:{8888}/lab?token=f41ef3f99692f72a4e1efb828a738f38d2da4c648c62d21c' 
 
-6. Once you launch the Docker instance successfully, you will be in a local JupyterLab instance in your browser. Now you can navigate to the global_daily_land_temperature_prediction.ipynb document and explore the interactive analysis.
+6. Once you launch the Docker instance successfully, you will be in a local JupyterLab instance in your browser. Now you can navigate to the global_daily_land_temperature_prediction.qmd document and explore the interactive analysis.
+
+7. To render the Quarto document to an html file, run `quarto render global_daily_land_temperature_prediction.qmd` from the reports folder of this repository in the Terminal. The html file will appear in the reports folder as global_daily_land_temperature_prediction.html. To view the html file, leave Docker, navigate to the local version of the repository on your machine, and launch the html file to your preferred browser. (Note: If you view the HTML in Docker, it may not format properly and some figures may not render. If you would prefer a PDF document, you should render to HTML, open the HTML as indicated above, and save the page as a PDF. Developers are working on resolving a bug related to PDF rendering through Quarto.)
 
 ### Running the scripts
 
