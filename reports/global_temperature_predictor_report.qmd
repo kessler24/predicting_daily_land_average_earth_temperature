@@ -74,7 +74,8 @@ The data set contains 5 columns with time series information, and one column rep
 
 # Methods & Results
 
-The Python programming language [@Python] and the following Python packages were used to perform the analysis: pandas [@pandas], altair [@altair], click [@click], as well as Quarto [@Allaire_Quarto_2022]. 
+The Python programming language [@Python] and the following Python packages were used to perform the analysis: pandas [@pandas], altair [@altair], click [@click], as well as Quarto [@Allaire_Quarto_2022].
+**ADD matplotlib and pandera etc.**
 
 ## Pandera Schema for Daily Temperature Data Validation
 
