@@ -203,10 +203,9 @@ DailyTempSchema = pa.DataFrameSchema(
 )
 ```
 
-The allowable limits for outliers on the average temperature anomaly dataset relative to the average baseline (estimated Jan. 1951 - Dec. 1980 absolute temperature with reported 95% confidence bounds [@Berkeley_data]), were naturally set as the minimum and maximum measurements of the baseline itself, or in other words the minimum and maximum temperature anomalies observed. These are reasonable limits for the averaged values because you would not expect the averaged values to be anywhere near the absolute minimum and maximum measurements, and if they are these examples should be examined more carefully (raising a validation warning or viewing the validation error log). Because the baseline, temperature in Celsius and temperature anomaly are all related, bounds can be set on the anomaly target or temperature target interchangeably by adding or subtracting the average baseline (8.59). The resulting average anomaly limits were -5.64 and 5.81, which were compared to external sources to ensure validity. The sources **add [1,2,3,4]**[@Hansen_2012], (which use the same 1951-1980 baseline for average temperature anomaly) demonstrate that a deviation of temperature anomaly by more than 5 degrees Celsius from the baseline is extremely rare, and only observed for certain monthly averages of anomaly temperature taken across specific regions: "It was unusually warm in the Southeast U.S. and Greenland in December, the monthly average anomaly exceeding +5°C (+9°F) (Fig. 3)"[@Hansen_2012]. Since our dataset involves average temperature anomalies globally, an anomaly this large in magnitude entering the training dataset should be flagged in the validation stage, examined further and potentially discarded.
+The allowable limits for outliers on the average temperature anomaly dataset relative to the average baseline (estimated Jan. 1951 - Dec. 1980 absolute temperature with reported 95% confidence bounds [@Berkeley_data]), were naturally set as the minimum and maximum measurements of the baseline itself, or in other words the minimum and maximum temperature anomalies observed. These are reasonable limits for the averaged values because you would not expect the averaged values to be anywhere near the absolute minimum and maximum measurements, and if they are these examples should be examined more carefully (raising a validation warning or viewing the validation error log). Because the baseline, temperature in Celsius and temperature anomaly all have a direct mathematical relationship, bounds can be set on the anomaly target or temperature target interchangeably by adding or subtracting the average baseline (8.59). The resulting average anomaly limits were -5.64 and 5.81, which were compared to external sources to ensure validity. 
 
-##  Load the Data
-Load the daily land-surface average anomaly data provided by Berkeley Earth collected from 1880 to 2022.
+The sources **add [1,2,3,4]**[@Hansen_2012], (which use the same 1951-1980 baseline for average temperature anomaly) demonstrate that a deviation of temperature anomaly by more than 5 degrees Celsius from the baseline is extremely rare, and only observed for certain monthly averages of anomaly temperature taken across specific regions: "It was unusually warm in the Southeast U.S. and Greenland in December, the monthly average anomaly exceeding +5°C (+9°F) (Fig. 3)"[@Hansen_2012]. Since our dataset involves average temperature anomalies globally, an anomaly this large in magnitude entering the training dataset should be flagged in the validation stage, examined further and potentially discarded.
 
 ```{python}
 url = "https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt"
@@ -225,8 +224,6 @@ df.columns = column_names
 #df.to_csv("data/raw.csv", index=False)
 ```
 
-## File type check 
-
 ```{python}
 # --- FILE TYPE CHECK ---
 # Ensure the source file is a .txt or .csv before loading.
@@ -235,8 +232,6 @@ df.columns = column_names
 if not url.endswith((".txt", ".csv")):
     raise ValueError("Invalid file type: expected .txt or .csv file.")
 ```
-
-## Data Pre-Processing 
 
 ```{python}
 df = df.drop(columns=['Date Number'])
@@ -272,7 +267,9 @@ df['Month_Name'] = df['Month'].map(month_dict)
 df['Month_Name'] = pd.Categorical(df['Month_Name'], categories=list(month_dict.values()), ordered=True)
 ```
 
-## Validating The Full Dataframe
+## Validating The Full Dataframe wiht the Defined Schema 
+
+(on the test and training datasets, see training data view here [@tbl-train-df])
 
 ```{python}
 # Adapted from https://github.com/skysheng7/DSCI522_data_validation_demo/tree/main/notebooks
@@ -293,9 +290,12 @@ except pa.errors.SchemaError as e:
     warnings.warn('Schema Error(s) Logged \n Evaluate Failures Before Proceeding')
 ```
 
-### Data Splitting
+### Data Splitting into Test and Training Data
 
 ```{python}
+#| label: tbl-train-df
+#| tbl-cap: A view of the head and tail of the training dataset.
+
 # Split into training and test dataframes based on decided cutoff
 cutoff = 2012
 test_df = df[df['Year'] > cutoff]
@@ -404,7 +404,9 @@ plot = (temp_hist + temp_labels) | (anomaly_hist + anomaly_labels)
 plot
 ```
 
-We can see from the histogram plots of the target (Anomaly untransformed and Temperature when transformed) that the distribution of the target is very slightly right-skewed, but is almost symmetric and fairly bell-shaped. It make sense that the majority of the distribution is close to normally distributed as temperature increase has accelerated in recent years and was less prevalent the further you go back in time. We would expect the distribution to be right-skewed since the accepted hypothesis of average global temperature is that it is increasing and accelerating in recent years relative to when the collection of this data first began, and this would cause more of the density of the anomaly and temperature distributions to be to the left of the mean.
+
+
+We can see from the histogram plots of the target [@fig-temp-hist] (Anomaly untransformed and Temperature when transformed) that the distribution of the target is very slightly right-skewed, but is almost symmetric and fairly bell-shaped. It make sense that the majority of the distribution is close to normally distributed as temperature increase has accelerated in recent years and was less prevalent the further you go back in time. We would expect the distribution to be right-skewed since the accepted hypothesis of average global temperature is that it is increasing and accelerating in recent years relative to when the collection of this data first began, and this would cause more of the density of the anomaly and temperature distributions to be to the left of the mean.
 
 ```{python}
 # -----------------------------------------------------------
