@@ -266,15 +266,14 @@ df['Month_Name'] = df['Month'].map(month_dict)
 df['Month_Name'] = pd.Categorical(df['Month_Name'], categories=list(month_dict.values()), ordered=True)
 ```
 
-## Validating The Full Dataframe wiht the Defined Schema 
-
+###### Validating The Full DataFrame with the Defined Schema 
 (on the test and training datasets, see training data view here [@tbl-train-df])
 
 ```{python}
 # Adapted from https://github.com/skysheng7/DSCI522_data_validation_demo/tree/main/notebooks
 try:
     df = DailyTempSchema.validate(df)
-    print("✓ Data validation passed")
+    print("df = DailyTempSchema.validate(df)\n>>> ✓ Data validation passed")
 except pa.errors.SchemaError as e:
     print("✗ Data validation failed")
     print('\nValidation Test DataFrame Schema Error Thrown:\n')
@@ -404,12 +403,13 @@ anomaly_labels = (
 # Display histograms side by side
 # ------------------------
 plot = (temp_hist + temp_labels) & (anomaly_hist + anomaly_labels)
-plot Show plot via image link and size control for report
+plot
 ```
 
-![Target Distribution Visualization (training data). Right-skewness is expected due to increasing anomalies in recent years.](../images/eda_plot_1.png){#fig-hist width=60%}
-
 We can see from the histogram plots of the target in [@fig-hist] (Anomaly untransformed and Temperature when transformed) that the distribution of the target is very slightly right-skewed, but is almost symmetric and fairly normally distributed. It make sense that the majority of the distribution is close to normally distributed as temperature increase has accelerated in recent years and was less prevalent the further you go back in time. We would expect the distribution to be right-skewed since the accepted hypothesis of average global temperature is that it is increasing and accelerating in recent years relative to when the collection of this data first began, and this would cause more of the density of the anomaly and temperature distributions to be to the left of the mean. A second validation schema was created to apply this skewness check to the training data and raise a warning otherwise.
+
+###### Validating The Training DataFrame with the Additions to the Schema 
+(see training data view here [@tbl-train-df])
 
 ```{python}
 # -----------------------------------------------------------
@@ -496,7 +496,7 @@ target_train_schema = pa.DataFrameSchema(
 try:
     # Attempt to validate the training dataset
     train_df = target_train_schema.validate(train_df)
-    print("✓ Data validation passed")
+    print("train_df = DailyTempSchema.validate(train_df)\n>>> ✓ Data validation passed")
 
 except pa.errors.SchemaError as e:
     # Provide structured diagnostics to help debug failures
@@ -608,15 +608,21 @@ if not check_feat_feat_corr_result.passed_conditions():
     warnings.warn("\nFeature-feature correlation exceeds the maximum acceptable threshold.")
 ```
 
-The validation checks are set to raise warnings if there are unexpected anomalous correlations among features or between features and the target. Any warnings raise should be examined carefully in conjunction with the correlation plot above. Some columns have been intentionally dropped for this training dataset correlation analysis because they are known to have a correlation that makes sense and does not affect the analysis. For example (and shown clearly below), Month and Day of Year will be very strongly correlated as they measure the same thing but in different intervals. Additionally, Anomaly and Temperature will have a correlation of 1 since they are transformations of each other by addition of a constant. Anomaly and Temperature are expected to be correlated with the Year as this relationship is well-known and part of the reason reasonable forecasts can be made by the model in this analysis.
+The validation checks are set to raise warnings if there are unexpected anomalous correlations among features or between features and the target. Any warnings raise should be examined carefully in conjunction with the correlation plot above. Some columns have been intentionally dropped for this training dataset correlation analysis because they are known to have a correlation that makes sense and does not affect the analysis. For example (and shown clearly below in [@fig-corr-line]), Month and Day of Year will be very strongly correlated as they measure the same thing but in different intervals. Additionally, Anomaly and Temperature will have a correlation of 1 since they are transformations of each other by addition of a constant. Anomaly and Temperature are expected to be correlated with the Year as this relationship is well-known and part of the reason reasonable forecasts can be made by the model in this analysis.
 
 ```{python}
+
+# This line is breaking the quarto render, comment out for the qmd report
+
 # Setup Altair renderer in Docker and lift the max limit for the rows
-alt.renderers.enable('mimetype') # alternative: alt.renderers.enable('html')
-alt.data_transformers.enable('default', max_rows=None)
+# alt.renderers.enable('mimetype') # alternative: alt.renderers.enable('html')
+# alt.data_transformers.enable('default', max_rows=None)
 ```
 
 ```{python}
+#| label: fig-corr-line
+#| fig-cap: Visualize why Day of Year and Month are correlated and why it is not anomalous.
+
 # -----------------------------------------------------------
 # Visualize why Day of Year and Month are correlated
 # -----------------------------------------------------------
@@ -638,7 +644,7 @@ trend = alt.Chart(train_df).mark_line(color='orange', size=3).transform_loess(
 # Layer both charts
 (scatter + trend).properties(
     **plot_size,
-    title='Month vs Day of Year Correlation (Figure 0_3)'
+    title='Month vs Day of Year Correlation'
 )
 ```
 
