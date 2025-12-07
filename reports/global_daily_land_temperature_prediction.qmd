@@ -8,6 +8,7 @@ format:
     toc-depth: 3
     fig-pos: H
   pdf:
+    pdf-engine: xelatex
     toc: true
     toc-depth: 3
     fig-pos: H
@@ -57,6 +58,33 @@ from pandera import Column, Check  # Column-level validation
 import warnings    # Issue runtime warnings without stopping execution
 import logging     # Logging errors or informational messages
 import json        # Convert validation errors or logs to JSON format
+
+# Create logs directory to hold validation logs
+logs_folder_path = "../logs"
+if not os.path.exists(logs_folder_path):
+    os.makedirs(logs_folder_path)
+
+# Configure logging
+logging.basicConfig(
+    filename=f"{logs_folder_path}/validation_errors.log",
+    filemode="w",
+    format="%(asctime)s - %(message)s",
+    level=logging.INFO,
+)
+
+# Simplify Working with Large Datasets 
+alt.data_transformers.enable('vegafusion')
+
+# Ignore all warnings from the altair package for pdf rendering, warnings validated first
+# resource for implementation:
+# https://stackoverflow.com/questions/3920502/how-to-suppress-a-third-party-warning-using-warnings-filterwarnings
+warnings.filterwarnings('ignore', module='altair')
+# suppress verbose pandera warning for ipynb and pdf rendering
+warnings.filterwarnings('ignore', module='pandera')
+
+# Configure Plot Sizes for pdf (D.R.Y)
+plot_size = {'width': 450, 'height': 300}
+facet_plot_size = {'width': 250, 'height': 200}
 ```
 
 # Summary
