@@ -886,9 +886,12 @@ print(f"\nPredicted anomaly for 2030: {forecast_2030_anomaly:.4f} °C")
 print(f"Predicted land-average temperature for 2030: {forecast_2030_temp:.4f} °C")
 ```
 
-The predicted anomaly of ≈1.97 °C indicates that 2030 is expected to be nearly 2 °C warmer than the baseline period. Adding this to the baseline gives a land-average temperature of ≈10.56 °C, showing a continuation of the observed warming trend.
+The predicted anomaly of ≈`python {forecast_2030_anomaly:.4f} °C` indicates that `python year_2030` is expected to be nearly `python f'{round(forecast_2030_temp)} °C'` warmer than the baseline period. Adding this to the baseline gives a land-average temperature of ≈`python f'{forecast_2030_temp:.4f} °C'`, showing a continuation of the observed warming trend.
 
 ```{python}
+
+
+
 # -----------------------------------------------------------
 # 7. PLOT RESULTS
 # -----------------------------------------------------------
@@ -929,7 +932,7 @@ plt.legend()
 plt.show()
 ```
 
-The plot shows the historical anomalies, with training data in blue and test data in orange, allowing us to visually compare the model’s predictions against unseen years. The black trend line from the SVR model captures the warming pattern, while the red point highlights the 2030 forecast, illustrating the expected continuation of the temperature rise.
+The plot shows the historical anomalies, with training data in blue and test data in orange, allowing us to visually compare the model’s predictions against unseen years. The black trend line from the SVR model captures the warming pattern, while the red point highlights the `python year_2030` forecast, illustrating the expected continuation of the temperature rise.
 
 The trend line closely follows historical data, test points are reasonably well-predicted, and the red forecast indicates that temperature anomalies are expected to continue rising, consistent with expert opinions on global warming.
 
