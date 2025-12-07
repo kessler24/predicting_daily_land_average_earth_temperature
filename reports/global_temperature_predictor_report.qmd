@@ -1,0 +1,81 @@
+---
+title: "Predicting Daily Land Average Temperature"
+author: "Molly Kessler, Daisy Zhou, Ojasv Issar, Jacob Cann"
+editor: source
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    fig-pos: H
+  pdf:
+    toc: true
+    toc-depth: 3
+    fig-pos: H
+bibliography: references.bib
+execute:
+  echo: false
+---
+
+```{python}
+import pandas as pd
+from IPython.display import Markdown, display
+from tabulate import tabulate
+```
+
+# Aim
+
+This project explores the historical population of horses in Canada 
+between 1906 and 1972 for each province.
+
+# Data
+
+Horse population data were sourced from the 
+[Government of Canada's Open Data website](http://open.canada.ca/en/open-data) [@horses1; @horses2].
+
+## Dataset
+The data set for this project was published by Berkeley Earth under a Creative Commons BY-NC 4.0 International license, free for non-commercial use, and accessed by our team compliant with the conditions in this license on November 18, 2025. The raw data can be found at the [Berkeley Earth Temperature site](https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt) [@].
+
+The data set contains 5 columns with time series information, and one column representing the temperature difference relative to the average temperature between January 1951 and December 1980, which they calculated as 8.59 +/- 0.05. For our analysis, we preprocessed the data to get the raw temperature readings back by adding 8.59 to each entry in the Anomaly column. All temperatures are in Celcius.
+
+# Methods
+
+The Python programming language [@Python] and the following Python packages were used to perform the analysis: pandas [@pandas], altair [@altair], click [@click], as well as Quarto [@Allaire_Quarto_2022]. 
+*Note: this report is adapted from Timbers [@ttimbers-horses].* 
+
+# Results
+
+![Horse populations for all provinces in Canada from 1906 - 1972.](../results/horse_pops_plot.png){#fig-horse-pop width=60%}
+
+We can see from @fig-horse-pop that Ontario, Saskatchewan and Alberta 
+have had the highest horse populations in Canada. 
+All provinces have had a decline in horse populations since 1940. 
+This is likely due to the rebound of the Canadian automotive industry 
+after the Great Depression and the Second World War. 
+An interesting follow-up visualisation would be car sales per year 
+for each Province over the time period visualised above 
+to further support this hypothesis.
+
+Suppose we were interested in looking in more closely at the province 
+with the highest spread (in terms of standard deviation) of horse populations. We present the standard deviations in @tbl-horse-sd. 
+
+```{python}
+#| label: tbl-horse-sd
+#| tbl-cap: Standard deviation of historical (1906-1972) horse populations for each Canadian province.
+
+
+horses_sd_table = pd.read_csv("../results/horses_sd.csv")
+largest_sd = horses_sd_table['Province'].values[0]
+Markdown(horses_sd_table.to_markdown(index = False))
+```
+
+Note that we define standard deviation (of a sample) as:
+
+$$s = \sqrt{\frac{\sum_{i=1}^N (x_i - \overline{x})^2}{N-1} }$$
+
+Additionally, note that in @tbl-horse-sd we consider the sample standard deviation of the number of horses during the same time span as @fig-horse-pop.
+
+![Horse populations for the province with the largest standard deviation](../results/horse_pops_plot_largest_sd.png){#fig-horse-largest width=60%}
+
+In @fig-horse-largest we zoom in and look at the province of , which had the largest spread of values in terms of standard deviation.
+
+# References
