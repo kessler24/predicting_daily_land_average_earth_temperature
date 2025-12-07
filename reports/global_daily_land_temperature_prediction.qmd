@@ -762,7 +762,7 @@ final_figure
 ```
 
 
-Finally, the distribution of the training data for temperature with respect to distinct year separated in by approximately 60 years were evaluated for distinct eras in [@fig-density] below. The last year in the training data set (`{python} cutoff`) can be seen as significantly shifted to the right, indicating the increase in global daily average land temperature across time. Three distinct peaks in [@fig-density] below reinforces the hypothesis that even when account for the variance in temperature due to local fluctuations, the overall trend of global temperature increasing over time remains.
+Finally, the distribution of the temperature in the training data for all measurements taken during three different years, separated by approximately 60 years, were evaluated in [@fig-density] below. The last year in the training data set (`{python} cutoff`) can be seen as significantly shifted to the right, indicating the increase in global daily average land temperature across time. Three distinct peaks in [@fig-density] below reinforces the hypothesis that even when account for the variance in temperature due to local fluctuations, the overall trend of global temperature increasing over time remains.
 
 ```{python}
 
