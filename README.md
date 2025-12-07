@@ -59,35 +59,35 @@ c. After changing the port number, run `docker compose up` again and look for th
  `python scripts/read_data.py "https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt" "data/global_temp_anomaly_raw.csv"`
 
  The script takes two arguments:
- 2.1 the path to the input file (a URL or a relative local path, such as data/file.csv), as well as
- 2.2 a path/filename where to write the file to and what to call it (e.g., data/cleaned_data.csv)
+ - the path to the input file (a URL or a relative local path, such as data/file.csv)
+ - a path/filename where to write the file to and what to call it (e.g., data/cleaned_data.csv)
 
 3. Reads the data from the first script and performs and data cleaning, preprocessing and validation with `data_preprocessing.py` script by runnning this command:
 
  `python scripts/data_preprocessing.py --read_path="data/global_temp_anomaly_raw.csv" --write_path="data/global_temp_anomaly_cleaned" --plots_path="images" --logs_path="logs"`
 
 The script takes four arguments:
-3.1 a path/filename pointing to the data to be read in
-3.2 a path/filename pointing to where the cleaned/processed/transformed/partitioned data should live.
-3.3 A path pointing to where the plots will be saved
-3.4 A path pointing to where the log file will be saved
+- a path/filename pointing to the data to be read in
+- a path/filename pointing to where the cleaned/processed/transformed/partitioned data should live.
+- A path pointing to where the plots will be saved
+- A path pointing to where the log file will be saved
 
 4. Perform EDA (Exploratory Data Analysis) on the training data with `abstract_eda.py` script by running this command:
 
 `python scripts/abstract_eda.py data/global_temp_anomaly_cleaned_train.csv images/eda.png`
 
 The script takes two arguments:
-4.1 a path/filename pointing to the cleaned training data to be analyzed
-4.2 a path/filename pointing to where the png images and csv tables will be saved
+- a path/filename pointing to the cleaned training data to be analyzed
+- a path/filename pointing to where the png images and csv tables will be saved
 
 5. Build machine learning model with `ml_modelling.py` script by running this command:
 
 `python scripts/ml_modelling.py --input_path data/global_temp_anomaly_cleaned_full.csv --output_dir results --cutoff_year 2012`
 
 The script takes three arguments:
-5.1 a path/filename pointing to the cleaned full data to be analyzed
-5.2 a path/filename pointing to where the analysis result will be saved
-5.3 a numeric parameter to take as the cutoff_year for train and test data
+- a path/filename pointing to the cleaned full data to be analyzed
+- a path/filename pointing to where the analysis result will be saved
+- a numeric parameter to take as the cutoff_year for train and test data
 
 ## Developer notes
 
