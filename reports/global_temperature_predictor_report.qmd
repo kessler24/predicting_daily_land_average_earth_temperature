@@ -17,24 +17,76 @@ execute:
 ---
 
 ```{python}
-import pandas as pd
-from IPython.display import Markdown, display
-from tabulate import tabulate
+
+# Importing the required libraries. Execution Time Note: 
+# It may take up to 30 seconds to load in the libraries on the first run through.
+
+# -----------------------------
+# Data Handling & Numerical Computation
+# -----------------------------
+import pandas as pd      # DataFrames for data manipulation
+import numpy as np       # Numerical computations and array operations
+import os                # OS-level operations (paths, environment variables)
+
+# -----------------------------
+# Visualization Libraries
+# -----------------------------
+import matplotlib.pyplot as plt  # Classic plotting library
+import altair as alt             # Interactive, declarative plots for EDA
+
+# -----------------------------
+# Machine Learning Models & Utilities
+# -----------------------------
+from sklearn.linear_model import LinearRegression        # Simple linear regression
+from sklearn.ensemble import RandomForestRegressor       # Ensemble method for regression
+from sklearn.svm import SVR                               # Support Vector Regression
+from sklearn.preprocessing import StandardScaler          # Feature scaling
+from sklearn.pipeline import Pipeline                     # Pipeline for sequential transformations
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+                                                        # Model evaluation metrics
+
+# -----------------------------
+# Data Validation
+# -----------------------------
+import pandera.pandas as pa     # Pandera DataFrame validation
+from pandera import Column, Check  # Column-level validation
+
+# -----------------------------
+# Logging & Warnings
+# -----------------------------
+import warnings    # Issue runtime warnings without stopping execution
+import logging     # Logging errors or informational messages
+import json        # Convert validation errors or logs to JSON format
 ```
 
 # Summary
 
 This project analyzes global daily average land-surface temperature measurements collected by Berkeley Earth from 1880–2022. In the following analysis, dataset is cleaned and preprocessed, explored through EDA, and modeled to predict future temperature trends using this historical data. After evaluating three regression approaches, Linear Regression, Random Forest, and Support Vector Regression (SVR),the SVR model performed best and was used to forecast the land average temperature for the year 2030.
 
-# Dataset
+# Introduction
+
+## Dataset
 The data set for this project was published by Berkeley Earth under a Creative Commons BY-NC 4.0 International license, free for non-commercial use, and accessed by our team compliant with the conditions in this license on November 18, 2025. The raw data can be found at the [Berkeley Earth Temperature site](https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt) [@Berkeley_data].
 
-The data set contains 5 columns with time series information, and one column representing the temperature difference relative to the average temperature between January 1951 and December 1980, which they calculated as 8.59 +/- 0.05. For our analysis, we preprocessed the data to get the raw temperature readings back by adding 8.59 to each entry in the Anomaly column. All temperatures are in Celcius.
+The data set contains 5 columns with time series information, and one column representing the temperature difference relative to the average temperature between January 1951 and December 1980, which they calculated as 8.59 +/- 0.05. For our analysis, we preprocessed the data to get the raw temperature readings back by adding 8.59 to each entry in the Anomaly column. All temperatures are in Celsius.
 
-# Methods
+
+
+# Methods & Results
 
 The Python programming language [@Python] and the following Python packages were used to perform the analysis: pandas [@pandas], altair [@altair], click [@click], as well as Quarto [@Allaire_Quarto_2022]. 
-*Note: this report is adapted from Timbers [@ttimbers-horses].* 
+
+## Pandera Schema for Daily Temperature Data Validation
+
+
+## Exploratory Data Analysis (EDA)
+
+
+
+## Machine Learning Modelling 
+
+
+
 
 # Results
 
