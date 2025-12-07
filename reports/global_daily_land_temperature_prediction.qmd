@@ -1,5 +1,10 @@
 ---
 title: Predicting Daily Land Average Temperature
+author:
+  - Molly Kessler
+  - Daisy Zhou
+  - Ojasv Issar
+  - Jacob Cann
 jupyter: python3
 editor: source
 format:
@@ -11,6 +16,7 @@ bibliography: references.bib
 execute:
   echo: false
 ---
+
 
 # Summary
 
@@ -33,8 +39,7 @@ The data set contains 5 columns with time series information, and one column rep
 
 # Methods and Results
 
-The Python programming language [@Python] and the following Python packages were used to perform the analysis: pandas [@pandas], altair [@altair], click [@click], as well as Quarto [@Allaire_Quarto_2022].
-**ADD matplotlib and pandera etc.[x,y,z refs]]**
+The Python programming language [@Python] and the following Python packages were used to perform the analysis: pandas [@pandas], altair [@altair], click [@click], matplotlib [@matplotlib], numpy [@numpy], scikit-learn [@sklearn], pandera [@pandera], as well as Quarto [@Allaire_Quarto_2022].
 
 ```{python}
 
@@ -204,7 +209,7 @@ DailyTempSchema = pa.DataFrameSchema(
 
 The allowable limits for outliers on the average temperature anomaly dataset relative to the average baseline (estimated Jan. 1951 - Dec. 1980 absolute temperature with reported 95% confidence bounds [@Berkeley_data]), were naturally set as the minimum and maximum measurements of the baseline itself, or in other words the minimum and maximum temperature anomalies observed. These are reasonable limits for the averaged values because you would not expect the averaged values to be anywhere near the absolute minimum and maximum measurements, and if they are these examples should be examined more carefully (raising a validation warning or viewing the validation error log). Because the baseline, temperature in Celsius and temperature anomaly all have a direct mathematical relationship, bounds can be set on the anomaly target or temperature target interchangeably by adding or subtracting the average baseline (8.59). The resulting average anomaly limits were -5.64 and 5.81, which were compared to external sources to ensure validity. 
 
-The sources **add [1,2,3,4]**[@Hansen_2012], (which use the same 1951-1980 baseline for average temperature anomaly) demonstrate that a deviation of temperature anomaly by more than 5 degrees Celsius from the baseline is extremely rare, and only observed for certain monthly averages of anomaly temperature taken across specific regions: "It was unusually warm in the Southeast U.S. and Greenland in December, the monthly average anomaly exceeding +5°C (+9°F) (Fig. 3)"[@Hansen_2012]. Since our dataset involves average temperature anomalies globally, an anomaly this large in magnitude entering the training dataset should be flagged in the validation stage, examined further and potentially discarded.
+The sources [@Berkeley_TMIN; @Berkeley_TMAX; @Hansen_2012; @Hansen_2022] (which use the same 1951-1980 baseline for average temperature anomaly) demonstrate that a deviation of temperature anomaly by more than 5 degrees Celsius from the baseline is extremely rare, and only observed for certain monthly averages of anomaly temperature taken across specific regions: "It was unusually warm in the Southeast U.S. and Greenland in December, the monthly average anomaly exceeding +5°C (+9°F) (Fig. 3)"[@Hansen_2012]. Since our dataset involves average temperature anomalies globally, an anomaly this large in magnitude entering the training dataset should be flagged in the validation stage, examined further and potentially discarded.
 
 ```{python}
 url = "https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt"
@@ -420,7 +425,7 @@ We can see from the histogram plots of the target in [@fig-hist] (Anomaly untran
 # information from the held-out test set and respects the
 # golden rule of model validation.
 #
-# Note: Pandera schemas aren’t easily "extended", so we
+# Note: Pandera schemas aren't easily "extended", so we
 # re-initialize a fresh schema specifically for the training
 # portion of the dataset.
 
@@ -966,45 +971,14 @@ plt.legend()
 plt.show()
 ```
 
-The plot shows the historical anomalies, with training data in blue and test data in orange, allowing us to visually compare the model’s predictions against unseen years. The black trend line from the SVR model captures the warming pattern, while the red point highlights the `{python} year_2030[0][0]` forecast, illustrating the expected continuation of the temperature rise.
+The plot shows the historical anomalies, with training data in blue and test data in orange, allowing us to visually compare the model's predictions against unseen years. The black trend line from the SVR model captures the warming pattern, while the red point highlights the `{python} year_2030[0][0]` forecast, illustrating the expected continuation of the temperature rise.
 
 The trend line closely follows historical data, test points are reasonably well-predicted, and the red forecast indicates that temperature anomalies are expected to continue rising, consistent with expert opinions on global warming.
 
 # Discussion
 
-We found that global daily average land temperature has been steadily increasing since `{python} years_selection[0]`, with a steeper increase after `{python} years_selection[1]`. This trend is approximately the same across all months and seasons. The best model to capture this trend was a SVR model, which gave a predicted `{python} year_2030[0][0]` average land temperature of `{python} temp_2030_format`, an almost `{python} rounded_increase` increase from the baseline period. This is an expected result. Our result aligns well with expert opinions and well-documented patterns of climate change.
+We found that global daily average land temperature has been steadily increasing since `{python} years_selection[0]`, with a steeper increase after `{python} years_selection[1]`. This trend is approximately the same across all months and seasons. The best model to capture this trend was a SVR model, which gave a predicted `{python} year_2030[0][0]` average land temperature of `{python} temp_2030_format`, an almost `{python} rounded_increase` increase from the baseline period. This is an expected result and aligns well with expert opinions [@NOAA_climate; @IPCC_2018; @NASA_climate] and well-documented patterns of climate change.
 
 The impact of these findings is that they reinforce the global scientific consensus of continued warming of the earth. In future, we would recommend creating more models with additional features to see what features most impact the model and predict warming. For example, could incorporating CO2 levels improve these predictions? Additionally, this model focuses on global averages, but we could use a more granular dataset to investigate if some parts of the world are warming faster than others.
 
 # References
-
-Lindsey, R., & Dahlman, L. (2024, January 18). Climate change: Global temperature. NOAA Climate.gov. https://www.climate.gov/news-features/understanding-climate/climate-change-global-temperature  ￼
-
-Intergovernmental Panel on Climate Change. (2018). Summary for policymakers: Global warming of 1.5 °C. In Global warming of 1.5 °C: An IPCC Special Report on the impacts of global warming of 1.5 °C above pre-industrial levels and related global greenhouse gas emission pathways. https://www.ipcc.ch/sr15/chapter/spm/  ￼
-
-NASA. (n.d.). Climate change: Evidence. https://science.nasa.gov/climate-change/evidence/  ￼
-
-National Centers for Environmental Information. (n.d.). Did you know? Anomalies vs. temperature. https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature  
-
-## Citations and Explanation of Outlier Limits Used for Validation
-
-### Primary Data Source
-1. Berkeley Earth – Global Temperature Data  
-   https://berkeleyearth.org/data/
-
-### Reference Values for Outlier Bounds
-2. Minimum Global Land Temperature (TMIN Summary)  
-   https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TMIN_summary.txt
-
-3. Maximum Global Land Temperature (TMAX Summary)  
-   https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TMAX_summary.txt
-
-### External Justifications for Threshold Ranges
-4. Hansen, J., Sato, M., & Ruedy, R. (2022). _Global Temperature in 2021_. 
-   PDF: https://www.columbia.edu/~mhs119/Temperature/Emails/Annual2021.pdf  
-   Related analysis: https://arxiv.org/pdf/1204.1286
-
-5. Hansen, J., Sato, M., & Ruedy, R. (2012). _Perception of Climate Change_. _PNAS_, 109(37), 14726–14727.  
-   https://doi.org/10.1073/pnas.1205276109  
-   Supplementary PDF: https://www.columbia.edu/~mhs119/Temperature/Emails/Annual2021.pdf
-

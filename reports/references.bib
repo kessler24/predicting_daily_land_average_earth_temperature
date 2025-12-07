@@ -32,7 +32,7 @@
   author    = {Wes McKinney},
   title     = {Data Structures for Statistical Computing in Python},
   booktitle = {Proceedings of the 9th Python in Science Conference},
-  pages     = { =51 - 56},
+  pages     = {51--56},
   year      = {2010},
   editor    = {St\'efan van der Walt and Jarrod Millman}
 }
@@ -51,15 +51,111 @@
 	author		 = {{Berkeley Earth}},
 	howpublished = {Open Data},
 	title        = {Berkeley Earth – Global Temperature Data},
-	date         = {06-Sep-2022},
+	year         = {2022},
+	month        = sep,
 	url          = {https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt}
 }
 
-@misc{Hansen_2012,
-	author		 = {{Hansen, J., Sato, M., & Ruedy, R.}},
-	howpublished = {Journal},
+@article{Hansen_2012,
+	author		 = {Hansen, James and Sato, Makiko and Ruedy, Reto},
+	journal      = {Proceedings of the National Academy of Sciences},
 	title        = {Perception of Climate Change},
-	date         = {13-Jan-2022},
-	url          = {https://doi.org/10.1073/pnas.1205276109},
-  note = {https://www.columbia.edu/~mhs119/Temperature/Emails/Annual2021.pdf}
+	year         = {2012},
+	volume       = {109},
+	number       = {37},
+	pages        = {14726--14727},
+	doi          = {10.1073/pnas.1205276109},
+	url          = {https://doi.org/10.1073/pnas.1205276109}
+}
+
+@misc{Hansen_2022,
+	author		 = {Hansen, James and Sato, Makiko and Ruedy, Reto},
+	title        = {Global Temperature in 2021},
+	year         = {2022},
+	url          = {https://www.columbia.edu/~mhs119/Temperature/Emails/Annual2021.pdf},
+	note         = {Columbia University}
+}
+
+@Manual{matplotlib,
+  author    = {Hunter, John D.},
+  title     = {Matplotlib: A 2D Graphics Environment},
+  journal   = {Computing in Science \& Engineering},
+  volume    = {9},
+  number    = {3},
+  pages     = {90--95},
+  year      = {2007},
+  publisher = {IEEE Computer Society},
+  doi       = {10.1109/MCSE.2007.55}
+}
+
+@software{pandera,
+  author    = {Niels Bantilan and others},
+  title     = {Pandera: Statistical Data Validation Toolkit},
+  year      = {2020},
+  url       = {https://pandera.readthedocs.io/},
+  note      = {Python package for data validation}
+}
+
+@misc{Berkeley_TMIN,
+	author		 = {{Berkeley Earth}},
+	title        = {Complete TMIN Summary – Global Temperature Data},
+	year         = {2022},
+	url          = {https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TMIN_summary.txt}
+}
+
+@misc{Berkeley_TMAX,
+	author		 = {{Berkeley Earth}},
+	title        = {Complete TMAX Summary – Global Temperature Data},
+	year         = {2022},
+	url          = {https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TMAX_summary.txt}
+}
+
+@Manual{numpy,
+  author    = {Harris, Charles R. and others},
+  title     = {Array programming with NumPy},
+  journal   = {Nature},
+  year      = {2020},
+  volume    = {585},
+  pages     = {357--362},
+  doi       = {10.1038/s41586-020-2649-2}
+}
+
+@Manual{sklearn,
+  author    = {Pedregosa, Fabian and others},
+  title     = {Scikit-learn: Machine Learning in Python},
+  journal   = {Journal of Machine Learning Research},
+  year      = {2011},
+  volume    = {12},
+  pages     = {2825--2830}
+}
+
+@misc{NOAA_climate,
+  author       = {Lindsey, Rebecca and Dahlman, LuAnn},
+  title        = {Climate Change: Global Temperature},
+  year         = {2024},
+  month        = jan,
+  url          = {https://www.climate.gov/news-features/understanding-climate/climate-change-global-temperature},
+  organization = {NOAA Climate.gov}
+}
+
+@misc{IPCC_2018,
+  author       = {{Intergovernmental Panel on Climate Change}},
+  title        = {Summary for Policymakers: Global Warming of 1.5°C},
+  year         = {2018},
+  url          = {https://www.ipcc.ch/sr15/chapter/spm/},
+  note         = {An IPCC Special Report}
+}
+
+@misc{NASA_climate,
+  author       = {{NASA}},
+  title        = {Climate Change: Evidence},
+  year         = {2024},
+  url          = {https://science.nasa.gov/climate-change/evidence/}
+}
+
+@misc{NCEI_anomalies,
+  author       = {{National Centers for Environmental Information}},
+  title        = {Did You Know? Anomalies vs. Temperature},
+  year         = {2024},
+  url          = {https://www.ncei.noaa.gov/access/monitoring/dyk/anomalies-vs-temperature}
 }
