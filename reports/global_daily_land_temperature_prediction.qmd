@@ -301,7 +301,7 @@ train_df = df[df['Year'] <= cutoff]
 train_df
 ```
 
-## Validating The Training Dataframe
+### Validating The Training Dataframe
 
 ```{python}
 
@@ -650,7 +650,7 @@ trend = alt.Chart(train_df).mark_line(color='orange', size=3).transform_loess(
 
 ## Exploratory Data Analysis (EDA)
 
-The goal of this EDA is to determine what type of predictive model will be the best fit for the data. A suitable regression method is to explored, as the target (global average land temperature) is continuous. After preprocessing the dataset, no presence of null values were found requiring attention. In order to make the Month_Name (converting from Month) feature more readable during EDA, the feature was converted to an ordinal feature, with Jan as the first in the order and December as the last in the order. Monthly trends in the data were considered over the years, however overall trends were found irrespective of the month the data was collected in. A cutoff year was decided for splitting the data into test and training data sets (see code below), and EDA was carried out on only the training portion of the data set to avoid violating the golden rule and double dipping. A randomized test split was not implemented as the model is desired for predicting temperatures in the future, so test data taken from the latest measurements represents the best evaluation of the regression model. Once the dataset was split, EDA was performed with several visualization strategies, the most informative of which are presented below. Discussions of the findings and rationale are found below as well.
+The goal of this EDA is to determine what type of predictive model will be the best fit for the data. A suitable regression method is to explored, as the target (global average land temperature) is continuous. After preprocessing the dataset, no presence of null values were found requiring attention. In order to make the Month_Name (converting from Month) feature more readable during EDA, the feature was converted to an ordinal feature, with Jan as the first in the order and December as the last in the order. Monthly trends in the data were considered over the years, however overall trends were found irrespective of the month the data was collected in. A cutoff year (`{python} cutoff`) was decided for splitting the data into test and training data sets, and EDA was carried out on only the training portion of the data set to avoid violating the golden rule and double dipping. A randomized test split was not implemented as the model is desired for predicting temperatures in the future, so test data taken from the latest measurements represents the best evaluation of the regression model. Once the dataset was split, EDA was performed with several visualization strategies, the most informative of which are presented below. Discussions of the findings and rationale are found below as well.
 
 ```{python}
 # Quick view of data and columns
@@ -664,16 +664,20 @@ train_df.describe()
 
 ```{python}
 # Verify no null values
-train_df.isna().any()
+## train_df.isna().any() comment out for qmd report
 ```
 
 Due to the many measurements that occur in each year (contributing to plotting noise), the mean of the temperatures for each group of measurements taken in a year were plotted in addition to the raw data points of temperature over time. A general trend of increasing temperature over time with local fluctuations can be observed below.
 
 ```{python}
+
+#| label: fig-scatter
+#| fig-cap: Visualize the raw data and mean per year for temperature over time.
+
 # Create scatter of raw data with some opacity to reduce plot noise
 temp_points = alt.Chart(train_df,
         title=alt.Title(
-        text='Global Daily Average Land Temperature (Figure 1)',
+        text='Global Daily Average Land Temperature',
         subtitle='Mean Temperature (Red Line)')
         ).mark_point(opacity=0.6, size=1).encode(
     x = 'Year:T',
@@ -696,7 +700,7 @@ Using the mean data points by year, a linear regression model was fit to the tra
 # PLot a scatter plot of the mean temperatures for each year
 temp_points_avg = alt.Chart(train_df,
         title=alt.Title(
-        text='Annual Means of Global Daily Average Land Temperature (Figure 2)',
+        text='Annual Means of Global Daily Average Land Temperature',
         subtitle='Linear Regression Indicated by Red Line')
     ).mark_point(size=2).encode(
     x = alt.X('Year:T', title='Year'),
@@ -715,9 +719,14 @@ reg = temp_points_avg+temp_points_avg.mark_line(
 reg
 ```
 
-In order to check if the global average daily temperature over time was affected by seasonal phenomena, the annual means of these temperature measurements were analyzed by each month separated. It can be seen from the facet plot below that regardless of the season global daily average land temperature measurements are increasing non-trivially over time.
+In order to check if the global average daily temperature over time was affected by seasonal phenomena, the annual means of these temperature measurements were analyzed by each month separated. It can be seen from [@fig-facet] below that regardless of the season global daily average land temperature measurements are increasing non-trivially over time.
 
 ```{python}
+#| label: fig-facet
+#| fig-cap: Visualize the mean temperature per year grouped by month.
+#| fig-width: 10
+#| fig-height: 6
+
 # Average by year for each month in data
 mean_per_month = train_df.groupby(
     ['Year','Month_Name'], observed=True)['Temperature'].mean().reset_index()
@@ -733,11 +742,11 @@ temp_plot = alt.Chart(mean_per_month).mark_line().encode(
 
 # Show the plot with overall title
 final_figure = alt.hconcat(temp_plot).properties(
-    title='Seasonality of Annual Means of Global Daily Average Land Temperature (Figure 3)')
+    title='Seasonality of Annual Means of Global Daily Average Land Temperature')
 final_figure
 ```
 
-Finally, the distribution of the training data for temperature with respect to distinct year separated in by approximately 60 years were evaluated for distinct eras in the density plot below. The last year in the training data set (the cutoff year defined above) can be seen as significantly shifted to the right, indicating the increase in global daily average land temperature across time. Three distinct peaks in the density plot below reinforces the hypothesis that even when account for the variance in temperature due to local fluctuations, the overall trend of global temperature increasing over time remains.
+Finally, the distribution of the training data for temperature with respect to distinct year separated in by approximately 60 years were evaluated for distinct eras in the density plot below. The last year in the training data set (the cutoff year of `python cutoff`) can be seen as significantly shifted to the right, indicating the increase in global daily average land temperature across time. Three distinct peaks in the density plot below reinforces the hypothesis that even when account for the variance in temperature due to local fluctuations, the overall trend of global temperature increasing over time remains.
 
 ```{python}
 # Years to be analyzed separated by ~60 years
