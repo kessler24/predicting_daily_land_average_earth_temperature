@@ -150,6 +150,9 @@ def viz_tabular_stats(train_df: pd.DataFrame,
     contains_na_df = train_df.isna().any().reset_index(
         ).rename(columns={'index': 'Column', 0: 'Contains NA Values'})
 
+    # Show the data types of the features
+    contains_na_df['Data Type'] = train_df.dtypes.values
+
     # Strip the .png extension
     filename, ext = os.path.splitext(plots_path)
 
