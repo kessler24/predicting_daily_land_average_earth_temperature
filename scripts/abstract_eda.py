@@ -201,7 +201,7 @@ def viz_mean_temp_years(train_df: pd.DataFrame,
     plot_name  = add_prefix_to_increment(plot_name, 'plot')
 
     # save the plot as a png file
-    (temp_points+temp_line_mean).save(plot_name)
+    (temp_points+temp_line_mean).save(plot_name, ppi=300)
 
     # Return the incremented plot filepath
     return plot_name
@@ -239,7 +239,7 @@ def viz_linear_regression(train_df: pd.DataFrame,
     plot_name  = add_prefix_to_increment(plot_name, 'plot')
 
     # save the plot as a png file
-    reg.save(plot_name)
+    reg.save(plot_name, ppi=300)
 
     # Return the incremented plot filepath
     return plot_name
@@ -276,7 +276,7 @@ def viz_seasonal_lines(train_df: pd.DataFrame,
     plot_name  = add_prefix_to_increment(plot_name, 'plot')
 
     # save the plot as a png file
-    final_figure.save(plot_name)
+    final_figure.save(plot_name, ppi=300)
 
     # Return the incremented plot filepath
     return plot_name
@@ -314,7 +314,7 @@ def viz_density_dists(train_df: pd.DataFrame,
     plot_name  = add_prefix_to_increment(plot_name, 'plot')
 
     # save the plot as a png file
-    temp_density.save(plot_name)
+    temp_density.save(plot_name, ppi=300)
 
     # Return the incremented plot filepath
     return plot_name
