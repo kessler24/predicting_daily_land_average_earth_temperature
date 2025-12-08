@@ -306,7 +306,7 @@ train_df = df[df['Year'] <= cutoff]
 # train_df
 
 # Read the script generated training data table
-read_csv('../data/global_temp_anomaly_cleaned_train.csv')
+pd.read_csv('../data/global_temp_anomaly_cleaned_train.csv')
 ```
 
 ### Validating The Training Dataframe
@@ -680,7 +680,7 @@ train_df_length = f'# of Rows (Examples of Feature Values) in the DataFrame: {le
 # contains_na_df
 
 # Read the script generated training data info table
-read_csv('../images/train_df_eda_table_1.csv')
+pd.read_csv('../images/train_df_eda_table_1.csv')
 ```
 `{python} train_df_length`
 
@@ -692,7 +692,7 @@ read_csv('../images/train_df_eda_table_1.csv')
 # train_df.describe()
 
 # Read the script generated training data describe table
-read_csv('../images/train_df_eda_table_2.csv')
+pd.read_csv('../images/train_df_eda_table_2.csv')
 ```
 
 ```{python}
@@ -906,7 +906,7 @@ results_table = pd.DataFrame(results).T
 # print(results_table)
 
 # Read the script generated model results table
-read_csv('../results/model_results.csv')
+pd.read_csv('../results/model_results.csv')
 ```
 
 Lower RMSE and MAE values indicate more accurate predictions, while a higher (positive) R² shows the model explains more variance in the data. From the table, SVR has the lowest errors and a positive R², making it the best model to use for forecasting.
