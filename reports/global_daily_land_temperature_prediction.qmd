@@ -414,7 +414,7 @@ plot = (temp_hist + temp_labels) & (anomaly_hist + anomaly_labels)
 # plot
 ```
 
-![Target Distribution Visualization (training data). Right-skewness is expected due to increasing anomalies in recent years.](../images/temperature_and_anomaly_distributions.png){#fig-hist width=70%}
+![Target Distribution Visualization (training data). Right-skewness is expected due to increasing anomalies in recent years.](../images/temperature_and_anomaly_distributions.png){#fig-hist}
 
 We can see from the histogram plots of the target in [@fig-hist] (Anomaly untransformed and Temperature when transformed) that the distribution of the target is very slightly right-skewed, but is almost symmetric and fairly normally distributed. It make sense that the majority of the distribution is close to normally distributed as temperature increase has accelerated in recent years and was less prevalent the further you go back in time. We would expect the distribution to be right-skewed since the accepted hypothesis of average global temperature is that it is increasing and accelerating in recent years relative to when the collection of this data first began, and this would cause more of the density of the anomaly and temperature distributions to be to the left of the mean. A second validation schema was created to apply this skewness check to the training data and raise a warning otherwise.
 
@@ -586,7 +586,7 @@ text = alt.Chart(correlation_long).mark_text(
 # )
 ```
 
-![Correlation analysis for training data via a heatmap visualization, informing further numerical schema validation. ](../images/correlation_heatmap.png){#fig-heatmap width=50%}
+![Correlation analysis for training data via a heatmap visualization, informing further numerical schema validation. ](../images/correlation_heatmap.png){#fig-heatmap}
 
 ```{python}
 #pip install deepchecks
@@ -660,7 +660,7 @@ trend = alt.Chart(train_df).mark_line(color='orange', size=3).transform_loess(
 # )
 ```
 
-![Visualize why Day of Year and Month are correlated and why it is not anomalous.](../images/month_vs_day_of_year_correlation.png){#fig-corr-line width=50%}
+![Visualize why Day of Year and Month are correlated and why it is not anomalous.](../images/month_vs_day_of_year_correlation.png){#fig-corr-line}
 
 ## Exploratory Data Analysis (EDA)
 
@@ -726,7 +726,7 @@ temp_line_mean = temp_points.mark_line(size=2, color='red').encode(
 # temp_points+temp_line_mean
 ```
 
-![Visualize the raw data and mean per year for temperature over time.](../images/eda_plot_1.png){#fig-scatter width=50%}
+![Visualize the raw data and mean per year for temperature over time.](../images/eda_plot_1.png){#fig-scatter}
 
 Using the mean data points by year, a linear regression model was fit to the training data to assess the viability of this approach in prediction. The linear regression fit can be seen in [@fig-reg] to follow the overall trend, but misses information about local fluctuations, seen by the points above and below the line. A linear model has potential to generalize for unseen year examples but may be too simple for this analysis and will not be precise in its predictions for every year. A 5-year rolling average was also explored, due to its ability to adapt the curve more effectively to local fluctuations. However, a model of this type may not extrapolate well for unseen examples to predict future temperatures.
 
@@ -756,7 +756,7 @@ reg = temp_points_avg+temp_points_avg.mark_line(
 # reg
 ```
 
-![Visualize the mean per year aggregated data with a linear fit on the training dataset.](../images/eda_plot_2.png){#fig-reg width=50%}
+![Visualize the mean per year aggregated data with a linear fit on the training dataset.](../images/eda_plot_2.png){#fig-reg}
 
 In order to check if the global average daily temperature over time was affected by seasonal phenomena, the annual means of these temperature measurements were analyzed by each month separated. It can be seen from [@fig-facet] below that regardless of the season global daily average land temperature measurements are increasing non-trivially over time.
 
@@ -783,7 +783,7 @@ temp_plot = alt.Chart(mean_per_month).mark_line().encode(
 # final_figure
 ```
 
-![Visualize the mean temperature per year grouped by month.](../images/eda_plot_3.png){#fig-facet width=20%}
+![Visualize the mean temperature per year grouped by month.](../images/eda_plot_3.png){#fig-facet}
 
 Finally, the distribution of the temperature in the training data for all measurements taken during three different years, separated by approximately 60 years, were evaluated in [@fig-density] below. The last year in the training data set (`{python} cutoff`) can be seen as significantly shifted to the right, indicating the increase in global daily average land temperature across time. Three distinct peaks in [@fig-density] below reinforces the hypothesis that even when account for the variance in temperature due to local fluctuations, the overall trend of global temperature increasing over time remains.
 
@@ -814,7 +814,7 @@ temp_density  = alt.Chart(data_subset
 # temp_density
 ```
 
-![Visualize temperature density distributions for select years across all measurements.](../images/eda_plot_4.png){#fig-density width=50%}
+![Visualize temperature density distributions for select years across all measurements.](../images/eda_plot_4.png){#fig-density}
 
 ## Machine Learning Modelling 
 
@@ -991,7 +991,7 @@ The predicted anomaly of ≈`{python} anom_2030_format` indicates that `{python}
 # plt.show()
 ```
 
-![Visualize the model fit to seen and unseen examples of global daily average land temperature.](../results/forecast_plot.png){#fig-model width=50%}
+![Visualize the model fit to seen and unseen examples of global daily average land temperature.](../results/forecast_plot.png){#fig-model}
 
 The plot shows the historical anomalies, with training data in blue and test data in orange, allowing us to visually compare the model's predictions against unseen years. The black trend line from the SVR model captures the warming pattern, while the red point highlights the `{python} year_2030[0][0]` forecast, illustrating the expected continuation of the temperature rise.
 
