@@ -660,7 +660,7 @@ trend = alt.Chart(train_df).mark_line(color='orange', size=3).transform_loess(
 # )
 ```
 
-![Visualize why Day of Year and Month are correlated and why it is not anomalous.](../images/month_vs_day_of_year_correlation.png){#fig-cor-line width=50%}
+![Visualize why Day of Year and Month are correlated and why it is not anomalous.](../images/month_vs_day_of_year_correlation.png){#fig-corr-line width=50%}
 
 ## Exploratory Data Analysis (EDA)
 
@@ -680,7 +680,7 @@ train_df_length = f'# of Rows (Examples of Feature Values) in the DataFrame: {le
 # contains_na_df
 
 # Read the script generated training data info table
-pd.read_csv('../images/train_df_eda_table_1.csv')
+pd.read_csv('../images/eda_table_1.csv')
 ```
 `{python} train_df_length`
 
@@ -692,7 +692,7 @@ pd.read_csv('../images/train_df_eda_table_1.csv')
 # train_df.describe()
 
 # Read the script generated training data describe table
-pd.read_csv('../images/train_df_eda_table_2.csv')
+pd.read_csv('../images/eda_table_2.csv')
 ```
 
 ```{python}
@@ -955,39 +955,39 @@ The predicted anomaly of ≈`{python} anom_2030_format` indicates that `{python}
 # 7. PLOT RESULTS
 # -----------------------------------------------------------
 
-plt.figure(figsize=(10,6))
-
-# Plot TRAIN data (blue)
-plt.scatter(
-    yearly['Year'][train_mask],
-    yearly['Anomaly'][train_mask],
-    alpha=0.6,
-    color='blue',
-    label="Train Data"
-)
+# plt.figure(figsize=(10,6))
+# 
+# # Plot TRAIN data (blue)
+# plt.scatter(
+#     yearly['Year'][train_mask],
+#     yearly['Anomaly'][train_mask],
+#     alpha=0.6,
+#     color='blue',
+#     label="Train Data"
+# )
 
 # Plot TEST data (orange/red)
-plt.scatter(
-    yearly['Year'][test_mask],
-    yearly['Anomaly'][test_mask],
-    alpha=0.8,
-    color='orange',
-    label="Test Data"
-)
+# plt.scatter(
+#     yearly['Year'][test_mask],
+#     yearly['Anomaly'][test_mask],
+#     alpha=0.8,
+#     color='orange',
+#     label="Test Data"
+# )
 
 # Model trend line
-plt.plot(yearly['Year'], best_model.predict(X), color='black', label=f"{best_model_name} Trend")
-
-# 2030 Forecast point
-plt.scatter(2030, forecast_2030_anomaly, color='red', s=100, label="2030 Forecast")
-
-# Train-test split line
-plt.axvline(cutoff, color='gray', linestyle='--', label="Train/Test Split")
-
-plt.xlabel("Year")
-plt.ylabel("Temperature Anomaly (°C)")
-plt.title("Global Temperature Anomaly Forecast")
-plt.legend()
+# plt.plot(yearly['Year'], best_model.predict(X), color='black', label=f"{best_model_name} Trend")
+# 
+# # 2030 Forecast point
+# plt.scatter(2030, forecast_2030_anomaly, color='red', s=100, label="2030 Forecast")
+# 
+# # Train-test split line
+# plt.axvline(cutoff, color='gray', linestyle='--', label="Train/Test Split")
+# 
+# plt.xlabel("Year")
+# plt.ylabel("Temperature Anomaly (°C)")
+# plt.title("Global Temperature Anomaly Forecast")
+# plt.legend()
 # plt.show()
 ```
 
