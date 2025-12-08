@@ -152,7 +152,7 @@ div.csl-indent {
 <section id="validating-the-full-dataframe-with-the-defined-schema" class="level6">
 <h6 class="anchored" data-anchor-id="validating-the-full-dataframe-with-the-defined-schema">Validating The Full DataFrame with the Defined Schema</h6>
 <p>(on the test and training datasets, see training data view here <a href="#tbl-train-df" class="quarto-xref">Table&nbsp;1</a>)</p>
-<div id="d61d3c01" class="cell" data-execution_count="9">
+<div id="2c651807" class="cell" data-execution_count="9">
 <div class="cell-output cell-output-stdout">
 <pre><code>df = DailyTempSchema.validate(df)
 &gt;&gt;&gt; ✓ Data validation passed</code></pre>
@@ -168,7 +168,7 @@ div.csl-indent {
 Table&nbsp;1: A view of the head and tail of the training dataset.
 </figcaption>
 <div aria-describedby="tbl-train-df-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-display" data-execution_count="131">
+<div class="cell-output cell-output-display" data-execution_count="10">
 <div>
 
 
@@ -312,7 +312,7 @@ Table&nbsp;1: A view of the head and tail of the training dataset.
 <div id="fig-hist" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-hist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../images/temperature_and_anomaly_distributions.png" class="img-fluid figure-img" style="width:70.0%">
+<img src="../images/temperature_and_anomaly_distributions.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Target Distribution Visualization (training data). Right-skewness is expected due to increasing anomalies in recent years.
@@ -323,7 +323,7 @@ Figure&nbsp;1: Target Distribution Visualization (training data). Right-skewness
 <section id="validating-the-training-dataframe-with-the-additions-to-the-schema" class="level6">
 <h6 class="anchored" data-anchor-id="validating-the-training-dataframe-with-the-additions-to-the-schema">Validating The Training DataFrame with the Additions to the Schema</h6>
 <p>(see training data view here <a href="#tbl-train-df" class="quarto-xref">Table&nbsp;1</a>)</p>
-<div id="1f015488" class="cell" data-execution_count="12">
+<div id="230fc30c" class="cell" data-execution_count="12">
 <div class="cell-output cell-output-stdout">
 <pre><code>train_df = DailyTempSchema.validate(train_df)
 &gt;&gt;&gt; ✓ Data validation passed</code></pre>
@@ -332,7 +332,7 @@ Figure&nbsp;1: Target Distribution Visualization (training data). Right-skewness
 <div id="fig-heatmap" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-heatmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../images/correlation_heatmap.png" class="img-fluid figure-img" style="width:50.0%">
+<img src="../images/correlation_heatmap.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-heatmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: Correlation analysis for training data via a heatmap visualization, informing further numerical schema validation.
@@ -347,7 +347,7 @@ Figure&nbsp;2: Correlation analysis for training data via a heatmap visualizatio
 <div id="fig-corr-line" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-corr-line-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../images/month_vs_day_of_year_correlation.png" class="img-fluid figure-img" style="width:50.0%">
+<img src="../images/month_vs_day_of_year_correlation.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-corr-line-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;3: Visualize why Day of Year and Month are correlated and why it is not anomalous.
@@ -366,7 +366,7 @@ Figure&nbsp;3: Visualize why Day of Year and Month are correlated and why it is 
 Table&nbsp;2: A view on the presence of null or NA values and the data types of the training dataset features.
 </figcaption>
 <div aria-describedby="tbl-train-df-info-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-display" data-execution_count="139">
+<div class="cell-output cell-output-display" data-execution_count="18">
 <div>
 
 
@@ -439,7 +439,7 @@ Table&nbsp;2: A view on the presence of null or NA values and the data types of 
 Table&nbsp;3: A view of descriptive statistics for the features (columns) in the training dataset.
 </figcaption>
 <div aria-describedby="tbl-train-df-desc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-display" data-execution_count="140">
+<div class="cell-output cell-output-display" data-execution_count="19">
 <div>
 
 
@@ -550,7 +550,7 @@ Table&nbsp;3: A view of descriptive statistics for the features (columns) in the
 <div id="fig-scatter" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scatter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../images/eda_plot_1.png" class="img-fluid figure-img" style="width:50.0%">
+<img src="../images/eda_plot_1.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scatter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4: Visualize the raw data and mean per year for temperature over time.
@@ -561,7 +561,7 @@ Figure&nbsp;4: Visualize the raw data and mean per year for temperature over tim
 <div id="fig-reg" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-reg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../images/eda_plot_2.png" class="img-fluid figure-img" style="width:50.0%">
+<img src="../images/eda_plot_2.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-reg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;5: Visualize the mean per year aggregated data with a linear fit on the training dataset.
@@ -572,7 +572,7 @@ Figure&nbsp;5: Visualize the mean per year aggregated data with a linear fit on 
 <div id="fig-facet" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-facet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../images/eda_plot_3.png" class="img-fluid figure-img" style="width:20.0%">
+<img src="../images/eda_plot_3.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-facet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;6: Visualize the mean temperature per year grouped by month.
@@ -583,7 +583,7 @@ Figure&nbsp;6: Visualize the mean temperature per year grouped by month.
 <div id="fig-density" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../images/eda_plot_4.png" class="img-fluid figure-img" style="width:50.0%">
+<img src="../images/eda_plot_4.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;7: Visualize temperature density distributions for select years across all measurements.
@@ -604,7 +604,7 @@ Figure&nbsp;7: Visualize temperature density distributions for select years acro
 Table&nbsp;4: Model Performance on Test Set dataset.
 </figcaption>
 <div aria-describedby="tbl-model_perform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-display" data-execution_count="149">
+<div class="cell-output cell-output-display" data-execution_count="28">
 <div>
 
 
@@ -655,7 +655,7 @@ Table&nbsp;4: Model Performance on Test Set dataset.
 <div id="fig-model" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../results/forecast_plot.png" class="img-fluid figure-img" style="width:50.0%">
+<img src="../results/forecast_plot.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;8: Visualize the model fit to seen and unseen examples of global daily average land temperature.
