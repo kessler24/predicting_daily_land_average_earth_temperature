@@ -167,10 +167,11 @@ def viz_tabular_stats(train_df: pd.DataFrame,
     table_name = increment_filename(table_name)
 
     # Export train_df.describe() to csv at plots_path directory with rounded numbers
-    train_df.describe().round(2).to_csv(
-        add_prefix_to_increment(table_name, 'table'),
-                                    index=True
-        ).rename(columns={'Unnamed: 0': 'Statistic'})
+    train_desc = train_df.describe().round(2)
+    # Rename the index column
+    train_desc.index.name = 'Statistic'
+    train_desc.to_csv(add_prefix_to_increment(table_name, 'table'),
+                                    index=True)
 
 # -----------------------------
 # Create the temperature scatter plot with mean temperature per year line
