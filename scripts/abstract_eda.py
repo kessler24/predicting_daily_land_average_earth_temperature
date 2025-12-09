@@ -107,7 +107,7 @@ def increment_filename(filepath: str) -> str:
 # Add an underscore prefix to an incremented filename
 # -----------------------------
 def add_prefix_to_increment(inc_filename: str, 
-                                    prefix: str) -> str:
+                                prefix: str) -> str:
     
     # Split the input filepath into the directory path and the file
     dirname, prefixed_name  = os.path.split(inc_filename)
