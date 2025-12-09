@@ -18,6 +18,8 @@ def main():
     test_add_temperature_column()
     test_set_baseline()
     test_incorrect_types_errors()
+    test_anomaly_values()
+    test_year_values()
     print("All tests passed.")
 
 # create general test data
@@ -170,9 +172,41 @@ def test_incorrect_types_errors():
     data_cleaning(raw_test_data_incorrect_day)
     data_cleaning(raw_test_data_multi_incorrect)
 
-# test when values in anomaly are very large
+# test when values in anomaly are negative, large, small
+raw_test_data_year_values = pd.DataFrame({
+    "Date Number" : [1880.001, 1880.004, 1880.007],
+    "Year" : [1880, 1880, 1880],
+    "Month" : [1, 1, 1],
+    "Day" : [1, 2, 3],
+    "Day of Year" : [1, 2, 3],
+    "Anomaly" : [-100000001.6543, 100000000.444, 0.000000000000008]
+})
+
+def test_anomaly_values():
+    cleaned_data = data_cleaning(raw_test_data_year_values, 1.0) 
+    assert math.isclose(cleaned_data["Temperature"][0], (-100000001.6543 + 1), abs_tol = 0.001)
+    assert math.isclose(cleaned_data["Temperature"][1], (100000000.444 + 1), abs_tol = 0.001)
+    assert math.isclose(cleaned_data["Temperature"][2], (0.000000000000008 + 1), abs_tol = 0.001)
+
+
 # test when values in year are very large or negative
+raw_test_data_year_values = pd.DataFrame({
+    "Date Number" : [1880.001, 1880.004, 1880.007],
+    "Year" : [-2003, 0, 6789543],
+    "Month" : [1, 1, 1],
+    "Day" : [1, 2, 3],
+    "Day of Year" : [1, 2, 3],
+    "Anomaly" : [-0.692, -0.592, -0.673]
+})
+
+def test_year_values():
+    cleaned_data = data_cleaning(raw_test_data_year_values, 1.0)
+    assert cleaned_data["Year"].equals(raw_test_data_year_values["Year"])
+ 
 # test when column names are misspelled
+# def test_misspelled_column_names():
+#   with pytest.raises(??):
+
 # test when some columns missing
 
 if __name__ == "__main__":
