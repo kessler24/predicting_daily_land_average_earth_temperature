@@ -3,6 +3,8 @@ import altair as alt
 import warnings
 import os
 import sys
+import pytest
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from scripts.abstract_eda import (increment_filename, 
                                   add_prefix_to_increment,
@@ -14,14 +16,19 @@ from scripts.abstract_eda import (increment_filename,
                                   viz_density_dists)
 
 """
+Test Data Examples
+"""
+
+
+"""
 Test increment_filename from abstract_eda.py script
 """
 def test_increment_filename():
     # Return type check
     assert isinstance(increment_filename('images/eda_1.png'), str)
-    # Typical example check
+    # Typical example, check output
     assert increment_filename('images/eda_1.png') == 'images/eda_2.png'
-    # Atypical example check
+    # Atypical example, check output
     assert increment_filename('images/eda_1_1.png') == 'images/eda_1_2.png'
 
 """
@@ -30,9 +37,9 @@ Test add_prefix_to_increment from abstract_eda.py script
 def test_add_prefix_to_increment():
     # Return type check
     assert isinstance(add_prefix_to_increment('images/eda_1.png', 'plot'), str)
-    # Typical example check
+    # Typical example, check output
     assert add_prefix_to_increment('images/eda_1.png','plot') == 'images/eda_plot_1.png'
-    # Atypical example check
+    # Atypical example, check output
     assert add_prefix_to_increment('images/train_df_1.csv', 'table') == 'images/train_df_table_1.csv'
 
 
@@ -42,10 +49,10 @@ Test read_clean_data from abstract_eda.py script
 def test_read_clean_data():
     # Return Type Check
     assert isinstance(read_clean_data('data/global_temp_anomaly_cleaned_train.csv'), pd.DataFrame)
-    # Typical example check all columns exist
+    # Typical example, check all columns exist
     assert {'Year', 'Month', 'Day', 'Anomaly', 'Day of Year', 'Temperature', 'Month_Name'}.issubset(
         read_clean_data('data/global_temp_anomaly_cleaned_train.csv').columns)
-    # Typical example check that more rows are in training data rather than test data
+    # Typical example, check that more rows are in training data rather than test data
     assert len(read_clean_data(
         'data/global_temp_anomaly_cleaned_test.csv')) < len(read_clean_data(
             'data/global_temp_anomaly_cleaned_train.csv'))
@@ -54,11 +61,10 @@ def test_read_clean_data():
 Test viz_tabular_stats from abstract_eda.py script
 """
 def test_viz_tabular_stats():
-    # Return Type Check
-    # Data will exist for checks after this line runs
+    # Return Type Check, Data exists in folder after this check
     assert viz_tabular_stats(
         read_clean_data('data/global_temp_anomaly_cleaned_train.csv'), 'images/eda.png') is None
-    # Typical example check side effect functions properly generating csv tables
+    # Typical example, check side effect functions properly generating csv tables
     assert os.path.exists('images/eda_table_1.csv')
     assert os.path.exists('images/eda_table_2.csv')
     assert {'Column', 'Contains NA Values', 'Data Type'}.issubset(
@@ -72,25 +78,20 @@ def test_viz_tabular_stats():
 Test viz_mean_temp_years from abstract_eda.py script
 """
 def test_viz_mean_temp_years():
-    # Return Type Check
-    # Data will exist for checks after this line runs
-    # Pytest fails running this:
-    #  ValueError: Saving charts in 'png' format requires the vl-convert-python package:
-    # assert isinstance(viz_mean_temp_years(read_clean_data(
-    #     'data/global_temp_anomaly_cleaned_train.csv'), 'images/eda.png') , str)
-    # Typical example check side effect functions properly generating png image
+    # Return Type Check, Data exists in folder after this check
+    assert isinstance(viz_mean_temp_years(read_clean_data(
+        'data/global_temp_anomaly_cleaned_train.csv'), 'images/eda.png') , str)
+    # Typical example, check side effect functions properly generating png image
     assert os.path.exists('images/eda_plot_1.png')
 
 """
 Test viz_linear_regression from abstract_eda.py script
 """
 def test_viz_linear_regression():
-
-    # train_df = read_clean_data('data/global_temp_anomaly_cleaned_train.csv')
-
-    # viz_linear_regression(train_df, 'images/eda.png')
-    
-    # Typical example check side effect functions properly generating png image
+    # Return Type Check, Data exists in folder after this check
+    assert isinstance(viz_linear_regression(read_clean_data(
+        'data/global_temp_anomaly_cleaned_train.csv'), 'images/eda.png') , str)
+    # Typical example, check side effect functions properly generating png image
     assert os.path.exists('images/eda_plot_2.png')
 
 
@@ -98,11 +99,10 @@ def test_viz_linear_regression():
 Test viz_seasonal_lines from abstract_eda.py script
 """
 def test_viz_seasonal_lines():
-    # train_df = read_clean_data('data/global_temp_anomaly_cleaned_train.csv')
-
-    # viz_linear_regression(train_df, 'images/eda.png')
-
-    # Typical example check side effect functions properly generating png images
+    # Return Type Check, Data exists in folder after this check
+    assert isinstance(viz_seasonal_lines(read_clean_data(
+        'data/global_temp_anomaly_cleaned_train.csv'), 'images/eda.png') , str)
+    # Typical example,  check side effect functions properly generating png images
     assert os.path.exists('images/eda_plot_3.png')
 
 
@@ -110,11 +110,10 @@ def test_viz_seasonal_lines():
 Test viz_density_dists from abstract_eda.py script
 """
 def test_viz_density_dists():
-    # train_df = read_clean_data('data/global_temp_anomaly_cleaned_train.csv')
-
-    # viz_linear_regression(train_df, 'images/eda.png')
-    
-    # Typical example check side effect functions properly generating png images
+    # Return Type Check, Data exists in folder after this check
+    assert isinstance(viz_density_dists(read_clean_data(
+        'data/global_temp_anomaly_cleaned_train.csv'), 'images/eda.png') , str)
+    # Typical example,  check side effect functions properly generating png images
     assert os.path.exists('images/eda_plot_4.png')
 
 

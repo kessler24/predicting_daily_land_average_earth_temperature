@@ -52,12 +52,6 @@ def main(train_df_csv_path:str, plots_path: str) -> None:
     # Read the training data csv into a dataframe from first command line argument
     train_df = read_clean_data(train_df_csv_path)
 
-    # Simplify Working with Large Datasets 
-    alt.data_transformers.enable('vegafusion')
-
-    # Suppress altair plot warnings for cleaner output
-    warnings.filterwarnings('ignore', module='altair')
-
     # View training dataframe at a high level for stats and null presence
     # Save the dataframe views as csv files
     viz_tabular_stats(train_df, plots_path)
@@ -145,7 +139,7 @@ def read_clean_data(train_df_csv_path: str) -> pd.DataFrame:
 # -----------------------------
 def viz_tabular_stats(train_df: pd.DataFrame,
                         plots_path: str) -> None:
-    
+
     # Check if any NA values are in any of the columns in the training dataset
     contains_na_df = train_df.isna().any().reset_index(
         ).rename(columns={'index': 'Column', 0: 'Contains NA Values'})
@@ -180,6 +174,12 @@ def viz_tabular_stats(train_df: pd.DataFrame,
 def viz_mean_temp_years(train_df: pd.DataFrame, 
                             plots_path: str,
                             plot_size: dict = {'width': 450, 'height': 300}) -> str:
+
+    # Simplify Working with Large Datasets 
+    alt.data_transformers.enable('vegafusion')
+
+    # Suppress altair plot warnings for cleaner output
+    warnings.filterwarnings('ignore', module='altair')
 
     # Create scatter of raw data with some opacity to reduce plot noise
     temp_points = alt.Chart(train_df,
@@ -217,6 +217,12 @@ def viz_linear_regression(train_df: pd.DataFrame,
                             plots_path: str,
                             plot_size: dict = {'width': 450, 'height': 300}) -> str:
     
+    # Simplify Working with Large Datasets 
+    alt.data_transformers.enable('vegafusion')
+
+    # Suppress altair plot warnings for cleaner output
+    warnings.filterwarnings('ignore', module='altair')
+
     # PLot a scatter plot of the mean temperatures for each year
     temp_points_avg = alt.Chart(train_df,
             title=alt.Title(
@@ -255,6 +261,12 @@ def viz_seasonal_lines(train_df: pd.DataFrame,
                         plots_path: str,
                         facet_plot_size: dict = {'width': 450, 'height': 300}) -> str:
     
+    # Simplify Working with Large Datasets 
+    alt.data_transformers.enable('vegafusion')
+
+    # Suppress altair plot warnings for cleaner output
+    warnings.filterwarnings('ignore', module='altair')
+
     # Average by year for each month in data
     mean_per_month = train_df.groupby(
         ['Year','Month_Name'], observed=True)['Temperature'].mean().reset_index()
@@ -292,6 +304,12 @@ def viz_density_dists(train_df: pd.DataFrame,
                         plots_path: str,
                         plot_size: dict = {'width': 450, 'height': 300}) -> str:
     
+    # Simplify Working with Large Datasets 
+    alt.data_transformers.enable('vegafusion')
+
+    # Suppress altair plot warnings for cleaner output
+    warnings.filterwarnings('ignore', module='altair')
+
     # Years to be analyzed separated by ~60 years
     years_selection = [1880, 1960, 2012]
 
