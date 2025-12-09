@@ -1,4 +1,4 @@
-,Year,Month,Day,Day of Year,Anomaly,Temperature
+Statistic,Year,Month,Day,Day of Year,Anomaly,Temperature
 count,48578.0,48578.0,48578.0,48578.0,48578.0,48578.0
 mean,1946.0,6.52,15.73,183.0,0.02,8.61
 std,38.39,3.45,8.8,105.33,0.61,0.61

@@ -1,2 +1,0 @@
-Predicted anomaly for 2030: 1.9646 °C
-Predicted temperature for 2030: 10.5546 °C
