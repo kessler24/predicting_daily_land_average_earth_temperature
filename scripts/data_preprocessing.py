@@ -51,7 +51,6 @@ This script throws a DeprecationWarning for pkg_resources used by DeepChecks. De
 # Data Handling & Numerical Computation
 # -----------------------------
 import pandas as pd      # DataFrames for data manipulation
-import numpy as np       # Numerical computations and array operations
 import os                # OS-level operations (paths, environment variables)
 
 # -----------------------------
@@ -216,6 +215,18 @@ def data_cleaning(raw_df, BASELINE_TEMP = 8.59):
     pd.DataFrame
         Cleaned DataFrame with new columns "Temperature" and "Month_Name".
     """
+    # Check for correct data types
+    expected_types = {
+        "Year": "int64",
+        "Month": "int64",
+        "Day": "int64",
+        "Day of Year": "int64",
+        "Anomaly": "float64"
+    }
+
+    for col, expected in expected_types.items():
+        if raw_df[col].dtype != expected:
+            raise TypeError(f"{col} has wrong dtype: {raw_df[col].dtype} (expected {expected})")
     
     # Drop Date Number column
     df = raw_df.drop(columns=['Date Number'])
