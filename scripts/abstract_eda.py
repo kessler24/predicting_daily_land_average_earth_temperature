@@ -107,7 +107,7 @@ def increment_filename(filepath: str) -> str:
 # Add an underscore prefix to an incremented filename
 # -----------------------------
 def add_prefix_to_increment(inc_filename: str, 
-                                prefix: str) -> str:
+                                    prefix: str) -> str:
     
     # Split the input filepath into the directory path and the file
     dirname, prefixed_name  = os.path.split(inc_filename)
@@ -150,6 +150,9 @@ def viz_tabular_stats(train_df: pd.DataFrame,
     contains_na_df = train_df.isna().any().reset_index(
         ).rename(columns={'index': 'Column', 0: 'Contains NA Values'})
 
+    # Show the data types of the features
+    contains_na_df['Data Type'] = train_df.dtypes.values
+
     # Strip the .png extension
     filename, ext = os.path.splitext(plots_path)
 
@@ -164,8 +167,11 @@ def viz_tabular_stats(train_df: pd.DataFrame,
     table_name = increment_filename(table_name)
 
     # Export train_df.describe() to csv at plots_path directory with rounded numbers
-    train_df.describe().round(2).to_csv(add_prefix_to_increment(table_name, 'table'),
-                                            index=True)
+    train_desc = train_df.describe().round(2)
+    # Rename the index column
+    train_desc.index.name = 'Statistic'
+    train_desc.to_csv(add_prefix_to_increment(table_name, 'table'),
+                                    index=True)
 
 # -----------------------------
 # Create the temperature scatter plot with mean temperature per year line
@@ -198,7 +204,7 @@ def viz_mean_temp_years(train_df: pd.DataFrame,
     plot_name  = add_prefix_to_increment(plot_name, 'plot')
 
     # save the plot as a png file
-    (temp_points+temp_line_mean).save(plot_name)
+    (temp_points+temp_line_mean).save(plot_name, ppi=300)
 
     # Return the incremented plot filepath
     return plot_name
@@ -236,7 +242,7 @@ def viz_linear_regression(train_df: pd.DataFrame,
     plot_name  = add_prefix_to_increment(plot_name, 'plot')
 
     # save the plot as a png file
-    reg.save(plot_name)
+    reg.save(plot_name, ppi=300)
 
     # Return the incremented plot filepath
     return plot_name
@@ -273,7 +279,7 @@ def viz_seasonal_lines(train_df: pd.DataFrame,
     plot_name  = add_prefix_to_increment(plot_name, 'plot')
 
     # save the plot as a png file
-    final_figure.save(plot_name)
+    final_figure.save(plot_name, ppi=300)
 
     # Return the incremented plot filepath
     return plot_name
@@ -311,7 +317,7 @@ def viz_density_dists(train_df: pd.DataFrame,
     plot_name  = add_prefix_to_increment(plot_name, 'plot')
 
     # save the plot as a png file
-    temp_density.save(plot_name)
+    temp_density.save(plot_name, ppi=300)
 
     # Return the incremented plot filepath
     return plot_name

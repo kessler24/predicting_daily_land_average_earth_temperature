@@ -155,6 +155,9 @@ def main(input_path, output_dir, cutoff_year):
     print("\nModel Performance on Test Set:\n")
     print(results_table)
 
+    # Rename the index column
+    results_table.index.name = 'Model'
+
     # Ensure output directory exists
     os.makedirs(output_dir, exist_ok=True)
     # Save evaluation table as CSV
