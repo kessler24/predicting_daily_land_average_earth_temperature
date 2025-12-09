@@ -80,7 +80,7 @@ Test viz_mean_temp_years from abstract_eda.py script
 def test_viz_mean_temp_years():
     # Return Type Check, Data exists in folder after this check
     assert isinstance(viz_mean_temp_years(read_clean_data(
-        'data/global_temp_anomaly_cleaned_train.csv'), 'images/eda.png') , str)
+        'data/global_temp_anomaly_cleaned_train.csv'), 'images/eda_1.png') , str)
     # Typical example, check side effect functions properly generating png image
     assert os.path.exists('images/eda_plot_1.png')
 
@@ -90,7 +90,7 @@ Test viz_linear_regression from abstract_eda.py script
 def test_viz_linear_regression():
     # Return Type Check, Data exists in folder after this check
     assert isinstance(viz_linear_regression(read_clean_data(
-        'data/global_temp_anomaly_cleaned_train.csv'), 'images/eda.png') , str)
+        'data/global_temp_anomaly_cleaned_train.csv'), 'images/eda_2.png') , str)
     # Typical example, check side effect functions properly generating png image
     assert os.path.exists('images/eda_plot_2.png')
 
@@ -101,7 +101,7 @@ Test viz_seasonal_lines from abstract_eda.py script
 def test_viz_seasonal_lines():
     # Return Type Check, Data exists in folder after this check
     assert isinstance(viz_seasonal_lines(read_clean_data(
-        'data/global_temp_anomaly_cleaned_train.csv'), 'images/eda.png') , str)
+        'data/global_temp_anomaly_cleaned_train.csv'), 'images/eda_3.png') , str)
     # Typical example,  check side effect functions properly generating png images
     assert os.path.exists('images/eda_plot_3.png')
 
@@ -112,7 +112,7 @@ Test viz_density_dists from abstract_eda.py script
 def test_viz_density_dists():
     # Return Type Check, Data exists in folder after this check
     assert isinstance(viz_density_dists(read_clean_data(
-        'data/global_temp_anomaly_cleaned_train.csv'), 'images/eda.png') , str)
+        'data/global_temp_anomaly_cleaned_train.csv'), 'images/eda_4.png') , str)
     # Typical example,  check side effect functions properly generating png images
     assert os.path.exists('images/eda_plot_4.png')
 
