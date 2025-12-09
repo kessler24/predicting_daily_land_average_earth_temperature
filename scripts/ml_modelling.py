@@ -155,6 +155,9 @@ def main(input_path, output_dir, cutoff_year):
     print("\nModel Performance on Test Set:\n")
     print(results_table)
 
+    # Rename the index column
+    results_table.index.name = 'Model'
+
     # Ensure output directory exists
     os.makedirs(output_dir, exist_ok=True)
     # Save evaluation table as CSV
@@ -184,9 +187,12 @@ def main(input_path, output_dir, cutoff_year):
     print(f"Predicted land-average temperature for 2030: {forecast_2030_temp:.4f} °C")
 
     # Save forecast to text file
-    with open(f"{output_dir}/forecast_2030.txt", "w") as f:
-        f.write(f"Predicted anomaly for 2030: {forecast_2030_anomaly:.4f} °C\n")
-        f.write(f"Predicted temperature for 2030: {forecast_2030_temp:.4f} °C\n")
+    forecast_2030 = pd.DataFrame({
+        "Year": [2030],
+        "Temperature": [forecast_2030_temp],
+        "Anomaly": [forecast_2030_anomaly]
+    })
+    forecast_2030.to_csv(f"{output_dir}/forecast_2030.csv")
 
     # -----------------------------------------------------------
     # 7. Plot results
