@@ -53,21 +53,29 @@ Test viz_tabular_stats from abstract_eda.py script
 """
 def test_viz_tabular_stats():
     # Return Type Check
+    # Data will exist for checks after this line runs
     assert viz_tabular_stats(
         read_clean_data('data/global_temp_anomaly_cleaned_train.csv'), 'images/eda.png') is None
-    # Typical example check side effect functions properly generating tables
-    viz_tabular_stats(read_clean_data('data/global_temp_anomaly_cleaned_train.csv'), 'images/eda.png')
+    # Typical example check side effect functions properly generating csv tables
     assert os.path.exists('images/eda_table_1.csv')
     assert os.path.exists('images/eda_table_2.csv')
-    # assert 
-    # Atypical example check
-
+    assert {'Column', 'Contains NA Values', 'Data Type'}.issubset(
+        pd.read_csv('images/eda_table_1.csv'))
+    assert len(pd.read_csv('images/eda_table_1.csv')) == 7
+    assert {'Statistic', 'Year', 'Month', 'Day', 'Anomaly', 'Day of Year', 'Temperature'}.issubset(
+        pd.read_csv('images/eda_table_2.csv'))
+    assert len(pd.read_csv('images/eda_table_2.csv')) == 8
 
 """
 Test viz_mean_temp_years from abstract_eda.py script
 """
-
-
+def test_viz_mean_temp_years():
+    # Return Type Check
+    # Data will exist for checks after this line runs
+    assert isinstance(viz_mean_temp_years(read_clean_data(
+        'data/global_temp_anomaly_cleaned_train.csv'), 'images/eda_plot_1.png') , str)
+    # Typical example check side effect functions properly generating png images
+    assert os.path.exists('images/eda_plot_1.png')
 
 """
 Test viz_linear_regression from abstract_eda.py script
