@@ -1,5 +1,6 @@
 import sys
 import os
+import pandas as pd
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from scripts.abstract_eda import (increment_filename, 
                                   add_prefix_to_increment,
@@ -37,13 +38,29 @@ def test_add_prefix_to_increment():
 Test read_clean_data from abstract_eda.py script
 """
 def test_read_clean_data():
-    assert read_clean_data('')
-
+    # Return Type Check
+    assert isinstance(read_clean_data('data/global_temp_anomaly_cleaned_train.csv'), pd.DataFrame)
+    # Typical example check all columns exist
+    assert {'Year', 'Month', 'Day', 'Anomaly', 'Day of Year', 'Temperature', 'Month_Name'}.issubset(
+        read_clean_data('data/global_temp_anomaly_cleaned_train.csv').columns)
+    # Typical example check that more rows are in training data rather than test data
+    assert len(read_clean_data(
+        'data/global_temp_anomaly_cleaned_test.csv')) < len(read_clean_data(
+            'data/global_temp_anomaly_cleaned_train.csv'))
 
 """
 Test viz_tabular_stats from abstract_eda.py script
 """
-
+def test_viz_tabular_stats():
+    # Return Type Check
+    assert viz_tabular_stats(
+        read_clean_data('data/global_temp_anomaly_cleaned_train.csv'), 'images/eda.png') is None
+    # Typical example check side effect functions properly generating tables
+    viz_tabular_stats(read_clean_data('data/global_temp_anomaly_cleaned_train.csv'), 'images/eda.png')
+    assert os.path.exists('images/eda_table_1.csv')
+    assert os.path.exists('images/eda_table_2.csv')
+    # assert 
+    # Atypical example check
 
 
 """
