@@ -215,6 +215,9 @@ def data_cleaning(raw_df, BASELINE_TEMP = 8.59):
     pd.DataFrame
         Cleaned DataFrame with new columns "Temperature" and "Month_Name".
     """
+    # Coerce anomaly to float type (in the event of an integer input)
+    raw_df["Anomaly"] = raw_df["Anomaly"].astype(float)
+    
     # Check for correct data types
     expected_types = {
         "Year": "int64",
