@@ -1,6 +1,6 @@
 """
 
-The following script modularizes the Exploratory Data Analysis notebook.
+The following script modularizes the Exploratory Data Analysis (EDA) notebook.
 Click commands take user input for the input training data filepath and
 the png file output path and filename.
 
@@ -18,9 +18,9 @@ None
     Generates training data png files of the plots and summary csv tables in the target folder.
 
 Examples
-    --------
-    >>> python scripts/abstract_eda.py data/global_temp_anomaly_cleaned_train.csv images/eda.png (from repo root)
-    None
+--------
+    $ python scripts/abstract_eda.py data/global_temp_anomaly_cleaned_train.csv images/eda.png (from repo root)
+    >>> None
         images/
             train_df_eda_table_1.csv
             train_df_eda_table_2.csv
