@@ -16,8 +16,10 @@ from scripts.abstract_eda import (increment_filename,
                                   viz_density_dists)
 
 """
-Test Data Examples
+Create Test Data
 """
+empty_df = pd.DataFrame()
+
 
 
 """
