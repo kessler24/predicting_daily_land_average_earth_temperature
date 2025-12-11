@@ -1,4 +1,7 @@
 """
+
+FUNCTION TO GRADE FOR TESTING: test_viz_mean_temp_years()
+
 The following script tests the exploratory data analysis (EDA) script functions from 
 abstract_eda.py. Testing should be running using the $ pytest or $ pytest -v in the 
 project environment from the repo root.
@@ -108,8 +111,18 @@ def create_test_data() -> tuple[str, pd.DataFrame, str, pd.DataFrame, pd.DataFra
         'Month_Name': ['January', 'February']}
     )
 
+    empty_path = ''
+
+    empty_df = pd.DataFrame()
+
+    # Make sure the tests/eda_test_data folder exists for creating test data.
+    # If folder does not exist in the repo for some reason run os.mkdir()
+    if not os.path.exists('tests/eda_test_data'):
+        os.mkdir('tests/eda_test_data')
+
+    # Create the oy_train_df_big.csv if it does not exist, otherwise read the data
     if not os.path.exists('tests/eda_test_data/toy_train_df_big.csv'):
-        # If the data does not exist run the preprocessing script with suggested arguments
+        # If the training data is not in the data folder run the preprocessing script
         if not os.path.exists('data/global_temp_anomaly_cleaned_train.csv'):
             # Run the preprocessing script if training data does not exist
             subprocess.run(['python', 
@@ -133,15 +146,35 @@ def create_test_data() -> tuple[str, pd.DataFrame, str, pd.DataFrame, pd.DataFra
     else:
         toy_train_df_big = pd.read_csv('tests/eda_test_data/toy_train_df_big.csv')
 
-    empty_path = ''
-
-    empty_df = pd.DataFrame()
+    # Run the abstract_eda.py script to write the data to the tests/eda_test_data folder
+    subprocess.run(['python', 
+                    'scripts/abstract_eda.py',
+                    'data/global_temp_anomaly_cleaned_train.csv',
+                    'tests/eda_test_data/eda.png'])
 
     return toy_path, toy_train_df, empty_path, empty_df, toy_train_df_big
 
+# Note that this writes the training data to the data folder if it does not exist for below
 toy_path, toy_train_df, empty_path, empty_df, toy_train_df_big = create_test_data()
 
-print(toy_train_df_big)
+# ----------------------------- 
+# FUNCTION TO GRADE FOR TESTING IN MILESTONE 4:
+# ----------------------------- 
+def test_viz_mean_temp_years():
+    """
+    Test viz_mean_temp_years from abstract_eda.py script
+
+    """
+    
+    # Return Type Check, Data exists in folder after this check
+    assert isinstance(viz_mean_temp_years(read_clean_data(
+        'data/global_temp_anomaly_cleaned_train.csv'), 'tests/eda_test_data/eda.png') , alt.LayerChart)
+    # Typical example, check side effect functions properly generating png image
+    assert os.path.exists('tests/eda_test_data/eda_mean_per_year_plot.png')
+
+# ----------------------------- 
+# OTHER FUNCTIONS WITH SIMPLE TESTS FOR QUICK CHECKS
+# ----------------------------- 
 
 def test_increment_filename():
     """
@@ -155,8 +188,9 @@ def test_increment_filename():
     assert increment_filename('images/eda_1.png') == 'images/eda_2.png'
     # Atypical example, check output
     assert increment_filename('images/eda_1_1.png') == 'images/eda_1_2.png'
-
+    # Edge case example, check output
     assert increment_filename('')=='_1.png'
+
 
 def test_add_suffix_to_filename():
     """
@@ -167,9 +201,9 @@ def test_add_suffix_to_filename():
     # Return type check
     assert isinstance(add_suffix_to_filename('images/eda_1.png', 'plot'), str)
     # Typical example, check output
-    assert add_suffix_to_filename('images/eda_1.png','plot') == 'images/eda_plot_1.png'
+    assert add_suffix_to_filename('images/eda.png','plot') == 'images/eda_plot.png'
     # Atypical example, check output
-    assert add_suffix_to_filename('images/train_df_1.csv', 'table') == 'images/train_df_table_1.csv'
+    assert add_suffix_to_filename('images/train_df.csv', 'table') == 'images/train_df_table.csv'
 
 def test_read_clean_data():
     """
@@ -195,28 +229,17 @@ def test_viz_tabular_stats():
     
     # Return Type Check, Data exists in folder after this check
     assert viz_tabular_stats(
-        read_clean_data('data/global_temp_anomaly_cleaned_train.csv'), 'images/eda.png') is None
+        read_clean_data('data/global_temp_anomaly_cleaned_train.csv'), 'tests/eda_test_data/eda.png') is None
     # Typical example, check side effect functions properly generating csv tables
-    assert os.path.exists('images/eda_table_1.csv')
-    assert os.path.exists('images/eda_table_2.csv')
+    assert os.path.exists('images/eda_training_data_info_table.csv')
+    assert os.path.exists('images/eda_training_data_stats_table.csv')
     assert {'Column', 'Contains NA Values', 'Data Type'}.issubset(
-        pd.read_csv('images/eda_table_1.csv'))
-    assert len(pd.read_csv('images/eda_table_1.csv')) == 7
-    assert {'Statistic', 'Year', 'Month', 'Day', 'Anomaly', 'Day of Year', 'Temperature'}.issubset(
-        pd.read_csv('images/eda_table_2.csv'))
-    assert len(pd.read_csv('images/eda_table_2.csv')) == 8
-
-def test_viz_mean_temp_years():
-    """
-    Test viz_mean_temp_years from abstract_eda.py script
-
-    """
-    
-    # Return Type Check, Data exists in folder after this check
-    assert isinstance(viz_mean_temp_years(read_clean_data(
-        'data/global_temp_anomaly_cleaned_train.csv'), increment_filename('images/eda.png')) , str)
-    # Typical example, check side effect functions properly generating png image
-    assert os.path.exists('images/eda_plot_1.png')
+        pd.read_csv('images/eda_training_data_info_table.csv'))
+    assert len(pd.read_csv('images/eda_training_data_info_table.csv')) == 7
+    assert {'Statistic', 'Year', 'Month', 'Day', 
+            'Anomaly', 'Day of Year', 'Temperature'}.issubset(
+        pd.read_csv('images/eda_training_data_stats_table.csv'))
+    assert len(pd.read_csv('images/eda_training_data_stats_table.csv')) == 8
 
 def test_viz_linear_regression():
     """
@@ -226,9 +249,9 @@ def test_viz_linear_regression():
     
     # Return Type Check, Data exists in folder after this check
     assert isinstance(viz_linear_regression(read_clean_data(
-        'data/global_temp_anomaly_cleaned_train.csv'), increment_filename('images/eda.png')) , str)
+        'data/global_temp_anomaly_cleaned_train.csv'),  'tests/eda_test_data/eda.png') , alt.LayerChart)
     # Typical example, check side effect functions properly generating png image
-    assert os.path.exists('images/eda_plot_2.png')
+    assert os.path.exists('tests/eda_test_data/eda_linear_fit_plot.png.png')
 
 def test_viz_seasonal_lines():
     """
@@ -238,9 +261,9 @@ def test_viz_seasonal_lines():
     
     # Return Type Check, Data exists in folder after this check
     assert isinstance(viz_seasonal_lines(read_clean_data(
-        'data/global_temp_anomaly_cleaned_train.csv'), increment_filename('images/eda.png')) , str)
+        'data/global_temp_anomaly_cleaned_train.csv'), 'tests/eda_test_data/eda.png') , alt.LayerChart)
     # Typical example,  check side effect functions properly generating png images
-    assert os.path.exists('images/eda_plot_3.png')
+    assert os.path.exists('tests/eda_test_data/eda_facet_by_month_plot.png.png')
 
 def test_viz_density_dists():
     """
@@ -250,6 +273,6 @@ def test_viz_density_dists():
     
     # Return Type Check, Data exists in folder after this check
     assert isinstance(viz_density_dists(read_clean_data(
-        'data/global_temp_anomaly_cleaned_train.csv'), increment_filename('images/eda.png')) , str)
+        'data/global_temp_anomaly_cleaned_train.csv'), 'tests/eda_test_data/eda.png') , alt.LayerChart)
     # Typical example,  check side effect functions properly generating png images
-    assert os.path.exists('images/eda_plot_4.png')
+    assert os.path.exists('tests/eda_test_data/eda_density_distributions_plot.png')

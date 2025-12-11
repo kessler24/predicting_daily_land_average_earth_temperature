@@ -20,7 +20,7 @@ None
 
 Examples
 --------
-    $ python scripts/abstract_eda.py data/global_temp_anomaly_cleaned_train.csv images/eda.png (from repo root)
+    $ python scripts/abstract_eda.py data/global_temp_anomaly_cleaned_train.csv images/eda.png  --  (from repo root)
     >>> None
     
     $ python scripts/abstract_eda.py  --  using defaults for train_df_csv_path and plots_path (from repo root)
@@ -162,15 +162,23 @@ def viz_tabular_stats(train_df: pd.DataFrame,
     # Strip the .png extension
     filename, ext = os.path.splitext(plots_path)
 
-    #Increment the plots_path filename with .csv extension
-    table_name = increment_filename(f"{filename}.csv")
+    if plots_path.split('_').pop(-1).isnumeric():
+        # Increment the plots_path if end is numeric and make .csv extension
+        table_name = increment_filename(f"{filename}.csv")
+    else:
+        # Otherwise use plots_path for filename
+        table_name = f"{filename}.csv"
 
     # Export contains_na_df to csv at plots_path directory
     contains_na_df.to_csv(add_suffix_to_filename(table_name, 'training_data_info_table'),
                             index=False)
 
-    # Increment the table csv filename above
-    table_name = increment_filename(table_name)
+    if plots_path.split('_').pop(-1).isnumeric():
+        # Increment the plots_path if end is numeric and make .csv extension
+        table_name = increment_filename(f"{filename}.csv")
+    else:
+        # Otherwise use plots_path for filename
+        table_name = f"{filename}.csv"
 
     # Export train_df.describe() to csv at plots_path directory with rounded numbers
     train_desc = train_df.describe().round(2)
@@ -180,13 +188,15 @@ def viz_tabular_stats(train_df: pd.DataFrame,
                                     index=True)
 
 # -----------------------------
+# FUNCTION TO GRADE FOR TESTING:
 # Create the temperature scatter plot with mean temperature per year line
 # Save the plot as a png file to the image folder with provided filename
-# Default plots_path value:
 # -----------------------------
 def viz_mean_temp_years(train_df: pd.DataFrame, 
                             plots_path: str,
                             plot_size: dict = {'width': 450, 'height': 300}) -> alt.LayerChart:
+
+    #!!!!!!! ADD ERROR RAISE ON ERRONEOUS INPUT !!!!!!
 
     # Simplify Working with Large Datasets 
     alt.data_transformers.enable('vegafusion')
