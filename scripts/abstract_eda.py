@@ -20,10 +20,10 @@ None
 
 Examples
 --------
-    $ python scripts/abstract_eda.py data/global_temp_anomaly_cleaned_train.csv images/eda.png  --  (from repo root)
+    $ python scripts/abstract_eda.py data/global_temp_anomaly_cleaned_train.csv images/eda.png    (from repo root)
     >>> None
     
-    $ python scripts/abstract_eda.py  --  using defaults for train_df_csv_path and plots_path (from repo root)
+    $ python scripts/abstract_eda.py    using defaults for train_df_csv_path and plots_path (from repo root)
     >>> None
     
     Side Effects:
@@ -58,6 +58,10 @@ import os
                     type=click.Path(), 
                     default='images/eda.png')
 def main(train_df_csv_path:str, plots_path: str) -> None:
+    """
+    Please refer to the abstract_eda.py docstring above for information on main().
+
+    """
 
     dirname, prefixed_name  = os.path.split(plots_path)
 
@@ -68,8 +72,8 @@ def main(train_df_csv_path:str, plots_path: str) -> None:
     if not ext == '.png':
         ext = '.png'
 
+    # Join the input directory with the modified filename and return the new path
     plots_path = os.path.join(dirname, prefixed_name + ext)
-
 
     # Read the training data csv into a dataframe to use for tables and plots
     train_df = read_clean_data(train_df_csv_path)
@@ -88,6 +92,126 @@ def main(train_df_csv_path:str, plots_path: str) -> None:
     
     # Create the density plot with for three years separated by ~60 years
     viz_density_dists(train_df, plots_path)
+
+# ---------------------------------------------
+# FUNCTION TO GRADE FOR TESTING IN MILESTONE 4
+# ---------------------------------------------
+def viz_mean_temp_years(train_df: pd.DataFrame, 
+                            plots_path: str,
+                            plot_size: dict = {'width': 450, 'height': 300}) -> alt.LayerChart:
+    """
+    
+    Create the temperature scatter plot with mean temperature per year line.
+    Save the plot as a png file to the image folder with provided filename.
+
+    Parameters
+    ----------
+    train_df: pd.DataFrame
+        The input training data as a pandas dataframe containing the expected columns.
+    
+
+    Returns
+    -------
+    plot_layered: alt.LayerChart
+        A alt.LayerChart object with scatter plot of raw data and line of the mean data for each year.
+        Attributes: x-axis and y-axis title, title, subtitle, mark_point, mark_line, width=450, height=300,
+        zero=False for scale(), 'Year' is temporal, 'Temperature and mean(Temperature) are quantitative.
+
+    Side Effects  
+    ------------ 
+    Temperature scatter plot with mean temperature per year line .png generated
+            
+    Examples  Using Default plots_path value: 'images/eda.png'
+    --------
+        plot_layered = viz_mean_temp_years(train_df: pd.DataFrame = train_df,
+                                            plots_path: str = 'images/eda.png')
+    >>> alt.LayerChart
+        Side Effect:    images/
+                             eda_mean_per_year_plot.png 
+
+    """
+
+    # -----------------------------
+    # Defensive programming checks
+    # -----------------------------
+
+    # Check the input type
+    if not isinstance(train_df, pd.DataFrame):
+        raise TypeError('The "train_df" parameter must be a valid pd.DataFrame object for plotting.')
+    
+    # Check the number of input data rows
+    if not len(train_df) > 1:
+        raise ValueError('The "train_df" parameter must have at least two rows for plotting.')
+    
+    # Check plotting path is a valid string
+    if not isinstance(plots_path, str):
+        raise TypeError('The plotting output path object must be of type str()')
+    
+    # Split the input filepath into the directory path and the file
+    dirname, _  = os.path.split(plots_path)
+
+    # Check the target output path exists
+    if not os.path.exists(dirname):
+    # Check the plots_path is not empty or None
+        if dirname is None or dirname == '':
+    # If the path is empty or None assign the defaults
+            plots_path = 'images/eda.png'
+            new_dir = 'images/'
+            if not os.path.exists(new_dir):
+                os.mkdir(new_dir)
+        else:
+            new_dir = dirname
+    # If the target folder does not exist and was not empty on accident, do not use default value raise error
+            raise ValueError(f'The desired output folder:\n{dirname} does not exist, creating the folder:\n{new_dir}')
+
+    # -----------------------------
+    # Create the chart object and .png image
+    # -----------------------------
+
+    # Simplify Working with Large Datasets 
+    alt.data_transformers.enable('vegafusion')
+
+    # Suppress altair plot warnings for cleaner output
+    warnings.filterwarnings('ignore', module='altair')
+
+    # Create scatter of raw data with some opacity to reduce plot noise
+    temp_points = alt.Chart(train_df,
+            title=alt.Title(
+            text='Global Daily Average Land Temperature',
+            subtitle='Mean Temperature Indicated by Red Line')
+            ).mark_point(opacity=0.6, size=1).encode(
+        x = alt.X('Year:T', title='Year'),
+        y = alt.Y('Temperature:Q', title='Temperature [°C]'))
+
+    # Create line plot of the mean of all the measurements in a given year 
+    temp_line_mean = temp_points.mark_line(size=2, color='red').encode(
+        x = alt.X('Year:T', title='Year'),
+        y = alt.Y('mean(Temperature):Q', title='Temperature [°C]'
+                ).scale(zero=False) 
+    ).properties(**plot_size)
+
+    if plots_path.split('_').pop(-1).isnumeric():
+        # Increment the file name in the png path if ending in numeric
+        plot_name = increment_filename(plots_path)
+    else:
+        # Otherwise use plots_path for filename
+        plot_name = plots_path
+
+    # Add _plot_ prefix to incremented file name
+    plot_name  = add_suffix_to_filename(plot_name, 'mean_per_year_plot')
+
+    plot_layered = temp_points+temp_line_mean
+
+    # save the plot as a png file
+    plot_layered.save(plot_name, ppi=300)
+
+    # Return the incremented plot filepath
+    return plot_layered
+
+
+# -----------------------------------
+# OTHER PLOTTING AND HELPER FUNCTIONS
+# -----------------------------------
 
 # -----------------------------
 # Increment any filename by one with *_\d*.ext suffix
@@ -173,7 +297,7 @@ def viz_tabular_stats(train_df: pd.DataFrame,
     contains_na_df['Data Type'] = train_df.dtypes.values
 
     # Strip the .png extension
-    filename, ext = os.path.splitext(plots_path)
+    filename, _ = os.path.splitext(plots_path)
 
     if plots_path.split('_').pop(-1).isnumeric():
         # Increment the plots_path if end is numeric and make .csv extension
@@ -199,92 +323,6 @@ def viz_tabular_stats(train_df: pd.DataFrame,
     train_desc.index.name = 'Statistic'
     train_desc.to_csv(add_suffix_to_filename(table_name, 'training_data_stats_table'),
                                     index=True)
-
-# -----------------------------
-# FUNCTION TO GRADE FOR TESTING IN MILESTONE 4:
-# Create the temperature scatter plot with mean temperature per year line
-# Save the plot as a png file to the image folder with provided filename
-# -----------------------------
-def viz_mean_temp_years(train_df: pd.DataFrame, 
-                            plots_path: str,
-                            plot_size: dict = {'width': 450, 'height': 300}) -> alt.LayerChart:
-    
-    """
-    
-    
-    
-    """
-
-    # -----------------------------
-    # Defensive programming checks
-    # -----------------------------
-    
-    # Check the input type
-    if not isinstance(train_df, pd.DataFrame):
-        raise TypeError('The "train_df" parameter must be a valid pd.DataFrame object for plotting.')
-    
-    # Check the number of input data rows
-    if not len(train_df) > 1:
-        raise ValueError('The "train_df" parameter must have at least two rows for plotting.')
-    
-    # Check plotting path is a valid string
-    if not isinstance(plots_path, str):
-        raise TypeError('The plotting output path object must be of type str()')
-    
-    # Split the input filepath into the directory path and the file
-    dirname, _  = os.path.split(plots_path)
-
-    # Check the target output path exists
-    if not os.path.exists(dirname):
-    # Check the plots_path is not empty or None
-        if dirname is None or dirname == '':
-    # If the path is empty or None assign the defaults
-            plots_path = 'images/eda.png'
-            new_dir = 'images/'
-        else:
-            new_dir = dirname
-    # If the target folder does not exist and was not empty on accident, do not use default value raise error
-            raise ValueError(f'The desired output folder:\n{dirname} does not exist, creating the folder:\n{new_dir}')
-
-    # Simplify Working with Large Datasets 
-    alt.data_transformers.enable('vegafusion')
-
-    # Suppress altair plot warnings for cleaner output
-    warnings.filterwarnings('ignore', module='altair')
-
-    # Create scatter of raw data with some opacity to reduce plot noise
-    temp_points = alt.Chart(train_df,
-            title=alt.Title(
-            text='Global Daily Average Land Temperature',
-            subtitle='Mean Temperature Indicated by Red Line')
-            ).mark_point(opacity=0.6, size=1).encode(
-        x = 'Year:T',
-        y = 'Temperature:Q')
-
-    # Create line plot of the mean of all the measurements in a given year 
-    temp_line_mean = temp_points.mark_line(size=2, color='red').encode(
-        x = alt.X('Year:T', title='Year'),
-        y = alt.Y('mean(Temperature):Q', title='Temperature [°C]'
-                ).scale(zero=False) 
-    ).properties(**plot_size)
-
-    if plots_path.split('_').pop(-1).isnumeric():
-        # Increment the file name in the png path if ending in numeric
-        plot_name = increment_filename(plots_path)
-    else:
-        # Otherwise use plots_path for filename
-        plot_name = plots_path
-
-    # Add _plot_ prefix to incremented file name
-    plot_name  = add_suffix_to_filename(plot_name, 'mean_per_year_plot')
-
-    plot_layered = temp_points+temp_line_mean
-
-    # save the plot as a png file
-    plot_layered.save(plot_name, ppi=300)
-
-    # Return the incremented plot filepath
-    return plot_layered
 
 # -----------------------------
 # Create the scatter plot with a simple linear regression fit

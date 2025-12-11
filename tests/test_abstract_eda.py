@@ -1,6 +1,6 @@
 """
 
-FUNCTION TO GRADE FOR TESTING: test_viz_mean_temp_years()
+FUNCTION TO GRADE FOR TESTING: test_viz_mean_temp_years() -- other functions skipped by default for grading.
 
 Please use the command for testing this function:
 
@@ -21,16 +21,41 @@ Returns
 None
     Prints the passed/failed tests in the terminal when using the $ pytest command.
 
+Side Effects  
+------------
+Temperature scatter plot with mean temperature per year line .png generated, for example:
+images/
+    eda_mean_per_year_plot.png
+tests_eda_test_data/
+    toy_big_mean_per_year_plot.png
+
 Examples
 --------
-    $ pytest    (for concise output, from repo root)
+If test and image data is already present or not you should run the entire test script:
+-----------------------------
+    
+    $ pytest -v    (default output when script is ran skipping previously created tests not to be graded)
+    >>> collected 8 items                                                             
+
+        tests/test_abstract_eda.py::test_viz_mean_temp_years PASSED             [ 12%]
+        tests/test_abstract_eda.py::test_increment_filename SKIPPED ()          [ 25%]
+        tests/test_abstract_eda.py::test_add_suffix_to_filename SKIPPED ()      [ 37%]
+        tests/test_abstract_eda.py::test_read_clean_data SKIPPED ()             [ 50%]
+        tests/test_abstract_eda.py::test_viz_tabular_stats SKIPPED ()           [ 62%]
+        tests/test_abstract_eda.py::test_viz_linear_regression SKIPPED ()       [ 75%]
+        tests/test_abstract_eda.py::test_viz_seasonal_lines SKIPPED ()          [ 87%]
+        tests/test_abstract_eda.py::test_viz_density_dists SKIPPED ()           [100%]
+
+        ======================== 1 passed, 7 skipped in 12.39s ========================
+    
+    $ pytest    (for concise output if all tests are enabled, ran from repo root)
     >>> collected 8 items
 
         tests/test_abstract_eda.py ........
                                                                                                                                                                                                                                                                            
         ======================= 8 passed in 4.80s =======================
 
-    $ pytest -v     (for verbose output, from repo root) 
+    $ pytest -v     (for verbose output if all tests are enabled, ran from repo root)
     >>> collected 8 items
 
         tests/test_abstract_eda.py::test_increment_filename PASSED
@@ -44,6 +69,8 @@ Examples
 
         ======================= 8 passed in 5.04s =======================
 
+If test and image data is present you can test just the function directly to grade:
+-----------------------------
     $ pytest tests/test_abstract_eda.py::test_viz_mean_temp_years -v  (verbose output, from repo root) 
         >>> collected 1 item 
                                                                        
@@ -83,6 +110,23 @@ def create_test_data() -> tuple[str, pd.DataFrame, str, pd.DataFrame, pd.DataFra
     """
     Create reproducible test data for use in Pytest compatible functions below.
 
+    Typical cases for input to test:
+            toy_path: str   
+            check expected output from valid input
+
+            toy_train_df: pd.DataFrame 
+            check expected output from valid input
+            
+            toy_train_df_big: pd.DataFrame   
+            check expected output from valid input
+
+    Edge Cases fro input to test:
+            empty_path: str     
+            default to images directory if none is provided
+            
+            empty_df: pd.DataFrame    
+            raise error if data is empty
+
     Parameters
     ----------
     None
@@ -91,20 +135,12 @@ def create_test_data() -> tuple[str, pd.DataFrame, str, pd.DataFrame, pd.DataFra
     -------
     tuple[toy_path: str, toy_train_df: pd.DataFrame, empty_path: str, empty_df: pd.DataFrame]
         A tuple to unpack of the filepath and DataFrame test data objects to test.
-
-    Typical Cases to test:
-            toy_path: str  -- check expected output from valid input
-            toy_train_df: pd.DataFrame()  -- check expected output from valid input
-
-    
-    Edge Cases to test:
-            empty_path: str  -- default to images directory if none is provided
-            empty_df: pd.DataFrame()  -- raise error if data is empty
             
     Examples
     --------
        toy_path, toy_train_df, empty_path, empty_df = create_test_data()
-    >>> tuple[toy_path: str, toy_train_df: pd.DataFrame, empty_path: str, empty_df: pd.DataFrame, toy_train_df_big: pd.DataFrame]
+    >>> tuple[toy_path: str, toy_train_df: pd.DataFrame, empty_path: str,
+                 empty_df: pd.DataFrame, toy_train_df_big: pd.DataFrame]
 
     """
 
@@ -144,13 +180,13 @@ def create_test_data() -> tuple[str, pd.DataFrame, str, pd.DataFrame, pd.DataFra
             # Read the training data but sample only 20% of it with random state
             train_df_20pc = pd.read_csv('data/global_temp_anomaly_cleaned_train.csv'
                                         ).sample(frac=0.2, random_state=123)
-            train_df_20pc.to_csv('tests/eda_test_data/toy_train_df_big.csv')
+            train_df_20pc.to_csv('tests/eda_test_data/toy_train_df_big.csv', index=False)
         
         # Otherwise read the training data but sample only 20% of it with random state
         else:
             train_df_20pc = pd.read_csv('data/global_temp_anomaly_cleaned_train.csv'
                                         ).sample(frac=0.2, random_state=123)
-            train_df_20pc.to_csv('tests/eda_test_data/toy_train_df_big.csv')
+            train_df_20pc.to_csv('tests/eda_test_data/toy_train_df_big.csv', index=False)
         
         toy_train_df_big = pd.read_csv('tests/eda_test_data/toy_train_df_big.csv')
     else:
@@ -164,13 +200,13 @@ def create_test_data() -> tuple[str, pd.DataFrame, str, pd.DataFrame, pd.DataFra
 
     return toy_path, toy_train_df, empty_path, empty_df, toy_train_df_big
 
-# Note that this writes the training data to the data folder if it does not exist for below
+# Note that this writes the training data to the data folder if it does not exist for tests below
 toy_path, toy_train_df, empty_path, empty_df, toy_train_df_big = create_test_data()
 
-# ----------------------------- 
-# FUNCTION TO GRADE FOR TESTING IN MILESTONE 4:
-# ----------------------------- 
-def test_viz_mean_temp_years():
+# -------------------------------------------- 
+# FUNCTION TO GRADE FOR TESTING IN MILESTONE 4
+# --------------------------------------------
+def test_viz_mean_temp_years() -> None:
     """
     Test viz_mean_temp_years() function from abstract_eda.py script.
 
@@ -189,8 +225,17 @@ def test_viz_mean_temp_years():
     None
         Prints the passed/failed tests in the terminal when using the $ pytest command.
 
+    Side Effects  
+    ------------
+    Temperature scatter plot with mean temperature per year line .png generated, for example:
+        images/
+            eda_mean_per_year_plot.png
+        tests_eda_test_data/
+            toy_big_mean_per_year_plot.png
+
     Examples
     --------
+    If test and image data is present you can test just the function directly to grade:
         $ pytest tests/test_abstract_eda.py::test_viz_mean_temp_years -v  (verbose output, from repo root) 
         >>> collected 1 item 
                                                                        
@@ -199,32 +244,96 @@ def test_viz_mean_temp_years():
             ============================ 1 passed in 8.19s =============================
     """
     
-    # Return Type Check, Data exists in folder after this check
-    assert isinstance(viz_mean_temp_years(read_clean_data(
-        'data/global_temp_anomaly_cleaned_train.csv'), 'tests/eda_test_data/eda.png') , alt.LayerChart)
+    # ---------------------------------------------
+    # Checks on different expected input data
+    # ---------------------------------------------
+
+    # Get the training dataframe for some of the tests
+    train_df = read_clean_data('data/global_temp_anomaly_cleaned_train.csv')
+
+    # Return Type Check, data exists at plots_path once viz_mean_temp_years() is called
+    assert isinstance(viz_mean_temp_years(train_df, 'tests/eda_test_data/eda.png') , alt.LayerChart)
+    
     # Typical example, check side effect functions properly generating png image
     assert os.path.exists('tests/eda_test_data/eda_mean_per_year_plot.png')
+    
     # Run checks on atypical toy_train_df
     assert isinstance(viz_mean_temp_years(toy_train_df, 'tests/eda_test_data/toy.png') , alt.LayerChart)
+    
     # Typical example, check side effect functions properly generating png image
     assert os.path.exists('tests/eda_test_data/toy_mean_per_year_plot.png')
+    
     # Edge case example empty filepath, use default plots_path value
-    assert isinstance(viz_mean_temp_years(toy_train_df_big, empty_path), alt.LayerChart)
+    assert isinstance(viz_mean_temp_years(train_df, empty_path), alt.LayerChart)
+    
     # Check that the image was still generated with the default filepath
     assert os.path.exists('images/eda_mean_per_year_plot.png')
+    
+    # ---------------------------------------------
+    # Checks on different unexpected input data 
+    # ---------------------------------------------
+
     # Check error raised when non-existent but non-empty directory passed in plots_path
     with pytest.raises(ValueError):
         viz_mean_temp_years(toy_train_df, 'fake_dir/eda.png')
+
+    # Check invalid string for plots_path
+    with pytest.raises(TypeError):
+        viz_mean_temp_years(toy_train_df, 1)
+    
     # Check erroneous input from integer
     with pytest.raises(TypeError):
         viz_mean_temp_years(1, 'tests/eda_test_data/eda.png')
+    
     # Check erroneous input from empty dataframe
     with pytest.raises(ValueError):
         viz_mean_temp_years(empty_df, 'tests/eda_test_data/eda.png')
 
+    # ---------------------------------------------
+    # Checks on a preprocessed, validated dataFrame generated by create_test_data()
+    # ---------------------------------------------
+    
+    # Validate toy_train_df_big from eda_test_data folder
+    assert len(toy_train_df_big) > 1
+    assert {'Year', 'Month', 'Day', 'Anomaly', 'Day of Year', 'Temperature'}.issubset(toy_train_df_big)
+    assert len(toy_train_df_big.columns) == 7
+
+    # Generated Layered Plot
+    plot_layered = viz_mean_temp_years(toy_train_df_big, 'tests/eda_test_data/toy_big.png')
+
+    # Check return type and image generated for toy_train_df_big exists in eda_test_data folder
+    assert isinstance(plot_layered, alt.LayerChart)
+    assert os.path.exists('tests/eda_test_data/toy_big_mean_per_year_plot.png')
+
+    # ---------------------------------------------
+    # Check the attributes of the chart are correct according to viz_mean_temp_years()
+    # ---------------------------------------------
+
+    # Check both layers exist and data exists in chart object
+    assert len(plot_layered.layer) == 2
+    assert len(plot_layered.data) > 1
+    
+    # Check axis titles, overall title and subtitles
+    assert plot_layered.layer[1].encoding.x['title'] == 'Year'
+    assert plot_layered.layer[1].encoding.y['title'] == 'Temperature [°C]'
+    assert plot_layered.layer[1].title['text'] == 'Global Daily Average Land Temperature'
+    assert plot_layered.layer[1].title['subtitle'] == 'Mean Temperature Indicated by Red Line'    
+
+    # Check columns are encoded properly and are the right type (T, Q)
+    assert plot_layered.layer[0].encoding.x['shorthand'] == 'Year:T'
+    assert plot_layered.layer[1].encoding.x['shorthand'] == 'Year:T'
+    assert plot_layered.layer[0].encoding.y['shorthand'] == 'Temperature:Q'
+    assert plot_layered.layer[1].encoding.y['shorthand'] == 'mean(Temperature):Q'
+
+    # Check layer mark types
+    assert plot_layered.layer[0].mark['type'] == 'point'
+    assert plot_layered.layer[1].mark['type'] == 'line'
+
+
+test_viz_mean_temp_years()
 
 # ----------------------------- 
-# OTHER FUNCTIONS WITH SIMPLE TESTS FOR QUICK CHECKS
+# OTHER FUNCTIONS WITH SIMPLE TESTS FOR QUICK SANITY CHECKS
 # ----------------------------- 
 
 def test_increment_filename():
@@ -242,6 +351,12 @@ def test_increment_filename():
     # Edge case example, check output
     assert increment_filename('')=='_1.png'
 
+    # ---------------------------------------------
+    # Skip pytest on this function, comment out line below or milestone 4 grading purposes. 
+    # Comment line below if data is present and you want to run $ pytest on all test functions
+    # ---------------------------------------------
+    pytest.skip('\nTest viz_mean_temp_years only')
+
 
 def test_add_suffix_to_filename():
     """
@@ -256,6 +371,12 @@ def test_add_suffix_to_filename():
     # Typical example, check output
     assert add_suffix_to_filename('images/train_df.csv', 'table') == 'images/train_df_table.csv'
 
+    # ---------------------------------------------
+    # Skip pytest on this function, comment out line below or milestone 4 grading purposes. 
+    # Comment line below if data is present and you want to run $ pytest on all test functions
+    # ---------------------------------------------
+    pytest.skip('\nTest viz_mean_temp_years only')
+
 def test_read_clean_data():
     """
     Test read_clean_data from abstract_eda.py script
@@ -269,6 +390,12 @@ def test_read_clean_data():
         read_clean_data('data/global_temp_anomaly_cleaned_train.csv').columns)
     # Check that dataframe has at least one row
     assert len(read_clean_data('data/global_temp_anomaly_cleaned_train.csv')) > 0
+
+    # ---------------------------------------------
+    # Skip pytest on this function, comment out line below or milestone 4 grading purposes. 
+    # Comment line below if data is present and you want to run $ pytest on all test functions
+    # ---------------------------------------------
+    pytest.skip('\nTest viz_mean_temp_years only')
 
 def test_viz_tabular_stats():
     """
@@ -290,6 +417,12 @@ def test_viz_tabular_stats():
         pd.read_csv('tests/eda_test_data/eda_training_data_stats_table.csv'))
     assert len(pd.read_csv('tests/eda_test_data/eda_training_data_stats_table.csv')) == 8
 
+    # ---------------------------------------------
+    # Skip pytest on this function, comment out line below or milestone 4 grading purposes. 
+    # Comment line below if data is present and you want to run $ pytest on all test functions
+    # ---------------------------------------------
+    pytest.skip('\nTest viz_mean_temp_years only')
+
 def test_viz_linear_regression():
     """
     Test viz_linear_regression from abstract_eda.py script
@@ -301,6 +434,12 @@ def test_viz_linear_regression():
         'data/global_temp_anomaly_cleaned_train.csv'),  'tests/eda_test_data/eda.png') , alt.LayerChart)
     # Typical example, check side effect functions properly generating png image
     assert os.path.exists('tests/eda_test_data/eda_linear_fit_plot.png')
+
+    # ---------------------------------------------
+    # Skip pytest on this function, comment out line below or milestone 4 grading purposes. 
+    # Comment line below if data is present and you want to run $ pytest on all test functions
+    # ---------------------------------------------
+    pytest.skip('\nTest viz_mean_temp_years only')
 
 def test_viz_seasonal_lines():
     """
@@ -314,6 +453,12 @@ def test_viz_seasonal_lines():
     # Typical example,  check side effect functions properly generating png images
     assert os.path.exists('tests/eda_test_data/eda_facet_by_month_plot.png')
 
+    # ---------------------------------------------
+    # Skip pytest on this function, comment out line below or milestone 4 grading purposes. 
+    # Comment line below if data is present and you want to run $ pytest on all test functions
+    # ---------------------------------------------
+    pytest.skip('\nTest viz_mean_temp_years only')
+
 def test_viz_density_dists():
     """
     Test viz_density_dists from abstract_eda.py script
@@ -325,3 +470,9 @@ def test_viz_density_dists():
         'data/global_temp_anomaly_cleaned_train.csv'), 'tests/eda_test_data/eda.png') , alt.Chart)
     # Typical example,  check side effect functions properly generating png images
     assert os.path.exists('tests/eda_test_data/eda_density_distributions_plot.png')
+
+    # ---------------------------------------------
+    # Skip pytest on this function, comment out line below or milestone 4 grading purposes. 
+    # Comment line below if data is present and you want to run $ pytest on all test functions
+    # ---------------------------------------------
+    pytest.skip('\nTest viz_mean_temp_years only')
