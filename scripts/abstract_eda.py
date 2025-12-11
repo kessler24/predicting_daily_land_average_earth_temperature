@@ -1,16 +1,17 @@
 """
-
 The following script modularizes the Exploratory Data Analysis (EDA) notebook.
 Click commands take user input for the input training data filepath and
 the png file output path and filename.
 
 Parameters
 ----------
-train_df_csv_path: str
+train_df_csv_path: str, default data/global_temp_anomaly_cleaned_train.csv
     The current relative filepath of the clean training data to be analyzed.
 
-plots_path: str
-    The target relative filepath of the png images and csv tables to be generated. 
+plots_path: str, default 'images/eda.png'
+    The target relative filepath of the png images and csv tables to be generated 
+    and a preferred file prefix. The default prefix is 'eda'. Use '_' as a separator
+    if need be for proper handling of filenames. 
 
 Returns
 -------
@@ -21,6 +22,12 @@ Examples
 --------
     $ python scripts/abstract_eda.py data/global_temp_anomaly_cleaned_train.csv images/eda.png (from repo root)
     >>> None
+    
+    $ python scripts/abstract_eda.py  --  using defaults for train_df_csv_path and plots_path (from repo root)
+    >>> None
+    
+    Side Effects:
+    -------------
         images/
             train_df_eda_table_1.csv
             train_df_eda_table_2.csv
@@ -34,7 +41,6 @@ Examples
 # -----------------------------
 # import libraries/packages
 # -----------------------------
-
 import pandas as pd
 import altair as alt
 import click
@@ -42,36 +48,34 @@ import warnings
 import os
 
 # -----------------------------
-# Define main function with click command arguments
+# Define main function with click command arguments and default values
 # -----------------------------
 @click.command()
-@click.argument('train_df_csv_path', type=click.Path(exists=True))
-@click.argument('plots_path', type=click.Path())
+@click.argument('train_df_csv_path', 
+                    type=click.Path(exists=True), 
+                    default='data/global_temp_anomaly_cleaned_train.csv')
+@click.argument('plots_path', 
+                    type=click.Path(), 
+                    default='images/eda.png')
 def main(train_df_csv_path:str, plots_path: str) -> None:
 
-    # Read the training data csv into a dataframe from first command line argument
+    # Read the training data csv into a dataframe to use for tables and plots
     train_df = read_clean_data(train_df_csv_path)
 
-    # View training dataframe at a high level for stats and null presence
-    # Save the dataframe views as csv files
+    # Save the dataframe as a .csv for high level for stats and null presence 
     viz_tabular_stats(train_df, plots_path)
 
     # Create the temperature scatter plot with mean temperature per year line
-    # Pass the command line argument plots_path to plot function for image output 
-    # Pass the plots_path with the filename incremented by one to next plot
-    inc_name = viz_mean_temp_years(train_df, plots_path)
+    viz_mean_temp_years(train_df, plots_path)
     
     # Create the scatter plot with a simple linear regression fit
-    # Pass the plots_path with the filename incremented by one to next plot
-    inc_name = viz_linear_regression(train_df, plots_path=inc_name)
+    viz_linear_regression(train_df, plots_path)
 
     # Create the mean temperature per year line plots for each month
-    # Pass the plots_path with the filename incremented by one to next plot
-    inc_name = viz_seasonal_lines(train_df, plots_path=inc_name)
+    viz_seasonal_lines(train_df, plots_path)
     
     # Create the density plot with for three years separated by ~60 years
-    # Pass the plots_path with the filename incremented by one to next plot
-    inc_name = viz_density_dists(train_df, plots_path=inc_name)
+    viz_density_dists(train_df, plots_path)
 
 # -----------------------------
 # Increment any filename by one with *_\d*.ext suffix
@@ -84,6 +88,10 @@ def increment_filename(filepath: str) -> str:
     # Split above filename into the base name and the extension
     filename, ext = os.path.splitext(filename)
     
+    # Handle empty path or no file ext, default to .png
+    if ext == '':
+        ext = '.png'
+
     # If the filename has a *_.ext as a numeric suffix increment it by one
     if filename.split('_').pop(-1).isnumeric():
        inc = int(filename.split('_')[-1])
@@ -100,21 +108,25 @@ def increment_filename(filepath: str) -> str:
 # -----------------------------
 # Add an underscore prefix to an incremented filename
 # -----------------------------
-def add_prefix_to_increment(inc_filename: str, 
-                                    prefix: str) -> str:
+def add_suffix_to_filename(filename: str, 
+                                prefix: str) -> str:
     
     # Split the input filepath into the directory path and the file
-    dirname, prefixed_name  = os.path.split(inc_filename)
+    dirname, prefixed_name  = os.path.split(filename)
 
     # Split above filename into the base name and the extension
     prefixed_name, ext = os.path.splitext(prefixed_name)
+
+    # Handle empty path or no file ext, default to .png
+    if ext == '':
+        ext = '.png'
 
     # Split by *_* for inserting, requires an incremented file
     prefixed_name = prefixed_name.split('_')
 
     # Insert _suffix_ before *_\d*
     if prefix not in prefixed_name:
-        prefixed_name.insert(-1, prefix)
+        prefixed_name.append(prefix)
     else:
         pass
 
@@ -154,7 +166,7 @@ def viz_tabular_stats(train_df: pd.DataFrame,
     table_name = increment_filename(f"{filename}.csv")
 
     # Export contains_na_df to csv at plots_path directory
-    contains_na_df.to_csv(add_prefix_to_increment(table_name, 'table'),
+    contains_na_df.to_csv(add_suffix_to_filename(table_name, 'training_data_info_table'),
                             index=False)
 
     # Increment the table csv filename above
@@ -164,16 +176,17 @@ def viz_tabular_stats(train_df: pd.DataFrame,
     train_desc = train_df.describe().round(2)
     # Rename the index column
     train_desc.index.name = 'Statistic'
-    train_desc.to_csv(add_prefix_to_increment(table_name, 'table'),
+    train_desc.to_csv(add_suffix_to_filename(table_name, 'training_data_stats_table'),
                                     index=True)
 
 # -----------------------------
 # Create the temperature scatter plot with mean temperature per year line
 # Save the plot as a png file to the image folder with provided filename
+# Default plots_path value:
 # -----------------------------
 def viz_mean_temp_years(train_df: pd.DataFrame, 
                             plots_path: str,
-                            plot_size: dict = {'width': 450, 'height': 300}) -> str:
+                            plot_size: dict = {'width': 450, 'height': 300}) -> alt.LayerChart:
 
     # Simplify Working with Large Datasets 
     alt.data_transformers.enable('vegafusion')
@@ -197,17 +210,23 @@ def viz_mean_temp_years(train_df: pd.DataFrame,
                 ).scale(zero=False) 
     ).properties(**plot_size)
 
-    # Increment the file name in the png path
-    plot_name = increment_filename(plots_path)
+    if plots_path.split('_').pop(-1).isnumeric():
+        # Increment the file name in the png path if ending in numeric
+        plot_name = increment_filename(plots_path)
+    else:
+        # Otherwise use plots_path for filename
+        plot_name = plots_path
 
     # Add _plot_ prefix to incremented file name
-    plot_name  = add_prefix_to_increment(plot_name, 'plot')
+    plot_name  = add_suffix_to_filename(plot_name, 'mean_per_year_plot')
+
+    plot_layered = temp_points+temp_line_mean
 
     # save the plot as a png file
-    (temp_points+temp_line_mean).save(plot_name, ppi=300)
+    plot_layered.save(plot_name, ppi=300)
 
     # Return the incremented plot filepath
-    return plot_name
+    return plot_layered
 
 # -----------------------------
 # Create the scatter plot with a simple linear regression fit
@@ -215,7 +234,7 @@ def viz_mean_temp_years(train_df: pd.DataFrame,
 # -----------------------------
 def viz_linear_regression(train_df: pd.DataFrame, 
                             plots_path: str,
-                            plot_size: dict = {'width': 450, 'height': 300}) -> str:
+                            plot_size: dict = {'width': 450, 'height': 300}) -> alt.LayerChart:
     
     # Simplify Working with Large Datasets 
     alt.data_transformers.enable('vegafusion')
@@ -235,23 +254,27 @@ def viz_linear_regression(train_df: pd.DataFrame,
         )
 
     # Add the regression line to the scatter plot and properties
-    reg = temp_points_avg+temp_points_avg.mark_line(
+    plot_layered = temp_points_avg+temp_points_avg.mark_line(
         size=2, color='red').transform_regression(
         'Year',
         'Temperature'
     ).properties(**plot_size)
     
-    # Increment the file name in the png path
-    plot_name = increment_filename(plots_path)
+    if plots_path.split('_').pop(-1).isnumeric():
+        # Increment the file name in the png path if ending in numeric
+        plot_name = increment_filename(plots_path)
+    else:
+        # Otherwise use plots_path for filename
+        plot_name = plots_path
 
     # Add _plot_ prefix to incremented file name
-    plot_name  = add_prefix_to_increment(plot_name, 'plot')
+    plot_name  = add_suffix_to_filename(plot_name, 'linear_fit_plot')
 
     # save the plot as a png file
-    reg.save(plot_name, ppi=300)
+    plot_layered.save(plot_name, ppi=300)
 
     # Return the incremented plot filepath
-    return plot_name
+    return plot_layered
 
 # -----------------------------
 # Create the mean temperature per year line plots for each month
@@ -259,7 +282,7 @@ def viz_linear_regression(train_df: pd.DataFrame,
 # -----------------------------
 def viz_seasonal_lines(train_df: pd.DataFrame, 
                         plots_path: str,
-                        facet_plot_size: dict = {'width': 450, 'height': 300}) -> str:
+                        facet_plot_size: dict = {'width': 450, 'height': 300}) -> alt.LayerChart:
     
     # Simplify Working with Large Datasets 
     alt.data_transformers.enable('vegafusion')
@@ -281,20 +304,24 @@ def viz_seasonal_lines(train_df: pd.DataFrame,
     ).properties(**facet_plot_size).facet(' ', columns=2)
 
     # Show the plot with overall title
-    final_figure = alt.hconcat(temp_plot).properties(
+    plot_layered = alt.hconcat(temp_plot).properties(
         title='Seasonality of Annual Means of Global Daily Average Land Temperature')
     
-    # Increment the file name in the png path
-    plot_name = increment_filename(plots_path)
+    if plots_path.split('_').pop(-1).isnumeric():
+        # Increment the file name in the png path if ending in numeric
+        plot_name = increment_filename(plots_path)
+    else:
+        # Otherwise use plots_path for filename
+        plot_name = plots_path
 
     # Add _plot_ prefix to incremented file name
-    plot_name  = add_prefix_to_increment(plot_name, 'plot')
+    plot_name  = add_suffix_to_filename(plot_name, 'facet_by_month_plot')
 
     # save the plot as a png file
-    final_figure.save(plot_name, ppi=300)
+    plot_layered.save(plot_name, ppi=300)
 
     # Return the incremented plot filepath
-    return plot_name
+    return plot_layered
 
 # -----------------------------
 # Create the density plot with for three years separated by ~60 years
@@ -302,7 +329,7 @@ def viz_seasonal_lines(train_df: pd.DataFrame,
 # -----------------------------
 def viz_density_dists(train_df: pd.DataFrame, 
                         plots_path: str,
-                        plot_size: dict = {'width': 450, 'height': 300}) -> str:
+                        plot_size: dict = {'width': 450, 'height': 300}) -> alt.LayerChart:
     
     # Simplify Working with Large Datasets 
     alt.data_transformers.enable('vegafusion')
@@ -317,7 +344,7 @@ def viz_density_dists(train_df: pd.DataFrame,
     data_subset = train_df[train_df['Year'].isin(years_selection)]
 
     # Create density plot for each selected year and add opacity to view overlap
-    temp_density  = alt.Chart(data_subset
+    plot_layered = alt.Chart(data_subset
         ).transform_density(
         'Temperature',
         groupby=['Year'],
@@ -328,17 +355,21 @@ def viz_density_dists(train_df: pd.DataFrame,
         color = 'Year:N'
     ).properties(**plot_size, title = 'Distributions of Global Daily Average Land Temperature')
 
-    # Increment the file name in the png path
-    plot_name = increment_filename(plots_path)
+    if plots_path.split('_').pop(-1).isnumeric():
+        # Increment the file name in the png path if ending in numeric
+        plot_name = increment_filename(plots_path)
+    else:
+        # Otherwise use plots_path for filename
+        plot_name = plots_path
     
     # Add _plot_ prefix to incremented file name
-    plot_name  = add_prefix_to_increment(plot_name, 'plot')
+    plot_name  = add_suffix_to_filename(plot_name, 'density_distributions_plot')
 
     # save the plot as a png file
-    temp_density.save(plot_name, ppi=300)
+    plot_layered.save(plot_name, ppi=300)
 
     # Return the incremented plot filepath
-    return plot_name
+    return plot_layered
 
 # -----------------------------    
 # Call main() with name guard
