@@ -218,21 +218,33 @@ def viz_mean_temp_years(train_df: pd.DataFrame,
     # -----------------------------
     # Defensive programming checks
     # -----------------------------
+    
     # Check the input type
     if not isinstance(train_df, pd.DataFrame):
         raise TypeError('The "train_df" parameter must be a valid pd.DataFrame object for plotting.')
+    
     # Check the number of input data rows
     if not len(train_df) > 1:
         raise ValueError('The "train_df" parameter must have at least two rows for plotting.')
+    
     # Check plotting path is a valid string
     if not isinstance(plots_path, str):
         raise TypeError('The plotting output path object must be of type str()')
-    # Check the target output path exists
+    
     # Split the input filepath into the directory path and the file
-    dirname, prefixed_name  = os.path.split(plots_path)
+    dirname, _  = os.path.split(plots_path)
+
+    # Check the target output path exists
     if not os.path.exists(dirname):
-        warnings.warn('The desired output folder does not exist, creating the folder...')
-        os.mkdir(dirname)
+    # Check the plots_path is not empty or None
+        if dirname is None or dirname == '':
+    # If the path is empty or None assign the defaults
+            plots_path = 'images/eda.png'
+            new_dir = 'images/'
+        else:
+            new_dir = dirname
+    # If the target folder does not exist and was not empty on accident, do not use default value raise error
+            raise ValueError(f'The desired output folder:\n{dirname} does not exist, creating the folder:\n{new_dir}')
 
     # Simplify Working with Large Datasets 
     alt.data_transformers.enable('vegafusion')

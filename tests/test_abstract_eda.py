@@ -2,6 +2,10 @@
 
 FUNCTION TO GRADE FOR TESTING: test_viz_mean_temp_years()
 
+Please use the command for testing this function:
+
+$ pytest tests/test_abstract_eda.py::test_viz_mean_temp_years -v  (verbose output, from repo root)  
+
 The following script tests the exploratory data analysis (EDA) script functions from 
 abstract_eda.py. Testing should be running using the $ pytest or $ pytest -v in the 
 project environment from the repo root.
@@ -40,6 +44,13 @@ Examples
 
         ======================= 8 passed in 5.04s =======================
 
+    $ pytest tests/test_abstract_eda.py::test_viz_mean_temp_years -v  (verbose output, from repo root) 
+        >>> collected 1 item 
+                                                                       
+            tests/test_abstract_eda.py::test_viz_mean_temp_years PASSED          [100%]
+
+            ============================ 1 passed in 8.19s =============================
+        
 """
 
 # -----------------------------
@@ -161,8 +172,31 @@ toy_path, toy_train_df, empty_path, empty_df, toy_train_df_big = create_test_dat
 # ----------------------------- 
 def test_viz_mean_temp_years():
     """
-    Test viz_mean_temp_years from abstract_eda.py script
+    Test viz_mean_temp_years() function from abstract_eda.py script.
 
+    This test checks the output of typical expected inputs, as well as 
+    erroneous inputs to the function. Also check the expected errors are 
+    raised by the function when tested with erroneous input.
+
+    Parameters
+    ----------
+    None
+        This script takes no arguments, test data is generated from within the script by the 
+        create_test_data() function below.
+
+    Returns
+    -------
+    None
+        Prints the passed/failed tests in the terminal when using the $ pytest command.
+
+    Examples
+    --------
+        $ pytest tests/test_abstract_eda.py::test_viz_mean_temp_years -v  (verbose output, from repo root) 
+        >>> collected 1 item 
+                                                                       
+            tests/test_abstract_eda.py::test_viz_mean_temp_years PASSED          [100%]
+
+            ============================ 1 passed in 8.19s =============================
     """
     
     # Return Type Check, Data exists in folder after this check
@@ -174,7 +208,19 @@ def test_viz_mean_temp_years():
     assert isinstance(viz_mean_temp_years(toy_train_df, 'tests/eda_test_data/toy.png') , alt.LayerChart)
     # Typical example, check side effect functions properly generating png image
     assert os.path.exists('tests/eda_test_data/toy_mean_per_year_plot.png')
-    # Edge case example
+    # Edge case example empty filepath, use default plots_path value
+    assert isinstance(viz_mean_temp_years(toy_train_df_big, empty_path), alt.LayerChart)
+    # Check that the image was still generated with the default filepath
+    assert os.path.exists('images/eda_mean_per_year_plot.png')
+    # Check error raised when non-existent but non-empty directory passed in plots_path
+    with pytest.raises(ValueError):
+        viz_mean_temp_years(toy_train_df, 'fake_dir/eda.png')
+    # Check erroneous input from integer
+    with pytest.raises(TypeError):
+        viz_mean_temp_years(1, 'tests/eda_test_data/eda.png')
+    # Check erroneous input from empty dataframe
+    with pytest.raises(ValueError):
+        viz_mean_temp_years(empty_df, 'tests/eda_test_data/eda.png')
 
 
 # ----------------------------- 
