@@ -18,6 +18,17 @@ Returns
 None
     Generates training data png files of the plots and summary csv tables in the target folder.
 
+Side Effects:
+-------------
+Plots and table tables as .csv and .png files, for example:
+        images/
+            eda_density_distributions_plot.png
+            eda_facet_by_month_plot.png
+            eda_linear_fit_plot
+            eda_mean_per_year_plot.png
+            eda_training_data_info_table.csv
+            eda_training_data_stats_table.csv
+
 Examples
 --------
     $ python scripts/abstract_eda.py data/global_temp_anomaly_cleaned_train.csv images/eda.png    (from repo root)
@@ -26,16 +37,6 @@ Examples
     $ python scripts/abstract_eda.py    using defaults for train_df_csv_path and plots_path (from repo root)
     >>> None
     
-    Side Effects:
-    -------------
-        images/
-            train_df_eda_table_1.csv
-            train_df_eda_table_2.csv
-            eda_plot_1.png
-            eda_plot_2.png
-            eda_plot_3.png
-            eda_plot_4.png
-
 """
 
 # -----------------------------
@@ -119,15 +120,15 @@ def viz_mean_temp_years(train_df: pd.DataFrame,
 
     Side Effects  
     ------------ 
-    Temperature scatter plot with mean temperature per year line .png generated
+    Temperature scatter plot with mean temperature per year line .png generated, for example:
+    images/
+        eda_mean_per_year_plot.png 
             
     Examples  Using Default plots_path value: 'images/eda.png'
     --------
         plot_layered = viz_mean_temp_years(train_df: pd.DataFrame = train_df,
                                             plots_path: str = 'images/eda.png')
-    >>> alt.LayerChart
-        Side Effect:    images/
-                             eda_mean_per_year_plot.png 
+    >>> alt.LayerChart  
 
     """
 

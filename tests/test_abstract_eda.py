@@ -144,7 +144,8 @@ def create_test_data() -> tuple[str, pd.DataFrame, str, pd.DataFrame, pd.DataFra
 
     """
 
-    toy_path = 'tests/eda_images/some_name.png'
+    # Fake directory should raise warning below
+    bad_path = 'fake/dir/eda.png'
 
     # Put at least two entries so std value shows in df.describe()
     toy_train_df = pd.DataFrame(
@@ -156,6 +157,9 @@ def create_test_data() -> tuple[str, pd.DataFrame, str, pd.DataFrame, pd.DataFra
         'Temperature': [8.09, 7.59], 
         'Month_Name': ['January', 'February']}
     )
+
+    # Put the data into the tests/eda_test_data folder
+    toy_train_df.to_csv('tests/eda_test_data/toy_train_df.csv')
 
     empty_path = ''
 
@@ -198,10 +202,10 @@ def create_test_data() -> tuple[str, pd.DataFrame, str, pd.DataFrame, pd.DataFra
                     'data/global_temp_anomaly_cleaned_train.csv',
                     'tests/eda_test_data/eda.png'])
 
-    return toy_path, toy_train_df, empty_path, empty_df, toy_train_df_big
+    return bad_path, toy_train_df, empty_path, empty_df, toy_train_df_big
 
 # Note that this writes the training data to the data folder if it does not exist for tests below
-toy_path, toy_train_df, empty_path, empty_df, toy_train_df_big = create_test_data()
+bad_path, toy_train_df, empty_path, empty_df, toy_train_df_big = create_test_data()
 
 # -------------------------------------------- 
 # FUNCTION TO GRADE FOR TESTING IN MILESTONE 4
@@ -231,7 +235,7 @@ def test_viz_mean_temp_years() -> None:
         images/
             eda_mean_per_year_plot.png
         tests_eda_test_data/
-            toy_big_mean_per_year_plot.png
+                        toy_big_mean_per_year_plot.png
 
     Examples
     --------
@@ -275,7 +279,7 @@ def test_viz_mean_temp_years() -> None:
 
     # Check error raised when non-existent but non-empty directory passed in plots_path
     with pytest.raises(ValueError):
-        viz_mean_temp_years(toy_train_df, 'fake_dir/eda.png')
+        viz_mean_temp_years(toy_train_df, bad_path)
 
     # Check invalid string for plots_path
     with pytest.raises(TypeError):
