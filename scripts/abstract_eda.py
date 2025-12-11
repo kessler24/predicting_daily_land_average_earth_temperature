@@ -59,6 +59,18 @@ import os
                     default='images/eda.png')
 def main(train_df_csv_path:str, plots_path: str) -> None:
 
+    dirname, prefixed_name  = os.path.split(plots_path)
+
+    # Split above filename into the base name and the extension
+    prefixed_name, ext = os.path.splitext(prefixed_name)
+
+    # Handle empty path or bad file extension, default to .png
+    if not ext == '.png':
+        ext = '.png'
+
+    plots_path = os.path.join(dirname, prefixed_name + ext)
+
+
     # Read the training data csv into a dataframe to use for tables and plots
     train_df = read_clean_data(train_df_csv_path)
 
@@ -109,7 +121,7 @@ def increment_filename(filepath: str) -> str:
 # Add an underscore prefix to an incremented filename
 # -----------------------------
 def add_suffix_to_filename(filename: str, 
-                                prefix: str) -> str:
+                                suffix: str) -> str:
     
     # Split the input filepath into the directory path and the file
     dirname, prefixed_name  = os.path.split(filename)
@@ -125,10 +137,8 @@ def add_suffix_to_filename(filename: str,
     prefixed_name = prefixed_name.split('_')
 
     # Insert _suffix_ before *_\d*
-    if prefix not in prefixed_name:
-        prefixed_name.append(prefix)
-    else:
-        pass
+    if suffix not in prefixed_name:
+        prefixed_name.append(suffix)
 
     # Join list[str] together for new filename
     prefixed_name = '_'.join(prefixed_name)
@@ -143,7 +153,10 @@ def add_suffix_to_filename(filename: str,
 # Read the training data csv into a dataframe from the user provided path
 # -----------------------------
 def read_clean_data(train_df_csv_path: str) -> pd.DataFrame:
+
+    # Create the training dataframe for tables and plots
     train_df = pd.read_csv(train_df_csv_path)
+
     return train_df
 
 # -----------------------------
@@ -188,15 +201,38 @@ def viz_tabular_stats(train_df: pd.DataFrame,
                                     index=True)
 
 # -----------------------------
-# FUNCTION TO GRADE FOR TESTING:
+# FUNCTION TO GRADE FOR TESTING IN MILESTONE 4:
 # Create the temperature scatter plot with mean temperature per year line
 # Save the plot as a png file to the image folder with provided filename
 # -----------------------------
 def viz_mean_temp_years(train_df: pd.DataFrame, 
                             plots_path: str,
                             plot_size: dict = {'width': 450, 'height': 300}) -> alt.LayerChart:
+    
+    """
+    
+    
+    
+    """
 
-    #!!!!!!! ADD ERROR RAISE ON ERRONEOUS INPUT !!!!!!
+    # -----------------------------
+    # Defensive programming checks
+    # -----------------------------
+    # Check the input type
+    if not isinstance(train_df, pd.DataFrame):
+        raise TypeError('The "train_df" parameter must be a valid pd.DataFrame object for plotting.')
+    # Check the number of input data rows
+    if not len(train_df) > 1:
+        raise ValueError('The "train_df" parameter must have at least two rows for plotting.')
+    # Check plotting path is a valid string
+    if not isinstance(plots_path, str):
+        raise TypeError('The plotting output path object must be of type str()')
+    # Check the target output path exists
+    # Split the input filepath into the directory path and the file
+    dirname, prefixed_name  = os.path.split(plots_path)
+    if not os.path.exists(dirname):
+        warnings.warn('The desired output folder does not exist, creating the folder...')
+        os.mkdir(dirname)
 
     # Simplify Working with Large Datasets 
     alt.data_transformers.enable('vegafusion')

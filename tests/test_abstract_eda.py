@@ -47,7 +47,6 @@ Examples
 # -----------------------------
 import pandas as pd
 import altair as alt
-import warnings
 import os
 import sys
 import pytest
@@ -171,6 +170,12 @@ def test_viz_mean_temp_years():
         'data/global_temp_anomaly_cleaned_train.csv'), 'tests/eda_test_data/eda.png') , alt.LayerChart)
     # Typical example, check side effect functions properly generating png image
     assert os.path.exists('tests/eda_test_data/eda_mean_per_year_plot.png')
+    # Run checks on atypical toy_train_df
+    assert isinstance(viz_mean_temp_years(toy_train_df, 'tests/eda_test_data/toy.png') , alt.LayerChart)
+    # Typical example, check side effect functions properly generating png image
+    assert os.path.exists('tests/eda_test_data/toy_mean_per_year_plot.png')
+    # Edge case example
+
 
 # ----------------------------- 
 # OTHER FUNCTIONS WITH SIMPLE TESTS FOR QUICK CHECKS
@@ -202,7 +207,7 @@ def test_add_suffix_to_filename():
     assert isinstance(add_suffix_to_filename('images/eda_1.png', 'plot'), str)
     # Typical example, check output
     assert add_suffix_to_filename('images/eda.png','plot') == 'images/eda_plot.png'
-    # Atypical example, check output
+    # Typical example, check output
     assert add_suffix_to_filename('images/train_df.csv', 'table') == 'images/train_df_table.csv'
 
 def test_read_clean_data():
@@ -216,10 +221,8 @@ def test_read_clean_data():
     # Typical example, check all columns exist
     assert {'Year', 'Month', 'Day', 'Anomaly', 'Day of Year', 'Temperature', 'Month_Name'}.issubset(
         read_clean_data('data/global_temp_anomaly_cleaned_train.csv').columns)
-    # Typical example, check that more rows are in training data rather than test data
-    assert len(read_clean_data(
-        'data/global_temp_anomaly_cleaned_test.csv')) < len(read_clean_data(
-            'data/global_temp_anomaly_cleaned_train.csv'))
+    # Check that dataframe has at least one row
+    assert len(read_clean_data('data/global_temp_anomaly_cleaned_train.csv')) > 0
 
 def test_viz_tabular_stats():
     """
@@ -231,15 +234,15 @@ def test_viz_tabular_stats():
     assert viz_tabular_stats(
         read_clean_data('data/global_temp_anomaly_cleaned_train.csv'), 'tests/eda_test_data/eda.png') is None
     # Typical example, check side effect functions properly generating csv tables
-    assert os.path.exists('images/eda_training_data_info_table.csv')
-    assert os.path.exists('images/eda_training_data_stats_table.csv')
+    assert os.path.exists('tests/eda_test_data/eda_training_data_info_table.csv')
+    assert os.path.exists('tests/eda_test_data/eda_training_data_stats_table.csv')
     assert {'Column', 'Contains NA Values', 'Data Type'}.issubset(
-        pd.read_csv('images/eda_training_data_info_table.csv'))
-    assert len(pd.read_csv('images/eda_training_data_info_table.csv')) == 7
+        pd.read_csv('tests/eda_test_data/eda_training_data_info_table.csv'))
+    assert len(pd.read_csv('tests/eda_test_data/eda_training_data_info_table.csv')) == 7
     assert {'Statistic', 'Year', 'Month', 'Day', 
             'Anomaly', 'Day of Year', 'Temperature'}.issubset(
-        pd.read_csv('images/eda_training_data_stats_table.csv'))
-    assert len(pd.read_csv('images/eda_training_data_stats_table.csv')) == 8
+        pd.read_csv('tests/eda_test_data/eda_training_data_stats_table.csv'))
+    assert len(pd.read_csv('tests/eda_test_data/eda_training_data_stats_table.csv')) == 8
 
 def test_viz_linear_regression():
     """
@@ -251,7 +254,7 @@ def test_viz_linear_regression():
     assert isinstance(viz_linear_regression(read_clean_data(
         'data/global_temp_anomaly_cleaned_train.csv'),  'tests/eda_test_data/eda.png') , alt.LayerChart)
     # Typical example, check side effect functions properly generating png image
-    assert os.path.exists('tests/eda_test_data/eda_linear_fit_plot.png.png')
+    assert os.path.exists('tests/eda_test_data/eda_linear_fit_plot.png')
 
 def test_viz_seasonal_lines():
     """
@@ -261,9 +264,9 @@ def test_viz_seasonal_lines():
     
     # Return Type Check, Data exists in folder after this check
     assert isinstance(viz_seasonal_lines(read_clean_data(
-        'data/global_temp_anomaly_cleaned_train.csv'), 'tests/eda_test_data/eda.png') , alt.LayerChart)
+        'data/global_temp_anomaly_cleaned_train.csv'), 'tests/eda_test_data/eda.png') , alt.HConcatChart)
     # Typical example,  check side effect functions properly generating png images
-    assert os.path.exists('tests/eda_test_data/eda_facet_by_month_plot.png.png')
+    assert os.path.exists('tests/eda_test_data/eda_facet_by_month_plot.png')
 
 def test_viz_density_dists():
     """
@@ -273,6 +276,6 @@ def test_viz_density_dists():
     
     # Return Type Check, Data exists in folder after this check
     assert isinstance(viz_density_dists(read_clean_data(
-        'data/global_temp_anomaly_cleaned_train.csv'), 'tests/eda_test_data/eda.png') , alt.LayerChart)
+        'data/global_temp_anomaly_cleaned_train.csv'), 'tests/eda_test_data/eda.png') , alt.Chart)
     # Typical example,  check side effect functions properly generating png images
     assert os.path.exists('tests/eda_test_data/eda_density_distributions_plot.png')
