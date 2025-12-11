@@ -55,7 +55,7 @@ import subprocess
 # -----------------------------
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from scripts.abstract_eda import (increment_filename, 
-                                  add_prefix_to_increment,
+                                  add_suffix_to_filename,
                                   read_clean_data,
                                   viz_tabular_stats,
                                   viz_mean_temp_years,
@@ -66,7 +66,7 @@ from scripts.abstract_eda import (increment_filename,
 # -----------------------------
 # Create test data for test functions below
 # -----------------------------
-def create_test_data() -> tuple[str, pd.DataFrame, str, pd.DataFrame]:
+def create_test_data() -> tuple[str, pd.DataFrame, str, pd.DataFrame, pd.DataFrame]:
     """
     Create reproducible test data for use in Pytest compatible functions below.
 
@@ -82,6 +82,7 @@ def create_test_data() -> tuple[str, pd.DataFrame, str, pd.DataFrame]:
     Typical Cases to test:
             toy_path: str  -- check expected output from valid input
             toy_train_df: pd.DataFrame()  -- check expected output from valid input
+
     
     Edge Cases to test:
             empty_path: str  -- default to images directory if none is provided
@@ -90,14 +91,14 @@ def create_test_data() -> tuple[str, pd.DataFrame, str, pd.DataFrame]:
     Examples
     --------
        toy_path, toy_train_df, empty_path, empty_df = create_test_data()
-    >>> tuple[toy_path: str, toy_train_df: pd.DataFrame, empty_path: str, empty_df: pd.DataFrame]
+    >>> tuple[toy_path: str, toy_train_df: pd.DataFrame, empty_path: str, empty_df: pd.DataFrame, toy_train_df_big: pd.DataFrame]
 
     """
 
     toy_path = 'tests/eda_images/some_name.png'
 
     # Put at least two entries so std value shows in df.describe()
-    toy_train_df_small = pd.DataFrame(
+    toy_train_df = pd.DataFrame(
         {'Year': [2000, 2001], 
         'Month': [1, 2], 
         'Day': [1,2], 
@@ -107,27 +108,40 @@ def create_test_data() -> tuple[str, pd.DataFrame, str, pd.DataFrame]:
         'Month_Name': ['January', 'February']}
     )
 
-    
     if not os.path.exists('tests/eda_test_data/toy_train_df_big.csv'):
+        # If the data does not exist run the preprocessing script with suggested arguments
         if not os.path.exists('data/global_temp_anomaly_cleaned_train.csv'):
+            # Run the preprocessing script if training data does not exist
             subprocess.run(['python', 
-                            'data_preprocessing.py',
-                            'arg1',
-                            'arg2'])
+                            'scripts/data_preprocessing.py',
+                            '--read_path=data/global_temp_anomaly_raw.csv',
+                            '--write_path=data/global_temp_anomaly_cleaned',
+                            '--plots_path=images',
+                            '--logs_path=logs'])
+            # Read the training data but sample only 20% of it with random state
+            train_df_20pc = pd.read_csv('data/global_temp_anomaly_cleaned_train.csv'
+                                        ).sample(frac=0.2, random_state=123)
+            train_df_20pc.to_csv('tests/eda_test_data/toy_train_df_big.csv')
         
+        # Otherwise read the training data but sample only 20% of it with random state
         else:
-            train_df_20pc = pd.read_csv('data/eda_test_data/toy_train_df_big.csv')
-
-    toy_train_df_big = pd.read_csv('tests/eda_test_data/toy_train_df_big.csv')
+            train_df_20pc = pd.read_csv('data/global_temp_anomaly_cleaned_train.csv'
+                                        ).sample(frac=0.2, random_state=123)
+            train_df_20pc.to_csv('tests/eda_test_data/toy_train_df_big.csv')
+        
+        toy_train_df_big = pd.read_csv('tests/eda_test_data/toy_train_df_big.csv')
+    else:
+        toy_train_df_big = pd.read_csv('tests/eda_test_data/toy_train_df_big.csv')
 
     empty_path = ''
 
     empty_df = pd.DataFrame()
 
-    return toy_path, toy_train_df, empty_path, empty_df
+    return toy_path, toy_train_df, empty_path, empty_df, toy_train_df_big
 
-toy_path, toy_train_df, empty_path, empty_df = create_test_data()
+toy_path, toy_train_df, empty_path, empty_df, toy_train_df_big = create_test_data()
 
+print(toy_train_df_big)
 
 def test_increment_filename():
     """
@@ -144,21 +158,18 @@ def test_increment_filename():
 
     assert increment_filename('')=='_1.png'
 
-
-def test_add_prefix_to_increment():
+def test_add_suffix_to_filename():
     """
     Test add_prefix_to_increment from abstract_eda.py script
 
     """
      
     # Return type check
-    assert isinstance(add_prefix_to_increment('images/eda_1.png', 'plot'), str)
+    assert isinstance(add_suffix_to_filename('images/eda_1.png', 'plot'), str)
     # Typical example, check output
-    assert add_prefix_to_increment('images/eda_1.png','plot') == 'images/eda_plot_1.png'
+    assert add_suffix_to_filename('images/eda_1.png','plot') == 'images/eda_plot_1.png'
     # Atypical example, check output
-    assert add_prefix_to_increment('images/train_df_1.csv', 'table') == 'images/train_df_table_1.csv'
-
-
+    assert add_suffix_to_filename('images/train_df_1.csv', 'table') == 'images/train_df_table_1.csv'
 
 def test_read_clean_data():
     """
@@ -175,7 +186,6 @@ def test_read_clean_data():
     assert len(read_clean_data(
         'data/global_temp_anomaly_cleaned_test.csv')) < len(read_clean_data(
             'data/global_temp_anomaly_cleaned_train.csv'))
-
 
 def test_viz_tabular_stats():
     """
@@ -208,7 +218,6 @@ def test_viz_mean_temp_years():
     # Typical example, check side effect functions properly generating png image
     assert os.path.exists('images/eda_plot_1.png')
 
-
 def test_viz_linear_regression():
     """
     Test viz_linear_regression from abstract_eda.py script
@@ -220,8 +229,6 @@ def test_viz_linear_regression():
         'data/global_temp_anomaly_cleaned_train.csv'), increment_filename('images/eda.png')) , str)
     # Typical example, check side effect functions properly generating png image
     assert os.path.exists('images/eda_plot_2.png')
-
-
 
 def test_viz_seasonal_lines():
     """
