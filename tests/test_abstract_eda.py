@@ -1,5 +1,4 @@
 """
-
 FUNCTION TO GRADE FOR TESTING: test_viz_mean_temp_years() -- other functions skipped by default for grading.
 
 Please use the command for testing this function:
@@ -103,6 +102,62 @@ from scripts.abstract_eda import (increment_filename,
                                   viz_seasonal_lines,
                                   viz_density_dists)
 
+# -------------------------------
+# Call the main testing function
+# -------------------------------
+def main():
+    test_viz_mean_temp()
+
+# -------------------------------------------- 
+# FUNCTION TO GRADE FOR TESTING IN MILESTONE 4
+# --------------------------------------------
+def test_viz_mean_temp() -> None:
+    """
+    Test viz_mean_temp_years() function from abstract_eda.py script.
+
+    This test checks the output of typical expected inputs, as well as 
+    erroneous inputs to the function. Also check the expected errors are 
+    raised by the function when tested with erroneous input.
+
+    Parameters
+    ----------
+    None
+        This script takes no arguments, test data is generated from within the script by the 
+        create_test_data() function below.
+
+    Returns
+    -------
+    None
+        Prints the passed/failed tests in the terminal when using the $ pytest command.
+
+    Side Effects  
+    ------------
+    Temperature scatter plot with mean temperature per year line .png generated, for example:
+        images/
+            eda_mean_per_year_plot.png
+        tests_eda_test_data/
+            toy_big_mean_per_year_plot.png
+
+    Examples
+    --------
+    If test and image data is present you can test just the function directly to grade:
+        $ pytest tests/test_abstract_eda.py::test_viz_mean_temp_years -v  (verbose output, from repo root) 
+        >>> collected 1 item 
+                                                                       
+            tests/test_abstract_eda.py::test_viz_mean_temp_years PASSED          [100%]
+
+            ============================ 1 passed in 8.19s =============================
+    """
+    
+    # Note that this writes the training data to the data folder if it does not exist for tests below
+    bad_path, toy_train_df, empty_path, empty_df, toy_train_df_big = create_test_data()
+
+    # Call the testing functions for viz_temp_mean() plotting function
+    expected_input_viz_mean(toy_train_df, empty_path)
+    unexpected_input_viz_mean(toy_train_df, bad_path, empty_df)
+    toy_data_input_viz_mean(toy_train_df_big)
+    chart_attrs_viz_mean(toy_train_df_big)
+    
 # -----------------------------
 # Create test data for test functions below
 # -----------------------------
@@ -158,9 +213,6 @@ def create_test_data() -> tuple[str, pd.DataFrame, str, pd.DataFrame, pd.DataFra
         'Month_Name': ['January', 'February']}
     )
 
-    # Put the data into the tests/eda_test_data folder
-    toy_train_df.to_csv('tests/eda_test_data/toy_train_df.csv')
-
     empty_path = ''
 
     empty_df = pd.DataFrame()
@@ -169,6 +221,9 @@ def create_test_data() -> tuple[str, pd.DataFrame, str, pd.DataFrame, pd.DataFra
     # If folder does not exist in the repo for some reason run os.mkdir()
     if not os.path.exists('tests/eda_test_data'):
         os.mkdir('tests/eda_test_data')
+
+    # Put the data into the tests/eda_test_data folder
+    toy_train_df.to_csv('tests/eda_test_data/toy_train_df.csv')
 
     # Create the oy_train_df_big.csv if it does not exist, otherwise read the data
     if not os.path.exists('tests/eda_test_data/toy_train_df_big.csv'):
@@ -204,54 +259,10 @@ def create_test_data() -> tuple[str, pd.DataFrame, str, pd.DataFrame, pd.DataFra
 
     return bad_path, toy_train_df, empty_path, empty_df, toy_train_df_big
 
-# Note that this writes the training data to the data folder if it does not exist for tests below
-bad_path, toy_train_df, empty_path, empty_df, toy_train_df_big = create_test_data()
-
-# -------------------------------------------- 
-# FUNCTION TO GRADE FOR TESTING IN MILESTONE 4
-# --------------------------------------------
-def test_viz_mean_temp_years() -> None:
-    """
-    Test viz_mean_temp_years() function from abstract_eda.py script.
-
-    This test checks the output of typical expected inputs, as well as 
-    erroneous inputs to the function. Also check the expected errors are 
-    raised by the function when tested with erroneous input.
-
-    Parameters
-    ----------
-    None
-        This script takes no arguments, test data is generated from within the script by the 
-        create_test_data() function below.
-
-    Returns
-    -------
-    None
-        Prints the passed/failed tests in the terminal when using the $ pytest command.
-
-    Side Effects  
-    ------------
-    Temperature scatter plot with mean temperature per year line .png generated, for example:
-        images/
-            eda_mean_per_year_plot.png
-        tests_eda_test_data/
-                        toy_big_mean_per_year_plot.png
-
-    Examples
-    --------
-    If test and image data is present you can test just the function directly to grade:
-        $ pytest tests/test_abstract_eda.py::test_viz_mean_temp_years -v  (verbose output, from repo root) 
-        >>> collected 1 item 
-                                                                       
-            tests/test_abstract_eda.py::test_viz_mean_temp_years PASSED          [100%]
-
-            ============================ 1 passed in 8.19s =============================
-    """
-    
-    # ---------------------------------------------
-    # Checks on different expected input data
-    # ---------------------------------------------
-
+# ---------------------------------------------
+# Checks on different expected input data
+# ---------------------------------------------
+def expected_input_viz_mean(toy_train_df, empty_path):
     # Get the training dataframe for some of the tests
     train_df = read_clean_data('data/global_temp_anomaly_cleaned_train.csv')
 
@@ -273,10 +284,10 @@ def test_viz_mean_temp_years() -> None:
     # Check that the image was still generated with the default filepath
     assert os.path.exists('images/eda_mean_per_year_plot.png')
     
-    # ---------------------------------------------
-    # Checks on different unexpected input data 
-    # ---------------------------------------------
-
+# ---------------------------------------------
+# Checks on different unexpected input data 
+# ---------------------------------------------
+def unexpected_input_viz_mean(toy_train_df, bad_path, empty_df):
     # Check error raised when non-existent but non-empty directory passed in plots_path
     with pytest.raises(ValueError):
         viz_mean_temp_years(toy_train_df, bad_path)
@@ -293,10 +304,10 @@ def test_viz_mean_temp_years() -> None:
     with pytest.raises(ValueError):
         viz_mean_temp_years(empty_df, 'tests/eda_test_data/eda.png')
 
-    # ---------------------------------------------
-    # Checks on a preprocessed, validated dataFrame generated by create_test_data()
-    # ---------------------------------------------
-    
+# ---------------------------------------------
+# Checks on a preprocessed, validated dataFrame generated by create_test_data()
+# ---------------------------------------------
+def toy_data_input_viz_mean(toy_train_df_big):
     # Validate toy_train_df_big from eda_test_data folder
     assert len(toy_train_df_big) > 1
     assert {'Year', 'Month', 'Day', 'Anomaly', 'Day of Year', 'Temperature'}.issubset(toy_train_df_big)
@@ -309,10 +320,13 @@ def test_viz_mean_temp_years() -> None:
     assert isinstance(plot_layered, alt.LayerChart)
     assert os.path.exists('tests/eda_test_data/toy_big_mean_per_year_plot.png')
 
-    # ---------------------------------------------
-    # Check the attributes of the chart are correct according to viz_mean_temp_years()
-    # ---------------------------------------------
-
+# ---------------------------------------------
+# Check the attributes of the chart are correct according to viz_mean_temp_years()
+# ---------------------------------------------
+def chart_attrs_viz_mean(toy_train_df_big):
+    # Generated Layered Plot
+    plot_layered = viz_mean_temp_years(toy_train_df_big, 'tests/eda_test_data/toy_big.png')
+    
     # Check both layers exist and data exists in chart object
     assert len(plot_layered.layer) == 2
     assert len(plot_layered.data) > 1
@@ -332,9 +346,6 @@ def test_viz_mean_temp_years() -> None:
     # Check layer mark types
     assert plot_layered.layer[0].mark['type'] == 'point'
     assert plot_layered.layer[1].mark['type'] == 'line'
-
-
-test_viz_mean_temp_years()
 
 # ----------------------------- 
 # OTHER FUNCTIONS WITH SIMPLE TESTS FOR QUICK SANITY CHECKS
@@ -480,3 +491,9 @@ def test_viz_density_dists():
     # Comment line below if data is present and you want to run $ pytest on all test functions
     # ---------------------------------------------
     pytest.skip('\nTest viz_mean_temp_years only')
+
+# -----------------------------    
+# Call main() with name guard
+# -----------------------------
+if __name__ == "__main__":
+    main()
