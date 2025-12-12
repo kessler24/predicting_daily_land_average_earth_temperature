@@ -12,6 +12,7 @@ dependencies:
   - altair-all=5.4
   - click=8.3.1
   - quarto=1.8.26
+  - pytest=9.0.2
   - pip=25.3
   # ------------
   # pip dependencies are installed into Docker in the Dockerfile. to create a working conda environment, uncomment the following lines before creating an environment from this file. to create a new conda-lock file (and subsequent Docker image), these lines must be commented out. (the Dockerfile will take care of installing these dependencies in the Docker image.)
