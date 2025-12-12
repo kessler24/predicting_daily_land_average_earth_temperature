@@ -132,6 +132,8 @@ We split the data into a training set (years up to 2012) and a test set (years a
 
 Three different machine-learning models are defined which are Linear Regression, Random Forest, and a Support Vector Regressor (SVR) with scaling—so we can compare how well each one predicts yearly temperature anomalies. Each model captures patterns differently, ranging from simple linear trends to more flexible non-linear relationships.
 
+Linear Regression uses default settings. Random Forest is configured with n_estimators=200 and random_state=42 to balance performance and reproducibility, with no depth limits specified. SVR uses an RBF kernel with C=100, gamma=0.1, epsilon=0.01; these values were selected based on prior exploratory experiments for stability and convergence, not through exhaustive hyperparameter tuning. Including these specifications allows others to reproduce the results exactly.
+
 We train each defined model on the training data, predicts anomalies for the test years, and calculates key evaluation metrics (RMSE, MAE, R²) to measure prediction accuracy. The results are stored in a table for easy comparison of model performance.
 
 ```{python}
@@ -144,6 +146,8 @@ results_table
 ```
 
 Lower RMSE and MAE values indicate more accurate predictions, while a higher (positive) R² shows the model explains more variance in the data. From the table, SVR has the lowest errors and a positive R², making it the best model to use for forecasting.
+
+Note: Two models have negative R² values, which indicates they perform worse than a naive baseline that always predicts the mean anomaly. We include R² to measure variance explanation, but negative values highlight poor predictive ability relative to the mean. SVR has the lowest errors and a positive R², making it the best model for forecasting.
 
 We use the selected best model `{python} results_table["RMSE"].idxmin()`, to predict the temperature anomaly for the year 2030 and then adds it to the baseline temperature to estimate the actual land-average temperature.
 
@@ -167,11 +171,15 @@ The predicted anomaly of ≈`{python} anom_2030_format` indicates that 2030 is e
 
 The plot shows the historical anomalies, with training data in blue and test data in orange, allowing us to visually compare the model's predictions against unseen years. The black trend line from the SVR model captures the warming pattern, while the red point highlights the 2030 forecast, illustrating the expected continuation of the temperature rise.
 
+This forecast assumes that historical trends continue linearly into the future, and it only uses year as a feature. The model does not account for external factors such as greenhouse gas concentrations or regional variations. Extrapolation beyond the range of training data (up to 2022) carries risk, so the 2030 prediction should be interpreted with caution.
+
 The trend line closely follows historical data, test points are reasonably well-predicted, and the red forecast indicates that temperature anomalies are expected to continue rising, consistent with expert opinions on global warming.
 
 # Discussion
 
 We found that global daily average land temperature has been steadily increasing since 1880, with a steeper increase after 1960. This trend is approximately the same across all months and seasons. The best model to capture this trend was a SVR model, which gave a predicted 2030 average land temperature of `{python} temp_2030_format`, an almost `{python} rounded_increase` increase from the baseline period. This is an expected result and aligns well with expert opinions [@NOAA_climate; @IPCC_2018; @NASA_climate] and well-documented patterns of climate change.
+
+We compared Linear Regression, Random Forest, and SVR. Linear Regression is simple and interpretable but cannot capture non-linear trends. Random Forest captures some non-linearity but may overfit with few features. SVR with an RBF kernel balances flexibility and smoothness in the forecasted trend, explaining why it was selected as the best-performing model.
 
 The impact of these findings is that they reinforce the global scientific consensus of continued warming of the earth. In future, we would recommend creating more models with additional features to see what features most impact the model and predict warming. For example, could incorporating CO2 levels improve these predictions? Additionally, this model focuses on global averages, but we could use a more granular dataset to investigate if some parts of the world are warming faster than others.
 
