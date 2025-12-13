@@ -20,109 +20,247 @@ The data set contains 5 columns with time series information, and one column rep
 
 All software dependencies for this project are managed using Docker. You can build and run the project directly inside the [Docker](https://www.docker.com/) container. This ensures a consistent and reproducible environmenyt across all systems. To install the relevant dependencies, follow the instructions in the Setup Environment section below.
 
+
 ## Running the Analysis
 
-Follow the instructions to run the analysis or modify the project in an editor.
+This section describes how to set up the environment, run the full analysis pipeline, execute tests, and render the final report.
 
-### Setup Environment
 
-1. Ensure Docker and Docker Compose are installed on your machine.
+## 1. Setup Environment
 
-2. Clone the GitHub repository to your machine.
+1. Ensure **Docker** and **Docker Compose** are installed on your machine.
 
-3. Open a command line interface (e.g. Terminal) on your machine and navigate to the root of this repository. Enter the following command to start and run your multi-container application based on the configuration provided in the docker-compose.yml file.
+2. Clone this GitHub repository to your local machine.
+
+3. Open a command line interface (e.g., Terminal) and navigate to the **root of this repository**.
+
+
+
+## 2. Launch the Docker Environment
+
+Start the multi-container application using Docker Compose:
+
+```bash
+docker compose up
+````
+
+After the Docker image is built and the container starts, look for a URL in the terminal that looks like:
+
+```
+http://127.0.0.1:8888/lab?token=...
+```
+
+This appears after the line:
+
+> Or copy and paste one of these URLs
+
+Copy and paste this URL into your browser to launch **JupyterLab**.
+
+---
+
+### Port Conflict Troubleshooting (Optional)
+
+If the page asks for a password or token, port `8888` may already be in use.
+
+To fix this:
+
+1. Stop and remove the current Docker instance:
+
+```bash
+docker compose rm
+```
+
+2. Open `docker-compose.yml` and change the port to an available one (e.g., 8887 or 8889):
+
+```yaml
+ports:
+  - "{8888}:8888"
+```
+
+3. Restart Docker:
 
 ```bash
 docker compose up
 ```
 
-4. After the docker image is created and the container is started, look for an url similar to 'http://127.0.0.1:8888/lab?token=f41ef3f99692f72a4e1efb828a738f38d2da4c648c62d21c' following the line 'Or copy and paste one of these URLs'.
+Then open the updated URL:
 
-5. Copy and paste the url to browser to launch the jupyter notebook. 
-
-If the page asks for a password or token, it is likely that the port 8888 is already being used on your computer. In this case, you can either remove the existing docker instance on port 8888, or launch this new docker instance on a new port. 
-
-To launch this docker instance on a new port:
-a. Remove the current instance by running the command
-
- ```bash
-docker compose rm
+```
+http://127.0.0.1:{8888}/lab?token=...
 ```
 
-b. Open the docker-compose.yml file and change the port number in curly braces {} below to an available port (e.g. If 8888 is unavailable, try 8887 or 8889).
-    ports:
-      - "{8888}:8888"
-c. After changing the port number, run the command
+(Replace `{8888}` with the port you selected.)
 
- ```bash
-docker compose up
+
+## 3. Explore the Analysis in JupyterLab
+
+Once Docker launches successfully, you will be in a local **JupyterLab** instance.
+
+Navigate to:
+
+```
+global_daily_land_temperature_prediction.qmd
 ```
 
-again and look for the url. Remember to replace the port number in the curly braces {} below with the number you changed to in step b.
-'http://127.0.0.1:{8888}/lab?token=f41ef3f99692f72a4e1efb828a738f38d2da4c648c62d21c' 
+to explore the interactive analysis.
 
-6. Once you launch the Docker instance successfully, you will be in a local JupyterLab instance in your browser. Now you can navigate to the global_daily_land_temperature_prediction.qmd document and explore the interactive analysis.
 
-7. To render the Quarto document to an html file, run the command
+## 4. Running the Analysis Pipeline with the Makefile
+
+This project uses a **Makefile** to run the full analysis pipeline and generate all required intermediate files.
+
+To reset the project to a clean state (i.e., remove all generated files), run:
+
+```bash
+make clean
+```
+
+To run the full analysis from start to finish, run:
+
+```bash
+make all
+```
+
+
+## 5. Running Individual Scripts (Optional)
+
+If you prefer to run the analysis step-by-step, ensure you are in the **project root**:
+
+```bash
+pwd
+```
+
+Then run the scripts in the following order.
+
+### 5.1 Download Raw Data
+
+```bash
+python scripts/read_data.py \
+  "https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt" \
+  "data/global_temp_anomaly_raw.csv"
+```
+
+Arguments:
+
+* input path (URL or local file)
+* output path for the raw data
+
+
+### 5.2 Data Cleaning and Preprocessing
+
+```bash
+python scripts/data_preprocessing.py \
+  --read_path="data/global_temp_anomaly_raw.csv" \
+  --write_path="data/global_temp_anomaly_cleaned" \
+  --plots_path="images" \
+  --logs_path="logs"
+```
+
+Arguments:
+
+* path to raw data
+* output path for cleaned and split data
+* directory for plots
+* directory for logs
+
+
+### 5.3 Exploratory Data Analysis (EDA)
+
+```bash
+python scripts/abstract_eda.py \
+  data/global_temp_anomaly_cleaned_train.csv \
+  images/eda.png
+```
+
+Arguments:
+
+* cleaned training data
+* output path for figures and tables
+
+
+### 5.4 Model Training and Evaluation
+
+```bash
+python scripts/ml_modelling.py \
+  --input_path data/global_temp_anomaly_cleaned_full.csv \
+  --output_dir results \
+  --cutoff_year 2012
+```
+
+Arguments:
+
+* cleaned full dataset
+* output directory for results
+* cutoff year for train/test split
+
+
+## 6. Testing (Important)
+
+⚠️ **Important:** You must run `make all` **before** running `pytest`.
+
+Some tests depend on files generated during the `make all` step.
+
+### Correct order
+
+```bash
+make all
+pytest
+```
+
+### Common pitfall
+
+Running:
+
+```bash
+make clean
+pytest
+```
+
+will cause tests to fail because required generated files are missing.
+
+After cleaning, always run:
+
+```bash
+make all
+pytest
+```
+
+
+## 7. Rendering the Final Report
+
+To render the Quarto document as an HTML file, run the following command **from the `reports/` folder**:
 
 ```bash
 quarto render global_daily_land_temperature_prediction.qmd
 ```
 
-from the reports folder of this repository in the Terminal. The html file will appear in the reports folder as global_daily_land_temperature_prediction.html. To view the html file, leave Docker, navigate to the local version of the repository on your machine, and launch the html file to your preferred browser. (Note: If you view the HTML in Docker, it may not format properly and some figures may not render. If you would prefer a PDF document, you should render to HTML, open the HTML as indicated above, and save the page as a PDF. Developers are working on resolving a bug related to PDF rendering through Quarto.)
+The rendered file will appear as:
 
-8. When you are done viewing the report, return to the Terminal running your Docker instance and press CTRL + C to quit the JupyterLab instance. Then, cleanly remove the Docker instance from your machine by running the command
+```
+global_daily_land_temperature_prediction.html
+```
 
- ```bash
+To view the report:
+
+1. Exit Docker
+2. Navigate to the local repository
+3. Open the HTML file in your preferred browser
+
+> **Note:** Viewing the HTML inside Docker may cause formatting issues.
+> To generate a PDF, render to HTML first, open it locally, and save the page as a PDF.
+
+
+## 8. Shutting Down Docker
+
+When finished:
+
+1. Return to the Terminal running Docker
+2. Press `CTRL + C` to stop JupyterLab
+3. Remove the Docker instance:
+
+```bash
 docker compose rm
 ```
-
-### Running the scripts
-
-1. Run the command `pwd` to make sure you are located in the project root, otherwise, make sure you naviagte to the root of the project before proceeding to the following steps. 
-
-2. Download the [Berkeley Earth Temperature Data](https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt) with `read_data.py` script by running this command:
-
- ```bash
- python scripts/read_data.py "https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt" "data/global_temp_anomaly_raw.csv"
- ```
-
- The script takes two arguments:
- - the path to the input file (a URL or a relative local path, such as data/file.csv)
- - a path/filename where to write the file to and what to call it (e.g., data/cleaned_data.csv)
-
-3. Reads the data from the first script and performs and data cleaning, preprocessing and validation with `data_preprocessing.py` script by runnning this command:
-
- ```bash
- python scripts/data_preprocessing.py --read_path="data/global_temp_anomaly_raw.csv" --write_path="data/global_temp_anomaly_cleaned" --plots_path="images" --logs_path="logs"
- ```
-
-The script takes four arguments:
-- a path/filename pointing to the data to be read in
-- a path/filename pointing to where the cleaned/processed/transformed/partitioned data should live.
-- A path pointing to where the plots will be saved
-- A path pointing to where the log file will be saved
-
-4. Perform EDA (Exploratory Data Analysis) on the training data with `abstract_eda.py` script by running this command:
-
-```bash
-python scripts/abstract_eda.py data/global_temp_anomaly_cleaned_train.csv images/eda.png
-```
-
-The script takes two arguments:
-- a path/filename pointing to the cleaned training data to be analyzed
-- a path/filename pointing to where the png images and csv tables will be saved
-
-5. Build machine learning model with `ml_modelling.py` script by running this command:
-
-```bash
-python scripts/ml_modelling.py --input_path data/global_temp_anomaly_cleaned_full.csv --output_dir results --cutoff_year 2012
-```
-
-The script takes three arguments:
-- a path/filename pointing to the cleaned full data to be analyzed
-- a path/filename pointing to where the analysis result will be saved
-- a numeric parameter to take as the cutoff_year for train and test data
 
 ## Developer notes
 
