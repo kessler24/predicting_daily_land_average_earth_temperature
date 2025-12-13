@@ -232,7 +232,7 @@ def main(input_path, output_dir, cutoff_year):
 
     # Save plot to output directory
     plt.savefig(f"{output_dir}/forecast_plot.png", dpi=300)
-    plt.show()
+    # plt.show()
 
     print("\nAll outputs saved successfully!")
 

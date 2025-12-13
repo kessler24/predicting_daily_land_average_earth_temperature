@@ -102,7 +102,7 @@ The goal of this EDA is to determine what type of predictive model will be the b
 #| tbl-cap: A view on the presence of null or NA values and the data types of the training dataset features.
 
 # Read the script generated training data info table
-pd.read_csv('../images/eda_table_1.csv')
+pd.read_csv('../images/eda_training_data_info_table.csv')
 ```
 
 The training set has `{python} len(train_df)` data entries.
@@ -113,24 +113,24 @@ The training set has `{python} len(train_df)` data entries.
 #| tbl-cap: A view of descriptive statistics for the features (columns) in the training dataset.
 
 # Read the script generated training data describe table
-pd.read_csv('../images/eda_table_2.csv')
+pd.read_csv('../images/eda_training_data_stats_table.csv')
 ```
 
 Due to the many measurements that occur in each year (contributing to plotting noise), the mean of the temperatures for each group of measurements taken in a year were plotted in addition to the raw data points of temperature over time. A general trend of increasing temperature over time with local fluctuations can be observed below in [@fig-scatter].
 
-![Visualize the raw data and mean per year for temperature over time.](../images/eda_plot_1.png){#fig-scatter}
+![Visualize the raw data and mean per year for temperature over time.](../images/eda_mean_per_year_plot.png){#fig-scatter}
 
 Using the mean data points by year, a linear regression model was fit to the training data to assess the viability of this approach in prediction. The linear regression fit can be seen in [@fig-reg] to follow the overall trend, but misses information about local fluctuations, seen by the points above and below the line. A linear model has potential to generalize for unseen year examples but may be too simple for this analysis and will not be precise in its predictions for every year. A 5-year rolling average was also explored, due to its ability to adapt the curve more effectively to local fluctuations. However, a model of this type may not extrapolate well for unseen examples to predict future temperatures.
 
-![Visualize the mean per year aggregated data with a linear fit on the training dataset.](../images/eda_plot_2.png){#fig-reg}
+![Visualize the mean per year aggregated data with a linear fit on the training dataset.](../images/eda_linear_fit_plot.png){#fig-reg}
 
 In order to check if the global average daily temperature over time was affected by seasonal phenomena, the annual means of these temperature measurements were analyzed by each month separated. It can be seen from [@fig-facet] below that regardless of the season global daily average land temperature measurements are increasing non-trivially over time.
 
-![Visualize the mean temperature per year grouped by month.](../images/eda_plot_3.png){#fig-facet}
+![Visualize the mean temperature per year grouped by month.](../images/eda_facet_by_month_plot.png){#fig-facet}
 
 Finally, the distribution of the temperature in the training data for all measurements taken during three different years, separated by approximately 60 years, were evaluated in [@fig-density] below. The last year in the training data set (2012) can be seen as significantly shifted to the right, indicating the increase in global daily average land temperature across time. Three distinct peaks in [@fig-density] below reinforces the hypothesis that even when account for the variance in temperature due to local fluctuations, the overall trend of global temperature increasing over time remains.
 
-![Visualize temperature density distributions for select years across all measurements.](../images/eda_plot_4.png){#fig-density}
+![Visualize temperature density distributions for select years across all measurements.](../images/eda_density_distributions_plot.png){#fig-density}
 
 ## Machine Learning Modelling
 
