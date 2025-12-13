@@ -8,7 +8,7 @@
 
 ### Feedback Addressed by Jacob
 - Original Issues Raised: https://github.com/UBC-MDS/data-analysis-review-2025/issues/18#issuecomment-3634810044 https://github.com/UBC-MDS/data-analysis-review-2025/issues/18#issuecomment-3639818869
-- Relevant commits of changes: https://github.com/kessler24/predicting_daily_land_average_earth_temperature/commit/3f5f3ee7ab927a93a3b3a44ff5e07a91b111f3cb https://github.com/kessler24/predicting_daily_land_average_earth_temperature/commit/3f5f3ee7ab927a93a3b3a44ff5e07a91b111f3cb
+- Relevant commits of changes: https://github.com/kessler24/predicting_daily_land_average_earth_temperature/commit/3f5f3ee7ab927a93a3b3a44ff5e07a91b111f3cb
 - Fixed the filename outputs and handling for the abstract_eda.py script and added error handling for defensive programming.
 - Added informative filename suffixes indicating the type of plot and and table while giving the user the ability to choose the filename prefix
 - Update .qmd to reflect new naming convention compatible with Makefile and full analysis
