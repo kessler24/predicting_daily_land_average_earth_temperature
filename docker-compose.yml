@@ -1,6 +1,6 @@
 services:
   jupyter-notebook:
-    image:  molkess/predicting_daily_land_average_earth_temperature:b08656a
+    image:  molkess/predicting_daily_land_average_earth_temperature:6be5103
     ports:
       - "8888:8888"
     volumes:
