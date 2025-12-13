@@ -30,22 +30,8 @@ tests_eda_test_data/
 
 Examples
 --------
-If test and image data is already present or not you should run the entire test script:
+If test and image data is or is not present you can run the entire test script:
 -----------------------------
-    
-    $ pytest -v    (default output when script is ran skipping previously created tests not to be graded)
-    >>> collected 8 items                                                             
-
-        tests/test_abstract_eda.py::test_viz_mean_temp_years PASSED             [ 12%]
-        tests/test_abstract_eda.py::test_increment_filename SKIPPED ()          [ 25%]
-        tests/test_abstract_eda.py::test_add_suffix_to_filename SKIPPED ()      [ 37%]
-        tests/test_abstract_eda.py::test_read_clean_data SKIPPED ()             [ 50%]
-        tests/test_abstract_eda.py::test_viz_tabular_stats SKIPPED ()           [ 62%]
-        tests/test_abstract_eda.py::test_viz_linear_regression SKIPPED ()       [ 75%]
-        tests/test_abstract_eda.py::test_viz_seasonal_lines SKIPPED ()          [ 87%]
-        tests/test_abstract_eda.py::test_viz_density_dists SKIPPED ()           [100%]
-
-        ======================== 1 passed, 7 skipped in 12.39s ========================
     
     $ pytest    (for concise output if all tests are enabled, ran from repo root)
     >>> collected 8 items
@@ -76,7 +62,23 @@ If test and image data is present you can test just the function directly to gra
             tests/test_abstract_eda.py::test_viz_mean_temp_years PASSED          [100%]
 
             ============================ 1 passed in 8.19s =============================
-        
+
+Uncomment pytest.skip() calls for grading if you do not want to consider their output or pass/fail
+-----------------------------
+    $ pytest -v    (for verbose output when helper functions are skipped
+        >>> collected 8 items                                                             
+
+            tests/test_abstract_eda.py::test_viz_mean_temp_years PASSED             [ 12%]
+            tests/test_abstract_eda.py::test_increment_filename SKIPPED ()          [ 25%]
+            tests/test_abstract_eda.py::test_add_suffix_to_filename SKIPPED ()      [ 37%]
+            tests/test_abstract_eda.py::test_read_clean_data SKIPPED ()             [ 50%]
+            tests/test_abstract_eda.py::test_viz_tabular_stats SKIPPED ()           [ 62%]
+            tests/test_abstract_eda.py::test_viz_linear_regression SKIPPED ()       [ 75%]
+            tests/test_abstract_eda.py::test_viz_seasonal_lines SKIPPED ()          [ 87%]
+            tests/test_abstract_eda.py::test_viz_density_dists SKIPPED ()           [100%]
+
+            ======================== 1 passed, 7 skipped in 12.39s ========================
+
 """
 
 # -----------------------------
@@ -349,7 +351,12 @@ def chart_attrs_viz_mean(toy_train_df_big):
 
 # ----------------------------- 
 # OTHER FUNCTIONS WITH SIMPLE TESTS FOR QUICK SANITY CHECKS
-# ----------------------------- 
+# -----------------------------
+ 
+# ---------------------------------------------
+# Uncomment the pytest.skip() lines below if want to skip any of the 
+# helper function tests below for milestone 4 grading purposes. 
+# --------------------------------------------- 
 
 def test_increment_filename():
     """
@@ -366,11 +373,8 @@ def test_increment_filename():
     # Edge case example, check output
     assert increment_filename('')=='_1.png'
 
-    # ---------------------------------------------
-    # Skip pytest on this function, comment out line below or milestone 4 grading purposes. 
-    # Comment line below if data is present and you want to run $ pytest on all test functions
-    # ---------------------------------------------
-    pytest.skip('\nTest viz_mean_temp_years only')
+    # Uncomment this line below if you want to skip this function during the $ pytest run
+    # pytest.skip('\nTest viz_mean_temp_years only')
 
 
 def test_add_suffix_to_filename():
@@ -386,11 +390,8 @@ def test_add_suffix_to_filename():
     # Typical example, check output
     assert add_suffix_to_filename('images/train_df.csv', 'table') == 'images/train_df_table.csv'
 
-    # ---------------------------------------------
-    # Skip pytest on this function, comment out line below or milestone 4 grading purposes. 
-    # Comment line below if data is present and you want to run $ pytest on all test functions
-    # ---------------------------------------------
-    pytest.skip('\nTest viz_mean_temp_years only')
+    # Uncomment this line below if you want to skip this function during the $ pytest run
+    # pytest.skip('\nTest viz_mean_temp_years only')
 
 def test_read_clean_data():
     """
@@ -406,11 +407,8 @@ def test_read_clean_data():
     # Check that dataframe has at least one row
     assert len(read_clean_data('data/global_temp_anomaly_cleaned_train.csv')) > 0
 
-    # ---------------------------------------------
-    # Skip pytest on this function, comment out line below or milestone 4 grading purposes. 
-    # Comment line below if data is present and you want to run $ pytest on all test functions
-    # ---------------------------------------------
-    pytest.skip('\nTest viz_mean_temp_years only')
+    # Uncomment this line below if you want to skip this function during the $ pytest run
+    # pytest.skip('\nTest viz_mean_temp_years only')
 
 def test_viz_tabular_stats():
     """
@@ -432,11 +430,8 @@ def test_viz_tabular_stats():
         pd.read_csv('tests/eda_test_data/eda_training_data_stats_table.csv'))
     assert len(pd.read_csv('tests/eda_test_data/eda_training_data_stats_table.csv')) == 8
 
-    # ---------------------------------------------
-    # Skip pytest on this function, comment out line below or milestone 4 grading purposes. 
-    # Comment line below if data is present and you want to run $ pytest on all test functions
-    # ---------------------------------------------
-    pytest.skip('\nTest viz_mean_temp_years only')
+    # Uncomment this line below if you want to skip this function during the $ pytest run
+    # pytest.skip('\nTest viz_mean_temp_years only')
 
 def test_viz_linear_regression():
     """
@@ -450,11 +445,8 @@ def test_viz_linear_regression():
     # Typical example, check side effect functions properly generating png image
     assert os.path.exists('tests/eda_test_data/eda_linear_fit_plot.png')
 
-    # ---------------------------------------------
-    # Skip pytest on this function, comment out line below or milestone 4 grading purposes. 
-    # Comment line below if data is present and you want to run $ pytest on all test functions
-    # ---------------------------------------------
-    pytest.skip('\nTest viz_mean_temp_years only')
+    # Uncomment this line below if you want to skip this function during the $ pytest run
+    # pytest.skip('\nTest viz_mean_temp_years only')
 
 def test_viz_seasonal_lines():
     """
@@ -468,11 +460,8 @@ def test_viz_seasonal_lines():
     # Typical example,  check side effect functions properly generating png images
     assert os.path.exists('tests/eda_test_data/eda_facet_by_month_plot.png')
 
-    # ---------------------------------------------
-    # Skip pytest on this function, comment out line below or milestone 4 grading purposes. 
-    # Comment line below if data is present and you want to run $ pytest on all test functions
-    # ---------------------------------------------
-    pytest.skip('\nTest viz_mean_temp_years only')
+   # Uncomment this line below if you want to skip this function during the $ pytest run
+   # pytest.skip('\nTest viz_mean_temp_years only')
 
 def test_viz_density_dists():
     """
@@ -486,11 +475,8 @@ def test_viz_density_dists():
     # Typical example,  check side effect functions properly generating png images
     assert os.path.exists('tests/eda_test_data/eda_density_distributions_plot.png')
 
-    # ---------------------------------------------
-    # Skip pytest on this function, comment out line below or milestone 4 grading purposes. 
-    # Comment line below if data is present and you want to run $ pytest on all test functions
-    # ---------------------------------------------
-    pytest.skip('\nTest viz_mean_temp_years only')
+   # Uncomment this line below if you want to skip this function during the $ pytest run
+   # pytest.skip('\nTest viz_mean_temp_years only')
 
 # -----------------------------    
 # Call main() with name guard
