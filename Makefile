@@ -54,6 +54,7 @@ clean :
 		images/eda_training_data_stats_table.csv \
 		results/forecast_2030.csv \
 		results/model_results.csv \
+		results/forecast_plot.png \
 		images/correlation_heatmap.png \
 		images/eda_density_distributions_plot.png \
 		images/eda_facet_by_month_plot.png \
