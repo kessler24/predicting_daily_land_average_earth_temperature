@@ -39,6 +39,7 @@ read_csv options.
 """
 import click
 import pandas as pd
+import os
 
 def download_temperature_data(input_path: str, output_path: str):
 
@@ -97,6 +98,9 @@ def download_temperature_data(input_path: str, output_path: str):
     
     # write and save the data as a csv file
     if output_path.endswith(".csv"):
+        dir, _ = os.path.split(output_path)
+        if not os.path.exists(dir):
+           os.mkdir(dir)
         df.to_csv(output_path, index=False)
         print(f"Data saved to {output_path}")
     else:
