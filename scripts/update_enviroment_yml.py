@@ -1,7 +1,7 @@
 """Library of functions used to append package versions in environment.yml files 
 
    Example command line usage: 
-   python scripts/00-update_enviroment_yml.py --root_dir="." --env_name="ai_env"
+   python scripts/update_enviroment_yml.py --root_dir="." --env_name="ai_env"
    
 """
 
