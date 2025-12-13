@@ -1,8 +1,0 @@
-Column,Contains NA Values,Data Type
-Year,False,int64
-Month,False,int64
-Day,False,int64
-Day of Year,False,int64
-Anomaly,False,float64
-Temperature,False,float64
-Month_Name,False,object

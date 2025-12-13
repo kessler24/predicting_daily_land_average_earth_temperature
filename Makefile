@@ -61,4 +61,5 @@ clean :
 		images/eda_mean_per_year_plot.png \
 		images/month_vs_day_of_year_correlation.png \
 		images/temperature_and_anomaly_distributions.png \
-		reports/global_daily_land_temperature_prediction.html
+		reports/global_daily_land_temperature_prediction.html \
+		reports/global_daily_land_temperature_prediction.pdf
