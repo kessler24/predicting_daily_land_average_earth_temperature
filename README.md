@@ -32,7 +32,9 @@ Follow the instructions to run the analysis or modify the project in an editor.
 
 3. Open a command line interface (e.g. Terminal) on your machine and navigate to the root of this repository. Enter the following command to start and run your multi-container application based on the configuration provided in the docker-compose.yml file.
 
-`docker compose up`
+```bash
+docker compose up
+```
 
 4. After the docker image is created and the container is started, look for an url similar to 'http://127.0.0.1:8888/lab?token=f41ef3f99692f72a4e1efb828a738f38d2da4c648c62d21c' following the line 'Or copy and paste one of these URLs'.
 
@@ -41,24 +43,49 @@ Follow the instructions to run the analysis or modify the project in an editor.
 If the page asks for a password or token, it is likely that the port 8888 is already being used on your computer. In this case, you can either remove the existing docker instance on port 8888, or launch this new docker instance on a new port. 
 
 To launch this docker instance on a new port:
-a. Remove the current instance by running `docker compose rm` command. 
+a. Remove the current instance by running the command
+
+ ```bash
+docker compose rm
+```
+
 b. Open the docker-compose.yml file and change the port number in curly braces {} below to an available port (e.g. If 8888 is unavailable, try 8887 or 8889).
     ports:
       - "{8888}:8888"
-c. After changing the port number, run `docker compose up` again and look for the url again. Remember to replace the port number in the curly braces {} below with the number you changed to in step b.
+c. After changing the port number, run the command
+
+ ```bash
+docker compose up
+```
+
+again and look for the url. Remember to replace the port number in the curly braces {} below with the number you changed to in step b.
 'http://127.0.0.1:{8888}/lab?token=f41ef3f99692f72a4e1efb828a738f38d2da4c648c62d21c' 
 
 6. Once you launch the Docker instance successfully, you will be in a local JupyterLab instance in your browser. Now you can navigate to the global_daily_land_temperature_prediction.qmd document and explore the interactive analysis.
 
-7. To render the Quarto document to an html file, run `quarto render global_daily_land_temperature_prediction.qmd` from the reports folder of this repository in the Terminal. The html file will appear in the reports folder as global_daily_land_temperature_prediction.html. To view the html file, leave Docker, navigate to the local version of the repository on your machine, and launch the html file to your preferred browser. (Note: If you view the HTML in Docker, it may not format properly and some figures may not render. If you would prefer a PDF document, you should render to HTML, open the HTML as indicated above, and save the page as a PDF. Developers are working on resolving a bug related to PDF rendering through Quarto.)
+7. To render the Quarto document to an html file, run the command
+
+```bash
+quarto render global_daily_land_temperature_prediction.qmd
+```
+
+from the reports folder of this repository in the Terminal. The html file will appear in the reports folder as global_daily_land_temperature_prediction.html. To view the html file, leave Docker, navigate to the local version of the repository on your machine, and launch the html file to your preferred browser. (Note: If you view the HTML in Docker, it may not format properly and some figures may not render. If you would prefer a PDF document, you should render to HTML, open the HTML as indicated above, and save the page as a PDF. Developers are working on resolving a bug related to PDF rendering through Quarto.)
+
+8. When you are done viewing the report, return to the Terminal running your Docker instance and press CTRL + C to quit the JupyterLab instance. Then, cleanly remove the Docker instance from your machine by running the command
+
+ ```bash
+docker compose rm
+```
 
 ### Running the scripts
 
-1. Run `pwd` to make sure you are located in the project root, otherwise, make sure you naviagte to the root of the project before proceeding to the following steps. 
+1. Run the command `pwd` to make sure you are located in the project root, otherwise, make sure you naviagte to the root of the project before proceeding to the following steps. 
 
 2. Download the [Berkeley Earth Temperature Data](https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt) with `read_data.py` script by running this command:
 
- `python scripts/read_data.py "https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt" "data/global_temp_anomaly_raw.csv"`
+ ```bash
+ python scripts/read_data.py "https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt" "data/global_temp_anomaly_raw.csv"
+ ```
 
  The script takes two arguments:
  - the path to the input file (a URL or a relative local path, such as data/file.csv)
@@ -66,7 +93,9 @@ c. After changing the port number, run `docker compose up` again and look for th
 
 3. Reads the data from the first script and performs and data cleaning, preprocessing and validation with `data_preprocessing.py` script by runnning this command:
 
- `python scripts/data_preprocessing.py --read_path="data/global_temp_anomaly_raw.csv" --write_path="data/global_temp_anomaly_cleaned" --plots_path="images" --logs_path="logs"`
+ ```bash
+ python scripts/data_preprocessing.py --read_path="data/global_temp_anomaly_raw.csv" --write_path="data/global_temp_anomaly_cleaned" --plots_path="images" --logs_path="logs"
+ ```
 
 The script takes four arguments:
 - a path/filename pointing to the data to be read in
@@ -76,7 +105,9 @@ The script takes four arguments:
 
 4. Perform EDA (Exploratory Data Analysis) on the training data with `abstract_eda.py` script by running this command:
 
-`python scripts/abstract_eda.py data/global_temp_anomaly_cleaned_train.csv images/eda.png`
+```bash
+python scripts/abstract_eda.py data/global_temp_anomaly_cleaned_train.csv images/eda.png
+```
 
 The script takes two arguments:
 - a path/filename pointing to the cleaned training data to be analyzed
@@ -84,7 +115,9 @@ The script takes two arguments:
 
 5. Build machine learning model with `ml_modelling.py` script by running this command:
 
-`python scripts/ml_modelling.py --input_path data/global_temp_anomaly_cleaned_full.csv --output_dir results --cutoff_year 2012`
+```bash
+python scripts/ml_modelling.py --input_path data/global_temp_anomaly_cleaned_full.csv --output_dir results --cutoff_year 2012
+```
 
 The script takes three arguments:
 - a path/filename pointing to the cleaned full data to be analyzed
@@ -99,19 +132,47 @@ The script takes three arguments:
 
 ### Adding a new dependency
 
-1. Create and switch to a new GitHub branch by typing `git checkout -b new-branch-name` in the terminal
+1. Create and switch to a new GitHub branch by running the following command in the terminal
+
+```bash
+git checkout -b new-branch-name
+```
 
 2. Open the `environment.yml`file and add the new dependencies
 
-3. To update the `conda-linux-64.lock` file, run `conda-lock -k explicit --file environment.yml -p linux-64` in the terminal
+3. To update the `conda-linux-64.lock` file, run the following command in the terminal
 
-4. Remember to rebuild the Docker image locally and make sure it runs locally with `docker compose up`.
+```bash
+conda-lock -k explicit --file environment.yml -p linux-64
+```
 
-5. To make sure the Docker image builds properly, check GitHub Actions on GitHub.com. Ensure the latest Docker image published sucessfully with a green check icon (note: it will take up to 10 minutes for the Docker image to build). 
+4. Remember to rebuild the Docker image locally and make sure it runs locally with 
 
-6. Run `git add modified_file_name` (Remember to add all files with edits i.e. `git add environment.yml`)
-       `git commit -m 'add new dependencies'`
-       `git push -u origin new-branch-name` to push the local changes to the GitHub repo.
+```bash
+docker compose up
+```
+
+5. To make sure the Docker image builds properly, check GitHub Actions on GitHub.com. Ensure the latest Docker image published sucessfully with a green check icon (note: it will take up to 10 minutes for the Docker image to build).
+
+6. Run 
+
+```bash 
+git add modified_file_name
+``` 
+
+to add all of the files with edits (e.g. `environment.yml`). Next, run
+
+```bash
+git commit -m 'add new dependencies'
+```
+
+to commit your changes with a meaningful commit message. Lastly, run
+
+```bash
+git push -u origin new-branch-name
+```
+
+to push your local changes to the GitHub repo.
 
 7. Create a new pull request in GitHub and merge the changes to the `main` branch after review.
 
