@@ -18,27 +18,33 @@ execute:
   echo: false
 ---
 
-
 # Summary
 
-This project analyzes global daily average land-surface temperature measurements collected by Berkeley Earth from 1880–2022. In the following analysis, dataset is cleaned and preprocessed, explored through EDA, and modeled to predict future temperature trends using this historical data. After evaluating three regression approaches, Linear Regression, Random Forest, and Support Vector Regression (SVR), the SVR model performed best and was used to forecast the land average temperature for the year 2030.
+This project analyzed Berkeley Earth global daily average land-surface temperature data from 1880–2022. The goal was to clean, explore, and model this historical data to predict future temperature trends. After evaluating three regression approaches: Linear Regression, Random Forest, and Support Vector Regression (SVR),the SVR model performed best and was used to forecast the land average temperature for the year 2030. The findings are important for climate risk assessment and informing mitigation policy.
+
+However, limitation of the model exists as the model is built on global historical temperature data without incorporating any external features (such as Carbon dioxide concentrations) and regional data. Future work can focus on feature engineering by integrating more relevant features and develop regional forecasts.
 
 # Introduction
 
-Understanding long-term changes in global land temperature is critical for studying climate change. Daily temperature anomaly data collected over more than 140 years provide an opportunity to model how temperatures have shifted, identify long-term patterns, and forecast future warming.
+Understanding long-term changes in global land temperature is critical for studying and responding to the escalating global crisis of climate change. Daily temperature anomaly data collected over more than 140 years provide an opportunity to model how temperatures have shifted, identify crucial long-term patterns, and forecast future warming. The urgency of this analysis is underscored by the severe, tangible impacts of rising temperatures, which threaten global food security, overwhelm infrastructure with increased extreme weather events (e.g., droughts, severe storms), and accelerate biodiversity loss.
 
-In this report, we talk both about the actual temperature as well as the temperature anomaly. Temperature anomaly refers to deviation from a baseline climatological temperature. In this study, the baseline is 8.59°C, representing the January 1951–December 1980 global land-average temperature. 
+In this report, we discuss both about the actual temperature and the temperature anomaly. According to @NCEI_anomalies, temperature anomaly refers to the deviation from a baseline climatological temperature. In this study, the baseline is 8.59°C, representing the January 1951–December 1980 global land-average temperature. By introducing anomalies, we can effectively normalize the data across the time periods, allowing us to highlight the long-term warming trend that defines climate change.
 
 In this project, we will be answering the research question:
 
-What do we expect the global land-average temperature of the Earth to be in 2030, based on the trends from the years 1880 to 2012.
+**What do we expect the global land-average temperature of the Earth to be in 2030, based on the trends from the years 1880 to 2012.**
+
+The ability to accurately forecast the global land-average temperature for a near-term year like 2030, moves the conversation beyond historical observation and into proactive decision-making and risk management. The prediction can be meaningful for several aspects such as assisting policy evaluation in targeting emission reduction, adaptation planning for relevant infrastructure, and raising public awareness to appeal for early actions.
 
 ## Dataset
+
 The data set for this project was published by Berkeley Earth under a Creative Commons BY-NC 4.0 International license, free for non-commercial use, and accessed by our team compliant with the conditions in this license on November 18, 2025. The raw data can be found at the [Berkeley Earth Temperature site](https://berkeley-earth-temperature.s3.us-west-1.amazonaws.com/Global/Complete_TAVG_daily.txt) [@Berkeley_data].
 
 The data set contains 5 columns with time series information, and one column representing the temperature difference relative to the average temperature between January 1951 and December 1980, which they calculated as 8.59 +/- 0.05 [@Berkeley_data]. For our analysis, we preprocessed the data to get the raw temperature readings back by adding 8.59 to each entry in the Anomaly column. All temperatures are in Celsius.
 
 # Methods and Results
+
+The project methodology began with rigorous **data validation** of the 1880–2012 daily temperature data using @pandera to enforce structural integrity, detect outliers, and ensure data quality. Following validation, the data was resampled to **annual mean anomaly values** to focus on long-term climate trends, and then split into training (pre-2012) and test (post-2012) sets for future prediction evaluation. **Exploratory Data Analysis (EDA)** confirmed a linear increasing temperature trend over time. Linear Regression, Random Forest, and Support Vector Regression (SVR) models were trained, and the **SVR model** was ultimately selected for its superior performance (lowest **RMSE** of 0.144) on the unseen test data, which was subsequently used to forecast the global land-average temperature for the year 2030.
 
 The Python programming language [@Python] and the following Python packages were used to perform the analysis: pandas [@pandas], altair [@altair], click [@click], matplotlib [@matplotlib], numpy [@numpy], scikit-learn [@sklearn], pandera [@pandera], as well as Quarto [@Allaire_Quarto_2022].
 
@@ -72,7 +78,9 @@ train_df
 
 ![Target Distribution Visualization (training data). Right-skewness is expected due to increasing anomalies in recent years.](../images/temperature_and_anomaly_distributions.png){#fig-hist}
 
-We can see from the histogram plots of the target in [@fig-hist] (Anomaly untransformed and Temperature when transformed) that the distribution of the target is very slightly right-skewed, but is almost symmetric and fairly normally distributed. It make sense that the majority of the distribution is close to normally distributed as temperature increase has accelerated in recent years and was less prevalent the further you go back in time. We would expect the distribution to be right-skewed since the accepted hypothesis of average global temperature is that it is increasing and accelerating in recent years relative to when the collection of this data first began, and this would cause more of the density of the anomaly and temperature distributions to be to the left of the mean. A second validation schema was created to apply this skewness check to the training data and raise a warning otherwise.
+We can see from the histogram plots of the target in [@fig-hist] (Anomaly un-transformed and Temperature when transformed) that the distribution of the target is very slightly right-skewed, but is almost symmetric and fairly normally distributed. It make sense that the majority of the distribution is close to normally distributed as temperature increase has accelerated in recent years and was less prevalent the further you go back in time. We would expect the distribution to be right-skewed since the accepted hypothesis of average global temperature is that it is increasing and accelerating in recent years relative to when the collection of this data first began, and this would cause more of the density of the anomaly and temperature distributions to be to the left of the mean. A second validation schema was created to apply this skewness check to the training data and raise a warning otherwise.
+
+###### Validating The Training DataFrame with the Additions to the Schema
 
 ###### Validating The Training DataFrame with the Additions to the Schema 
 (see head and tail of the training data in [@tbl-train-df])
@@ -124,9 +132,9 @@ Finally, the distribution of the temperature in the training data for all measur
 
 ![Visualize temperature density distributions for select years across all measurements.](../images/eda_plot_4.png){#fig-density}
 
-## Machine Learning Modelling 
+## Machine Learning Modelling
 
-Here we convert daily climate data into yearly averages by creating a proper datetime index, resampling the anomaly values to annual means, and preparing the data for modeling by extracting the numerical year and separating it into feature (X) and target (y) arrays. Yearly averages smooth out short-term noise and make long-term climate trends easier to model, and using the year as the feature allows the machine-learning models to learn how temperature anomalies evolve over time.
+Here we convert daily climate data into yearly averages by creating a proper datetime index, re-sampling the anomaly values to annual means, and preparing the data for modeling by extracting the numerical year and separating it into feature (X) and target (y) arrays. Yearly averages smooth out short-term noise and make long-term climate trends easier to model, and using the year as the feature allows the machine-learning models to learn how temperature anomalies evolve over time.
 
 We split the data into a training set (years up to 2012) and a test set (years after 2012) by creating boolean masks based on the chosen split year. It then uses those masks to separate the feature matrix and target values into training and testing subsets. By training on earlier years and testing on later years, we evaluate how well the model predicts future climate patterns rather than just fitting past data. A good model should perform well on the test set, meaning it can generalize to years it has never seen before.
 
