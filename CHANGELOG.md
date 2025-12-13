@@ -21,3 +21,13 @@
 - Original Issues Raised: https://github.com/UBC-MDS/data-analysis-review-2025/issues/18#issuecomment-3634618262
 - Relevant commits of changes: https://github.com/kessler24/predicting_daily_land_average_earth_temperature/commit/31bb74cfeba108f9b13f7e4fe9f30a1f9ee53cfa
 - Changed script name for better naming conventions
+
+### Feedback Addressed by Molly
+- Original Issue Raised: https://github.com/UBC-MDS/data-analysis-review-2025/issues/18#issuecomment-3634618262
+- Relevant commits of changes: https://github.com/kessler24/predicting_daily_land_average_earth_temperature/pull/119/changes/1d3e98caca776317c93d188847ed60f42d5bdd64
+- Added line to README indicating how to shut down and clean up the Docker image when finished using CTRL + C and `docker compose rm`.
+
+
+- Original Issue Raised: https://github.com/UBC-MDS/data-analysis-review-2025/issues/18#issuecomment-3634728390
+- Relevant commits of changes: https://github.com/kessler24/predicting_daily_land_average_earth_temperature/pull/119/changes/1d3e98caca776317c93d188847ed60f42d5bdd64
+- Updated long inline code and terminal commands to be code blocks using bash syntax highlighting rather than inline for easier readability.
